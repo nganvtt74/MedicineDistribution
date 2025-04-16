@@ -33,6 +33,11 @@ build/
 
 ### VS Code ###
 .vscode/
+/.env
+.env.local
+.env
+
+
 
 ### Mac OS ###
 .DS_Store
