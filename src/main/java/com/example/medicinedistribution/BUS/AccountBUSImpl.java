@@ -50,7 +50,9 @@ public class AccountBUSImpl implements AccountBUS {
                     log.error("Tài khoản đã tồn tại: {}", accountDTO);
                     throw new AlreadyExistsException("Tài khoản đã tồn tại");
                 }else{
-                    if (accountDAO.insert(accountDTO, connection) > 0) {
+                    Integer accountId = accountDAO.insert(accountDTO, connection);
+                    if (accountId > 0) {
+                        accountDTO.setAccountId(accountId);
                         log.info("Thêm tài khoản thành công: {}", accountDTO);
                         return true;
                     } else {

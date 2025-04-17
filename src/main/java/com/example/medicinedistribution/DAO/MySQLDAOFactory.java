@@ -1,9 +1,6 @@
 package com.example.medicinedistribution.DAO;
 
-import com.example.medicinedistribution.DAO.Interface.AccountDAO;
-import com.example.medicinedistribution.DAO.Interface.PermissionDAO;
-import com.example.medicinedistribution.DAO.Interface.RoleDAO;
-import com.example.medicinedistribution.DAO.Interface.RolePermDAO;
+import com.example.medicinedistribution.DAO.Interface.*;
 
 import java.sql.SQLException;
 
@@ -24,5 +21,17 @@ public class MySQLDAOFactory extends DAOFactory {
     @Override
     public PermissionDAO getPermissionDAO(){
         return new PermissionDAOImpl();
+    }
+    @Override
+    public PositionDAO getPositionDAO() {
+        return new PositionDAOImpl();
+    }
+    @Override
+    public EmployeeDAO getEmployeeDAO() {
+        return new EmployeeDAOImpl();
+    }
+    @Override
+    public DepartmentDAO getDepartmentDAO() {
+        return new DepartmentDAOImpl();
     }
 }

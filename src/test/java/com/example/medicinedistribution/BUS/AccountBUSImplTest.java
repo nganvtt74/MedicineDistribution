@@ -34,8 +34,6 @@ class AccountBUSImplTest {
     private static AccountDTO testAccount;
     private static int testAccountId;
     private static PasswordUtil passwordUtil;
-    private static UserSession userSession;
-    private static AuthBUS authBUS;
 
     @BeforeAll
     static void setUpAll() {
@@ -43,8 +41,8 @@ class AccountBUSImplTest {
         dataSource = DBConnection.getDataSource(); // Giả sử getDataSource() đã được cấu hình cho test
         TransactionManager transactionManager = new TransactionManager(dataSource);
         daoFactory = new MySQLDAOFactory();
-        userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager,userSession);
+        UserSession userSession = new UserSession();
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession);
                 // Tạo một tài khoản test để sử dụng trong các test
                 testAccount = AccountDTO.builder()
                         .username("testuser")
@@ -56,7 +54,7 @@ class AccountBUSImplTest {
     @BeforeEach
     void setUp() {
         accountBUS = busFactory.getAccountBUS();
-        authBUS = busFactory.getAuthBUS();
+        AuthBUS authBUS = busFactory.getAuthBUS();
         if (authBUS.login("admin", "admin")){
             System.out.println("Login successful");
         } else {

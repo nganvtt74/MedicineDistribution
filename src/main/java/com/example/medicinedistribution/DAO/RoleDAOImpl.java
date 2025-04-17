@@ -24,7 +24,7 @@ public class RoleDAOImpl implements RoleDAO {
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
-        return null;
+        return 0;
     }
 
     @Override

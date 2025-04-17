@@ -1,6 +1,8 @@
 package com.example.medicinedistribution.DTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import lombok.*;
 
 @Data
@@ -11,11 +13,11 @@ public class EmployeeDTO {
     private int employeeId;  // PK
     private String firstName;
     private String lastName;
-    private String birthday;
+    private LocalDate birthday;
     private String gender;
     private String phone;
     private String email;
-    private String hireDate;
+    private LocalDate hireDate;
     private String address;
     private BigDecimal basicSalary;  // Sử dụng BigDecimal cho tiền lương
     private String status;

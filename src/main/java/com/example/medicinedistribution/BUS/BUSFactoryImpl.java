@@ -1,7 +1,5 @@
 package com.example.medicinedistribution.BUS;
-import com.example.medicinedistribution.BUS.Interface.AccountBUS;
-import com.example.medicinedistribution.BUS.Interface.AuthBUS;
-import com.example.medicinedistribution.BUS.Interface.RoleBUS;
+import com.example.medicinedistribution.BUS.Interface.*;
 import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DTO.UserSession;
 
@@ -37,6 +35,20 @@ public class BUSFactoryImpl extends BUSFactory{
     public AuthBUS getAuthBUS() {
         RoleBUS roleBUS = getRoleBUS();
         return new AuthBUSImpl(dataSource, mySQLDAOFactory.getAccountDAO(), roleBUS,userSession);
+    }
+
+    @Override
+    public DepartmentBUS getDepartmentBUS() {
+        return new DepartmentBUSImpl( mySQLDAOFactory.getDepartmentDAO(), userSession, dataSource);
+    }
+    @Override
+    public PositionBUS getPositionBUS() {
+        return new PositionBUSImpl( mySQLDAOFactory.getPositionDAO(),userSession, dataSource);
+    }
+
+    @Override
+    public EmployeeBUS getEmployeeBUS() {
+        return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource);
     }
 
 }
