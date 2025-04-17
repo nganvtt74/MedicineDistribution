@@ -1,7 +1,10 @@
+# Maven and Gradle build directories
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -33,11 +36,11 @@ build/
 
 ### VS Code ###
 .vscode/
-/.env
-.env.local
-.env
-
-
+.env*
+!.env.local  # Optional, if you want to track a specific .env.local file.
 
 ### Mac OS ###
 .DS_Store
+
+# Logs and sensitive files
+*.log
