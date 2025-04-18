@@ -61,7 +61,7 @@ public class RoleDAOImpl implements RoleDAO {
                 return RoleDTO.builder()
                         .roleId(rs.getInt("roleId"))
                         .roleName(rs.getString("roleName"))
-                        .status(rs.getBoolean("status"))
+                        .status(rs.getInt("status"))
                         .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                         .updatedAt(rs.getTimestamp("updated_at").toLocalDateTime())
                         .build();
@@ -82,7 +82,7 @@ public class RoleDAOImpl implements RoleDAO {
                 roles.add(RoleDTO.builder()
                         .roleId(rs.getInt("roleId"))
                         .roleName(rs.getString("roleName"))
-                        .status(rs.getBoolean("status"))
+                        .status(rs.getInt("status"))
                         .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                         .updatedAt(rs.getTimestamp("updated_at").toLocalDateTime())
                         .build());
@@ -104,7 +104,7 @@ public class RoleDAOImpl implements RoleDAO {
                 return RoleDTO.builder()
                         .roleId(rs.getInt("roleId"))
                         .roleName(rs.getString("roleName"))
-                        .status(rs.getBoolean("status"))
+                        .status(rs.getInt("status"))
                         .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                         .updatedAt(rs.getTimestamp("updated_at").toLocalDateTime())
                         .build();

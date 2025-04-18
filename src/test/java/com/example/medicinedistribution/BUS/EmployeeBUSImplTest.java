@@ -85,7 +85,7 @@ class EmployeeBUSImplTest {
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giả sử ngày vào làm là 01/01/2022
                 .address("123 Test Street, Test City")
                 .basicSalary(new BigDecimal("3500.00"))  // Tiền lương cơ bản
-                .status("Active")
+                .status(1)
                 .positionId(testPosition.getPositionId())  // Liên kết với testPosition
                 .accountId(testAccount.getAccountId())  // Giả sử accountId là 1
                 .build();
@@ -129,7 +129,7 @@ class EmployeeBUSImplTest {
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giữ nguyên ngày vào làm
                 .address("456 Updated Street, Updated City")  // Địa chỉ mới
                 .basicSalary(new BigDecimal("4000.00"))  // Tiền lương cập nhật
-                .status("Inactive")  // Trạng thái mới
+                .status(0)  // Trạng thái mới
                 .positionId(testPosition.getPositionId())  // Cập nhật positionId
                 .accountId(testAccount.getAccountId())  // Giữ nguyên accountId
                 .build();

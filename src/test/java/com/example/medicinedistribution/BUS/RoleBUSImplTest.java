@@ -186,34 +186,4 @@ package com.example.medicinedistribution.BUS;
             System.out.println("Delete non-existent exception: " + exception.getMessage());
         }
 
-public static void printPermissions(java.util.List<PermissionDTO> permissions) {
-    final String ANSI_RESET = "\u001B[0m";
-    final String ANSI_RED = "\u001B[31m";
-    final String ANSI_GREEN = "\u001B[32m";
-
-    StringBuilder sb = new StringBuilder();
-    // Build table header.
-    sb.append(String.format("| %-15s | %-10s | %-25s | %-16s | %-20s | %-20s | %-20s |%n",
-            "permissionCode", "permName", "parentPermissionCode", "editableBy", "status", "isEditable", "isChecked"));
-    sb.append(String.format("|%-17s|%-12s|%-27s|%-18s|%-22s|%-22s|%-22s|%n",
-            "-----------------", "------------", "---------------------------", "------------------", "----------------------", "----------------------", "----------------------"));
-
-    // Add permission rows with colored booleans.
-    for (PermissionDTO perm : permissions) {
-        String coloredStatus = perm.getStatus() ? ANSI_GREEN + "true" + ANSI_RESET : ANSI_RED + "false" + ANSI_RESET;
-        String coloredEditable = perm.isEditable() ? ANSI_GREEN + "true" + ANSI_RESET : ANSI_RED + "false" + ANSI_RESET;
-        String coloredChecked = perm.isChecked() ? ANSI_GREEN + "true" + ANSI_RESET : ANSI_RED + "false" + ANSI_RESET;
-
-        sb.append(String.format("| %-15s | %-10s | %-25s | %-16s | %-29s | %-29s | %-29s |%n",
-                perm.getPermissionCode(),
-                perm.getPermName(),
-                perm.getParentPermissionCode() == null ? "null" : perm.getParentPermissionCode(),
-                perm.getEditableByPermissionCode(),
-                coloredStatus,
-                coloredEditable,
-                coloredChecked));
-    }
-
-    System.out.println(sb.toString());
-}
     }

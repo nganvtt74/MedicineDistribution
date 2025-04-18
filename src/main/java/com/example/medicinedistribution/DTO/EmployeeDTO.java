@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDTO {
-    private int employeeId;  // PK
+    private Integer employeeId;  // PK
     private String firstName;
     private String lastName;
     private LocalDate birthday;
@@ -20,7 +20,7 @@ public class EmployeeDTO {
     private LocalDate hireDate;
     private String address;
     private BigDecimal basicSalary;  // Sử dụng BigDecimal cho tiền lương
-    private String status;
-    private int positionId;  // FK
-    private int accountId;  // FK
+    private Integer status;
+    private Integer positionId;  // FK
+    private Integer accountId;  // FK
 }

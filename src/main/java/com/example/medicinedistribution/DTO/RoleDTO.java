@@ -12,7 +12,7 @@ import java.util.List;
 public class RoleDTO {
     private Integer roleId;
     private String roleName;
-    private Boolean status;
+    private Integer status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<PermissionDTO> permissions;

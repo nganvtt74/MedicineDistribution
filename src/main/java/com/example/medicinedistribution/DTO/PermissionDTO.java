@@ -11,7 +11,7 @@ public class PermissionDTO {
     private String permName;
     private String parentPermissionCode;
     private String editableByPermissionCode;
-    private Boolean status;
+    private Integer status;
 
     private boolean isEditable;
     private boolean isChecked;

@@ -102,7 +102,7 @@ public class RolePermDAOImpl implements RolePermDAO {
                             .permName(rs.getString("permName"))
                             .parentPermissionCode(rs.getString("parent_permission_code"))
                             .editableByPermissionCode(rs.getString("editable_by_permission_code"))
-                            .status(rs.getBoolean("status"))
+                            .status(rs.getInt("status"))
                             .build());
                 }
             }

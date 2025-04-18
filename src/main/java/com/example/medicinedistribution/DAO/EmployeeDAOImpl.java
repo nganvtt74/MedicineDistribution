@@ -59,7 +59,7 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
         stmt.setDate(7, Date.valueOf(employeeDTO.getHireDate()));
         stmt.setString(8, employeeDTO.getAddress());
         stmt.setBigDecimal(9, employeeDTO.getBasicSalary());
-        stmt.setString(10, employeeDTO.getStatus());
+        stmt.setInt(10, employeeDTO.getStatus());
     }
 
     @Override
@@ -90,7 +90,7 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .phone(rs.getString("phone"))
                         .birthday(rs.getDate("birthday").toLocalDate())
                         .hireDate(rs.getDate("hireDate").toLocalDate())
-                        .status(rs.getString("status"))
+                        .status(rs.getInt("status"))
                         .accountId(rs.getInt("accountId"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
@@ -122,7 +122,7 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .phone(rs.getString("phone"))
                         .birthday(rs.getDate("birthday").toLocalDate())
                         .hireDate(rs.getDate("hireDate").toLocalDate())
-                        .status(rs.getString("status"))
+                        .status(rs.getInt("status"))
                         .accountId(rs.getInt("accountId"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
