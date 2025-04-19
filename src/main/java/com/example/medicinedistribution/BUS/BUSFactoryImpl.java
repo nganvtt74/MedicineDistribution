@@ -51,4 +51,19 @@ public class BUSFactoryImpl extends BUSFactory{
         return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource);
     }
 
+    @Override
+    public CategoryBUS getCategoryBUS() {
+        return new CategoryBUSImpl(dataSource, mySQLDAOFactory.getCategoryDAO(), userSession);
+    }
+
+    @Override
+    public ProductBUS getProductBUS() {
+        return new ProductBUSImpl(mySQLDAOFactory.getProductDAO(), userSession, dataSource);
+    }
+
+    @Override
+    public CustomerBUS getCustomerBUS() {
+        return new CustomerBUSImpl(mySQLDAOFactory.getCustomerDAO(), dataSource, userSession);
+    }
+
 }

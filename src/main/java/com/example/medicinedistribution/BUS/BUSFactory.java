@@ -23,5 +23,7 @@ public abstract class BUSFactory {
 //
 //    public abstract RoleBUS getRoleBUS();
 //
-//    public abstract CategoryBUS getCategoryBUS();
+    public abstract CategoryBUS getCategoryBUS();
+    public abstract ProductBUS getProductBUS();
+    public abstract CustomerBUS getCustomerBUS();
 }

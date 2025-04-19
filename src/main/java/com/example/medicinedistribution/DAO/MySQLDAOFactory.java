@@ -34,4 +34,37 @@ public class MySQLDAOFactory extends DAOFactory {
     public DepartmentDAO getDepartmentDAO() {
         return new DepartmentDAOImpl();
     }
+    @Override
+    public CategoryDAO getCategoryDAO() {
+        return new CategoryDAOImpl();
+    }
+    @Override
+    public ManufacturerDAO getManufacturerDAO() {
+        return new ManufacturerDAOImpl();
+    }
+    @Override
+    public ProductDAO getProductDAO() {
+        return new ProductDAOImpl();
+    }
+    @Override
+    public InvoiceDAO getInvoiceDAO() {
+        return new InvoiceDAOImpl();
+    }
+    @Override
+    public InvoiceDetailDAO getInvoiceDetailDAO() {
+        return new InvoiceDetailDAOImpl();
+    }
+    @Override
+    public GoodsReceiptDAO getGoodsReceiptDAO() {
+        return new GoodsReceiptDAOImpl();
+    }
+    @Override
+    public GoodsReceiptDetailDAO getGoodsReceiptDetailDAO() {
+        return new GoodsReceiptDetailDAOImpl();
+    }
+    @Override
+    public CustomerDAO getCustomerDAO() {
+        return new CustomerDAOImpl();
+    }
+
 }

@@ -12,5 +12,14 @@ public abstract class DAOFactory {
     public abstract PositionDAO getPositionDAO();
     public abstract EmployeeDAO getEmployeeDAO();
     public abstract DepartmentDAO getDepartmentDAO();
+    public abstract CategoryDAO getCategoryDAO();
+    public abstract ManufacturerDAO getManufacturerDAO();
+    public abstract ProductDAO getProductDAO();
+    public abstract InvoiceDAO getInvoiceDAO();
+    public abstract InvoiceDetailDAO getInvoiceDetailDAO();
+    public abstract GoodsReceiptDAO getGoodsReceiptDAO();
+    public abstract GoodsReceiptDetailDAO getGoodsReceiptDetailDAO();
+    public abstract CustomerDAO getCustomerDAO();
+
 
 }

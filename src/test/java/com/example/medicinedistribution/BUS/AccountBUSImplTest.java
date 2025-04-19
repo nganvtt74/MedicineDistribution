@@ -33,7 +33,6 @@ class AccountBUSImplTest {
     private AccountBUS accountBUS;
     private static AccountDTO testAccount;
     private static int testAccountId;
-    private static PasswordUtil passwordUtil;
 
     @BeforeAll
     static void setUpAll() {
