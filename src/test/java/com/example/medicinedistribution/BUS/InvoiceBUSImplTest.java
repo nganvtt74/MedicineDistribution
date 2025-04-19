@@ -6,7 +6,12 @@ import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.*;
 import com.example.medicinedistribution.Exception.DeleteFailedException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -37,7 +42,13 @@ class InvoiceBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
 
         AuthBUS authBUS = busFactory.getAuthBUS();
         if (authBUS.login("admin", "admin")) {
@@ -63,7 +74,7 @@ class InvoiceBUSImplTest {
                 .lastName("Example")
                 .birthday(LocalDate.of(1990, 5, 15))  // Giả sử sinh nhật là 15/05/1990
                 .gender("Male")
-                .phone("123-456-7890")
+                .phone("0123456789")
                 .email("test.employee@example.com")
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giả sử ngày vào làm là 01/01/2022
                 .address("123 Test Street, Test City")
@@ -77,6 +88,9 @@ class InvoiceBUSImplTest {
         // Create test customer
         testCustomer = CustomerDTO.builder()
                 .customerName("TestCustomer")
+                .phone("0987654321")
+                .address("456 Test Avenue, Test City")
+                .email("test.customer@example.com")
                 .build();
         customerBUS.insert(testCustomer);
 
@@ -85,6 +99,8 @@ class InvoiceBUSImplTest {
             ProductDTO product = ProductDTO.builder()
                     .productName("TestProduct" + i)
                     .price(new BigDecimal(i * 100))
+                    .unit("Box")
+                    .categoryId(1)  // Assuming category ID 1 exists
                     .build();
             productBUS.insert(product);
             testProducts.add(product);
@@ -97,6 +113,7 @@ class InvoiceBUSImplTest {
             detail.setProductId(testProducts.get(i).getProductId());
             detail.setQuantity(i + 2); // Different quantities
             detail.setPrice(testProducts.get(i).getPrice());
+            detail.setTotal(testProducts.get(i).getPrice().multiply(BigDecimal.valueOf(i + 2)));
             details.add(detail);
         }
 
@@ -148,7 +165,7 @@ class InvoiceBUSImplTest {
                 .build();
         
         // Test should throw an exception when trying to process null details
-        assertThrows(NullPointerException.class, () -> invoiceBUS.insert(invalidInvoice),
+        assertThrows(IllegalArgumentException.class, () -> invoiceBUS.insert(invalidInvoice),
                 "Should throw exception with null details");
                 
         // Create invoice with non-existent product ID

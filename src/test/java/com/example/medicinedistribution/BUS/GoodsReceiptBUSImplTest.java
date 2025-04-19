@@ -6,7 +6,12 @@ import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.*;
 import com.example.medicinedistribution.Exception.DeleteFailedException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -38,7 +43,13 @@ class GoodsReceiptBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
 
         AuthBUS authBUS = busFactory.getAuthBUS();
         if (authBUS.login("admin", "admin")) {
@@ -64,7 +75,7 @@ class GoodsReceiptBUSImplTest {
                 .lastName("Example")
                 .birthday(LocalDate.of(1990, 5, 15))  // Giả sử sinh nhật là 15/05/1990
                 .gender("Male")
-                .phone("123-456-7890")
+                .phone("0123456789")
                 .email("test.employee@example.com")
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giả sử ngày vào làm là 01/01/2022
                 .address("123 Test Street, Test City")
@@ -78,6 +89,12 @@ class GoodsReceiptBUSImplTest {
         // Create test manufacturer
         testManufacturer = ManufacturerDTO.builder()
                 .manufacturerName("TestManufacturer")
+                .address("123 Manufacturer St, Test City")
+                .phone("0987654321")
+                .email("test@example.com")
+                .country("Testland")
+                .description("TestDescription")
+
                 .build();
         manufacturerBUS.insert(testManufacturer);
 
@@ -86,6 +103,8 @@ class GoodsReceiptBUSImplTest {
             ProductDTO product = ProductDTO.builder()
                     .productName("TestProduct" + i)
                     .price(new BigDecimal(i * 100))
+                    .unit("Box")
+                    .categoryId(1)  // Assuming category ID 1 exists
                     .build();
             productBUS.insert(product);
             testProducts.add(product);
@@ -98,6 +117,7 @@ class GoodsReceiptBUSImplTest {
             detail.setProductId(testProducts.get(i).getProductId());
             detail.setQuantity(i + 5); // Different quantities
             detail.setPrice(testProducts.get(i).getPrice());
+            detail.setTotal(testProducts.get(i).getPrice().multiply(BigDecimal.valueOf(i + 5)));
             details.add(detail);
         }
 
@@ -122,6 +142,7 @@ class GoodsReceiptBUSImplTest {
     @Test
     @Order(1)
     void insert_validGoodsReceipt_goodsReceiptIsAdded() {
+        System.out.println(testGoodsReceipt);
         boolean result = goodsReceiptBUS.insert(testGoodsReceipt);
         assertTrue(result, "Goods receipt should be inserted");
 
@@ -149,7 +170,7 @@ class GoodsReceiptBUSImplTest {
                 .build();
         
         // Test should throw an exception when trying to process null details
-        assertThrows(NullPointerException.class, () -> goodsReceiptBUS.insert(invalidGoodsReceipt),
+        assertThrows(IllegalArgumentException.class, () -> goodsReceiptBUS.insert(invalidGoodsReceipt),
                 "Should throw exception with null details");
                 
         // Create goods receipt with non-existent product ID

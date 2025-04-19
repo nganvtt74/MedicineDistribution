@@ -2,6 +2,7 @@ package com.example.medicinedistribution.BUS;
 import com.example.medicinedistribution.BUS.Interface.*;
 import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DTO.UserSession;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 
@@ -10,25 +11,30 @@ public class BUSFactoryImpl extends BUSFactory{
     private final DAOFactory mySQLDAOFactory;
     private final TransactionManager transactionManager;
     private final UserSession userSession;
+    private final Validator validator;
 
     public BUSFactoryImpl(DataSource dataSource,
                           DAOFactory mySQLDAOFactory,
                           TransactionManager transactionManager,
-                          UserSession userSession) {
+                          UserSession userSession,
+                          Validator validator
+                          ) {
         this.dataSource = dataSource;
         this.mySQLDAOFactory = mySQLDAOFactory;
         this.transactionManager = transactionManager;
         this.userSession = userSession;
+        this.validator = validator;
     }
 
     @Override
     public AccountBUS getAccountBUS() {
-        return new AccountBUSImpl(dataSource, mySQLDAOFactory.getAccountDAO(),userSession);
+        return new AccountBUSImpl(dataSource, mySQLDAOFactory.getAccountDAO(),userSession , validator);
     }
 
     @Override
     public RoleBUS getRoleBUS() {
-        return new RoleBUSImpl(dataSource, mySQLDAOFactory.getRoleDAO(), mySQLDAOFactory.getRolePermDAO(), transactionManager, userSession, mySQLDAOFactory.getPermissionDAO());
+        return new RoleBUSImpl(dataSource, mySQLDAOFactory.getRoleDAO(), mySQLDAOFactory.getRolePermDAO(),
+                transactionManager, userSession, mySQLDAOFactory.getPermissionDAO() , validator);
     }
 
     @Override
@@ -39,46 +45,48 @@ public class BUSFactoryImpl extends BUSFactory{
 
     @Override
     public DepartmentBUS getDepartmentBUS() {
-        return new DepartmentBUSImpl( mySQLDAOFactory.getDepartmentDAO(), userSession, dataSource);
+        return new DepartmentBUSImpl( mySQLDAOFactory.getDepartmentDAO(), userSession, dataSource , validator);
     }
     @Override
     public PositionBUS getPositionBUS() {
-        return new PositionBUSImpl( mySQLDAOFactory.getPositionDAO(),userSession, dataSource);
+        return new PositionBUSImpl( mySQLDAOFactory.getPositionDAO(),userSession, dataSource , validator);
     }
 
     @Override
     public EmployeeBUS getEmployeeBUS() {
-        return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource);
+        return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource , validator);
     }
 
     @Override
     public CategoryBUS getCategoryBUS() {
-        return new CategoryBUSImpl(dataSource, mySQLDAOFactory.getCategoryDAO(), userSession);
+        return new CategoryBUSImpl(dataSource, mySQLDAOFactory.getCategoryDAO(), userSession , validator);
     }
 
     @Override
     public ProductBUS getProductBUS() {
-        return new ProductBUSImpl(mySQLDAOFactory.getProductDAO(), userSession, dataSource);
+        return new ProductBUSImpl(mySQLDAOFactory.getProductDAO(), userSession, dataSource , validator);
     }
 
     @Override
     public CustomerBUS getCustomerBUS() {
-        return new CustomerBUSImpl(mySQLDAOFactory.getCustomerDAO(), dataSource, userSession);
+        return new CustomerBUSImpl(mySQLDAOFactory.getCustomerDAO(), dataSource, userSession , validator);
     }
 
     @Override
     public ManufacturerBUS getManufacturerBUS() {
-        return new ManufacturerBUSImpl(mySQLDAOFactory.getManufacturerDAO(), dataSource, userSession);
+        return new ManufacturerBUSImpl(mySQLDAOFactory.getManufacturerDAO(), dataSource, userSession, validator);
     }
 
     @Override
     public GoodsReceiptBUS getGoodsReceiptBUS() {
-        return new GoodsReceiptBUSImpl(mySQLDAOFactory.getGoodsReceiptDAO(), mySQLDAOFactory.getGoodsReceiptDetailDAO(), dataSource, userSession, transactionManager);
+        return new GoodsReceiptBUSImpl(mySQLDAOFactory.getGoodsReceiptDAO(), mySQLDAOFactory.getGoodsReceiptDetailDAO(),
+                dataSource, userSession, transactionManager , validator);
     }
 
     @Override
     public InvoiceBUS getInvoiceBUS() {
-        return new InvoiceBUSImpl(mySQLDAOFactory.getInvoiceDAO(), mySQLDAOFactory.getInvoiceDetailDAO(), dataSource, userSession, transactionManager);
+        return new InvoiceBUSImpl(mySQLDAOFactory.getInvoiceDAO(), mySQLDAOFactory.getInvoiceDetailDAO(),
+                dataSource, userSession, transactionManager , validator);
     }
 
 }

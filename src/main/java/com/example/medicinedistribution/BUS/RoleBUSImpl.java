@@ -10,6 +10,8 @@ import com.example.medicinedistribution.DTO.RolePermDTO;
 import com.example.medicinedistribution.DTO.UserSession;
 import com.example.medicinedistribution.Exception.*;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -29,20 +31,33 @@ public class RoleBUSImpl implements RoleBUS{
     private final TransactionManager transactionManager;
     private final UserSession userSession;
     private final PermissionDAO permissionDAO;
+    private final Validator validator;
 
     public RoleBUSImpl(DataSource dataSource, RoleDAO roleDao, RolePermDAO rolePermDAO,
                        TransactionManager transactionManager , UserSession userSession ,
-                       PermissionDAO permissionDAO) {
+                       PermissionDAO permissionDAO, Validator validator) {
         this.dataSource = dataSource;
         this.roleDao = roleDao;
         this.rolePermDAO = rolePermDAO;
         this.transactionManager = transactionManager;
         this.userSession = userSession;
         this.permissionDAO = permissionDAO;
+        this.validator = validator;
+    }
+
+    private void valid(RoleDTO roleDTO) {
+        Set<ConstraintViolation<RoleDTO>> violations = validator.validate(roleDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<RoleDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
     }
 
     @Override
     public boolean insert(RoleDTO roleDTO) {
+        valid(roleDTO);
         if (userSession.hasPermission("INSERT_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
                 // Check if the role name already exists
@@ -94,6 +109,7 @@ public class RoleBUSImpl implements RoleBUS{
 
     @Override
     public boolean update(RoleDTO roleDTO) {
+        valid(roleDTO);
         if (userSession.hasPermission("UPDATE_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
                 // Check if the role name already exists

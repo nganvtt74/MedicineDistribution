@@ -9,8 +9,17 @@ import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.AccountDTO;
 import com.example.medicinedistribution.DTO.CategoryDTO;
 import com.example.medicinedistribution.DTO.UserSession;
+import com.example.medicinedistribution.Exception.DeleteFailedException;
+import com.example.medicinedistribution.Exception.InsertFailedException;
+import com.example.medicinedistribution.Exception.UpdateFailedException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
+
 
 
 import javax.sql.DataSource;
@@ -37,7 +46,14 @@ class CategoryBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession);
+
+        ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
         login();
         categoryBUS = busFactory.getCategoryBUS();
         testCategory = CategoryDTO.builder()
@@ -61,11 +77,37 @@ class CategoryBUSImplTest {
     }
 
     @Test
+    @Order(6)
+    void insert_nullCategory_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            categoryBUS.insert(null);
+        });
+    }
+
+    @Test
+    @Order(7)
+    void insert_emptyName_throwsException() {
+        CategoryDTO invalidCategory = CategoryDTO.builder()
+                .categoryName("")
+                .build();
+        assertThrows(IllegalArgumentException.class, () -> {
+            categoryBUS.insert(invalidCategory);
+        });
+    }
+
+    @Test
     @Order(2)
     void findById_existingCategory_returnsCategoryDTO() {
         CategoryDTO retrieved = categoryBUS.findById(testCategoryId);
         assertNotNull(retrieved);
         assertEquals("testCategory", retrieved.getCategoryName());
+    }
+
+    @Test
+    @Order(8)
+    void findById_nonExistentId_returnsNull() {
+        CategoryDTO result = categoryBUS.findById(99999);
+        assertNull(result);
     }
 
     @Test
@@ -80,6 +122,26 @@ class CategoryBUSImplTest {
 
         CategoryDTO retrieved = categoryBUS.findById(testCategoryId);
         assertEquals("UpdatedCategory", retrieved.getCategoryName());
+    }
+
+    @Test
+    @Order(9)
+    void update_nonExistentCategory_returnsFalse() {
+        CategoryDTO nonExistentCategory = CategoryDTO.builder()
+                .categoryId(99999)
+                .categoryName("NonExistent")
+                .build();
+        assertThrows(RuntimeException.class, () -> {
+            categoryBUS.update(nonExistentCategory);
+        });
+    }
+
+    @Test
+    @Order(10)
+    void update_nullCategory_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            categoryBUS.update(null);
+        });
     }
 
     @Test
@@ -98,6 +160,41 @@ class CategoryBUSImplTest {
         assertNull(deleted, "Category should be deleted");
     }
 
+    @Test
+    @Order(11)
+    void delete_nonExistentId_returnsFalse() {
+//        assertFalse(categoryBUS.delete(99999));
+        assertThrows(DeleteFailedException.class,
+                ()-> categoryBUS.delete(99999));
+    }
+
+    @Test
+    @Order(12)
+    void insert_invalidCategoryName_throwsException() {
+        CategoryDTO invalidCategory = CategoryDTO.builder()
+                .categoryName("") // Invalid: Blank
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            categoryBUS.insert(invalidCategory);
+        });
+        assertEquals("Tên danh mục không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(13)
+    void update_invalidCategoryName_throwsException() {
+        CategoryDTO invalidCategory = CategoryDTO.builder()
+                .categoryId(testCategoryId)
+                .categoryName("") // Invalid: Blank
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            categoryBUS.update(invalidCategory);
+        });
+        assertEquals("Tên danh mục không được để trống", exception.getMessage());
+    }
+
     @AfterEach
     void tearDown() {
     }
@@ -111,3 +208,4 @@ class CategoryBUSImplTest {
         }
     }
 }
+

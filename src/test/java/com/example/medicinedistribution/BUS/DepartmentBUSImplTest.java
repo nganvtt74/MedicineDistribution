@@ -7,7 +7,13 @@ import com.example.medicinedistribution.DAO.DBConnection;
 import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.DepartmentDTO;
 import com.example.medicinedistribution.DTO.UserSession;
+import com.example.medicinedistribution.Exception.DeleteFailedException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 
 import javax.sql.DataSource;
@@ -30,7 +36,13 @@ class DepartmentBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+      ValidatorFactory factory =   Validation.byProvider(HibernateValidator.class)
+              .configure()
+              .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+              .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
         testDepartment = DepartmentDTO.builder()
                 .departmentName("TestDepartment")
                 .build();
@@ -97,5 +109,86 @@ class DepartmentBUSImplTest {
 
         DepartmentDTO retrieved = departmentBUS.findById(testDepartmentId);
         assertNull(retrieved, "Department should be null after deletion");
+    }
+
+    @Test
+    @Order(6)
+    void insert_nullDepartment_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            departmentBUS.insert(null);
+        });
+    }
+
+    @Test
+    @Order(7)
+    void insert_emptyName_throwsException() {
+        DepartmentDTO invalidDepartment = DepartmentDTO.builder()
+                .departmentName("")
+                .build();
+        assertThrows(IllegalArgumentException.class, () -> {
+            departmentBUS.insert(invalidDepartment);
+        });
+    }
+
+    @Test
+    @Order(8)
+    void findById_nonExistentId_returnsNull() {
+        DepartmentDTO result = departmentBUS.findById(99999);
+        assertNull(result);
+    }
+
+    @Test
+    @Order(9)
+    void update_nonExistentDepartment_throwsException() {
+        DepartmentDTO nonExistentDept = DepartmentDTO.builder()
+                .departmentId(99999)
+                .departmentName("NonExistent")
+                .build();
+        assertThrows(RuntimeException.class, () -> {
+            departmentBUS.update(nonExistentDept);
+        });
+    }
+
+    @Test
+    @Order(10)
+    void update_nullDepartment_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            departmentBUS.update(null);
+        });
+    }
+
+    @Test
+    @Order(11)
+    void delete_nonExistentId_throwsException() {
+        assertThrows(DeleteFailedException.class, () ->
+            departmentBUS.delete(99999)
+        );
+    }
+
+    @Test
+    @Order(12)
+    void insert_invalidDepartmentName_throwsException() {
+        DepartmentDTO invalidDepartment = DepartmentDTO.builder()
+                .departmentName("") // Invalid: Blank
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            departmentBUS.insert(invalidDepartment);
+        });
+        assertEquals("Tên phòng ban không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(13)
+    void update_invalidDepartmentName_throwsException() {
+        DepartmentDTO invalidDepartment = DepartmentDTO.builder()
+                .departmentId(testDepartmentId)
+                .departmentName("") // Invalid: Blank
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            departmentBUS.update(invalidDepartment);
+        });
+        assertEquals("Tên phòng ban không được để trống", exception.getMessage());
     }
 }

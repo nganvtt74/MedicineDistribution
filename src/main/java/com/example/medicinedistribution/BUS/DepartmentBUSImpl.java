@@ -9,11 +9,14 @@ import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import com.example.medicinedistribution.Exception.UpdateFailedException;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class DepartmentBUSImpl implements DepartmentBUS {
@@ -21,17 +24,28 @@ public class DepartmentBUSImpl implements DepartmentBUS {
     private final DepartmentDAO departmentDAO;
     private final UserSession userSession;
     private final DataSource dataSource;
+    private final Validator validator;
 
-    public DepartmentBUSImpl(DepartmentDAO departmentDAO, UserSession userSession, DataSource dataSource) {
+    public DepartmentBUSImpl(DepartmentDAO departmentDAO, UserSession userSession, DataSource dataSource, Validator validator) {
         this.departmentDAO = departmentDAO;
         this.userSession = userSession;
         this.dataSource = dataSource;
+        this.validator = validator;
     }
 
-
+    private void valid(DepartmentDTO departmentDTO) {
+        Set<ConstraintViolation<DepartmentDTO>> violations = validator.validate(departmentDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<DepartmentDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
+    }
 
     @Override
     public boolean insert(DepartmentDTO departmentDTO) {
+        valid(departmentDTO);
         if (userSession.hasPermission("INSERT_DEPARTMENT")) {
             try(Connection conn = dataSource.getConnection()) {
                 Integer departmentId = departmentDAO.insert(departmentDTO, conn);
@@ -55,6 +69,7 @@ public class DepartmentBUSImpl implements DepartmentBUS {
 
     @Override
     public boolean update(DepartmentDTO departmentDTO) {
+        valid(departmentDTO);
         if (userSession.hasPermission("UPDATE_DEPARTMENT")) {
             try(Connection conn = dataSource.getConnection()) {
                 if (departmentDAO.update(departmentDTO, conn)){

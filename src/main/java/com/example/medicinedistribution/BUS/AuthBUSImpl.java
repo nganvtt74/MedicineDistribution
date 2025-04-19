@@ -46,13 +46,14 @@ public class AuthBUSImpl implements AuthBUS {
                 userSession.setRole(role);
                 userSession.setPermissions(permissions);
                 return true;
+            }else {
+                log.error("Invalid username or password");
+                throw new RuntimeException("Tài khoản hoặc mật khẩu không hợp lệ");
             }
         }catch (SQLException e){
             log.error("Error while getting connection", e);
             throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
-        return false;
-
     }
 
     @Override

@@ -9,10 +9,16 @@ import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.CustomerDTO;
 import com.example.medicinedistribution.DTO.ProductDTO;
 import com.example.medicinedistribution.DTO.UserSession;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +37,13 @@ class ProductBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
 
         AuthBUS authBUS = busFactory.getAuthBUS();
         authBUS.login("admin", "admin");
@@ -39,6 +51,9 @@ class ProductBUSImplTest {
         productBUS = busFactory.getProductBUS();
         testProduct = ProductDTO.builder()
                 .productName("TestProduct")
+                .price(BigDecimal.valueOf(1000))
+                .unit("Box")
+                .categoryId(1) // Assuming category ID 1 exists
                 .build();
     }
 
@@ -66,6 +81,9 @@ class ProductBUSImplTest {
         ProductDTO updated = ProductDTO.builder()
                 .productId(testProductId)
                 .productName("UpdatedProduct")
+                .price(BigDecimal.valueOf(2000))
+                .unit("Bottle")
+                .categoryId(1) // Assuming category ID 1 exists
                 .build();
         boolean result = productBUS.update(updated);
         assertTrue(result);
@@ -88,5 +106,36 @@ class ProductBUSImplTest {
         assertTrue(result);
         ProductDTO deleted = productBUS.findById(testProductId);
         assertNull(deleted);
+    }
+    @Test
+    @Order(6)
+    void insert_invalidProductName_throwsException() {
+        ProductDTO invalidProduct = ProductDTO.builder()
+                .productName("") // Invalid: Blank
+                .price(BigDecimal.valueOf(1000))
+                .unit("Box")
+                .categoryId(1)
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productBUS.insert(invalidProduct);
+        });
+        assertEquals("Tên sản phẩm không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(7)
+    void insert_invalidPrice_throwsException() {
+        ProductDTO invalidProduct = ProductDTO.builder()
+                .productName("InvalidProduct")
+                .price(BigDecimal.valueOf(-1000)) // Invalid: Negative price
+                .unit("Box")
+                .categoryId(1)
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productBUS.insert(invalidProduct);
+        });
+        assertEquals("Giá không được âm", exception.getMessage());
     }
 }

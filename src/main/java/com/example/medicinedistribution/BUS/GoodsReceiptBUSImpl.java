@@ -10,43 +10,58 @@ import com.example.medicinedistribution.Exception.DeleteFailedException;
 import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
-
 
     private final GoodsReceiptDAO goodsReceiptDAO;
     private final GoodsReceiptDetailDAO goodsReceiptDetailDAO;
     private final DataSource dataSource;
     private final UserSession userSession;
     private final TransactionManager transactionManager;
+    private final Validator validator;
 
     public GoodsReceiptBUSImpl(GoodsReceiptDAO goodsReceiptDAO, GoodsReceiptDetailDAO goodsReceiptDetailDAO,
-                               DataSource dataSource, UserSession userSession ,TransactionManager transactionManager) {
+                               DataSource dataSource, UserSession userSession, TransactionManager transactionManager, Validator validator) {
         this.goodsReceiptDAO = goodsReceiptDAO;
         this.goodsReceiptDetailDAO = goodsReceiptDetailDAO;
         this.dataSource = dataSource;
         this.userSession = userSession;
         this.transactionManager = transactionManager;
+        this.validator = validator;
+    }
+
+    private void valid(GoodsReceiptDTO goodsReceiptDTO) {
+        Set<ConstraintViolation<GoodsReceiptDTO>> violations = validator.validate(goodsReceiptDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<GoodsReceiptDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
     }
 
     @Override
     public boolean insert(GoodsReceiptDTO goodsReceiptDTO) {
-        if(!userSession.hasPermission("INSERT_GOODS_RECEIPT")){
+        valid(goodsReceiptDTO);
+        if (!userSession.hasPermission("INSERT_GOODS_RECEIPT")) {
             log.error("User does not have permission to insert goods receipt");
             throw new PermissionDeniedException("Bạn không có quyền thêm phiếu nhập");
         }
-        try(Connection connection = transactionManager.beginTransaction()) {
+        try (Connection connection = transactionManager.beginTransaction()) {
             Integer result = goodsReceiptDAO.insert(goodsReceiptDTO, connection);
             if (result > 0) {
                 for (var detail : goodsReceiptDTO.getDetails()) {
                     detail.setGoodsReceiptId(result);
-                    if (goodsReceiptDetailDAO.insert(detail, connection)<0) {
+                    if (goodsReceiptDetailDAO.insert(detail, connection) < 0) {
                         transactionManager.rollbackTransaction(connection);
                         log.error("Insert GoodsReceiptDetail failed");
                         throw new InsertFailedException("Thêm chi tiết phiếu nhập thất bại");
@@ -73,13 +88,13 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
 
     @Override
     public boolean delete(Integer integer) {
-        if(!userSession.hasPermission("DELETE_GOODS_RECEIPT")){
+        if (!userSession.hasPermission("DELETE_GOODS_RECEIPT")) {
             log.error("User does not have permission to delete goods receipt");
             throw new PermissionDeniedException("Bạn không có quyền xóa phiếu nhập");
         }
         try (Connection connection = transactionManager.beginTransaction()) {
             if (goodsReceiptDetailDAO.delete(integer, connection)) {
-                if(!goodsReceiptDAO.delete(integer, connection)){
+                if (!goodsReceiptDAO.delete(integer, connection)) {
                     transactionManager.rollbackTransaction(connection);
                     log.error("Delete GoodsReceiptDetail failed");
                     throw new DeleteFailedException("Xóa chi tiết phiếu nhập thất bại");
@@ -99,7 +114,7 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
 
     @Override
     public GoodsReceiptDTO findById(Integer integer) {
-        if(!userSession.hasPermission("VIEW_GOODS_RECEIPT")){
+        if (!userSession.hasPermission("VIEW_GOODS_RECEIPT")) {
             log.error("User does not have permission to view goods receipt");
             throw new PermissionDeniedException("Bạn không có quyền xem phiếu nhập");
         }
@@ -109,12 +124,12 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
                 List<GoodsReceiptDetailDTO> details = goodsReceiptDetailDAO.findByGoodsReceiptId(integer, connection);
                 if (details != null) {
                     goodsReceiptDTO.setDetails(details);
-                }else {
+                } else {
                     log.error("No details found for GoodsReceipt with ID: {}", integer);
                     throw new RuntimeException("Không tìm thấy chi tiết phiếu nhập");
                 }
                 return goodsReceiptDTO;
-            }else {
+            } else {
                 log.error("No GoodsReceipt found with ID: {}", integer);
                 return null;
             }
@@ -127,7 +142,7 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
 
     @Override
     public List<GoodsReceiptDTO> findAll() {
-        if(!userSession.hasPermission("VIEW_GOODS_RECEIPT")){
+        if (!userSession.hasPermission("VIEW_GOODS_RECEIPT")) {
             log.error("User does not have permission to view goods receipt");
             throw new PermissionDeniedException("Bạn không có quyền xem phiếu nhập");
         }

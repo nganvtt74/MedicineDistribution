@@ -10,7 +10,12 @@ import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.UserSession;
 import com.example.medicinedistribution.Exception.AlreadyExistsException;
 import com.example.medicinedistribution.Util.PasswordUtil;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 
 import javax.sql.DataSource;
@@ -41,7 +46,13 @@ class AccountBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
                 // Tạo một tài khoản test để sử dụng trong các test
                 testAccount = AccountDTO.builder()
                         .username("testuser")

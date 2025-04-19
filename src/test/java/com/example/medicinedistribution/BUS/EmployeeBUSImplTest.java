@@ -5,7 +5,13 @@ import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DAO.DBConnection;
 import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.*;
+import com.example.medicinedistribution.Exception.DeleteFailedException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 
 import javax.sql.DataSource;
@@ -38,7 +44,13 @@ class EmployeeBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
         // Tạo một tài khoản test để sử dụng trong các test
 
         testDepartment = DepartmentDTO.builder()
@@ -80,7 +92,7 @@ class EmployeeBUSImplTest {
                 .lastName("Example")
                 .birthday(LocalDate.of(1990, 5, 15))  // Giả sử sinh nhật là 15/05/1990
                 .gender("Male")
-                .phone("123-456-7890")
+                .phone("0123456789")  // Số điện thoại giả định
                 .email("test.employee@example.com")
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giả sử ngày vào làm là 01/01/2022
                 .address("123 Test Street, Test City")
@@ -124,7 +136,7 @@ class EmployeeBUSImplTest {
                 .lastName("UpdatedLastName")   // Họ mới
                 .birthday(LocalDate.of(1991, 7, 20))  // Ngày sinh mới
                 .gender("Female")  // Giới tính mới
-                .phone("987-654-3210")  // Số điện thoại mới
+                .phone("0987654321")  // Số điện thoại mới
                 .email("updated.employee@example.com")  // Email mới
                 .hireDate(LocalDate.of(2022, 1, 1))  // Giữ nguyên ngày vào làm
                 .address("456 Updated Street, Updated City")  // Địa chỉ mới
@@ -158,7 +170,206 @@ class EmployeeBUSImplTest {
         assertNull(retrieved, "Employee should be null after deletion");
     }
 
+    @Test
+    @Order(6)
+    void insert_nullEmployee_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(null);
+        });
+    }
 
+    @Test
+    @Order(7)
+    void insert_emptyName_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("")
+                .lastName("")
+                .build();
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+    }
+
+    @Test
+    @Order(8)
+    void findById_nonExistentId_returnsNull() {
+        EmployeeDTO result = employeeBUS.findById(99999);
+        assertNull(result);
+    }
+
+    @Test
+    @Order(9)
+    void update_nonExistentEmployee_throwsException() {
+        EmployeeDTO nonExistentEmp = EmployeeDTO.builder()
+                .employeeId(99999)
+                .firstName("NonExistent")
+                .lastName("Employee")
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+        assertThrows(RuntimeException.class, () -> {
+            employeeBUS.update(nonExistentEmp);
+        });
+    }
+
+    @Test
+    @Order(10)
+    void update_nullEmployee_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.update(null);
+        });
+    }
+
+    @Test
+    @Order(11)
+    void delete_nonExistentId_throwsException() {
+        assertThrows(DeleteFailedException.class, () ->
+            employeeBUS.delete(99999)
+        );
+    }
+    @Test
+    @Order(12)
+    void insert_invalidFirstName_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("") // Invalid: Blank
+                .lastName("ValidLastName")
+                .birthday(LocalDate.of(1990, 5, 15))
+                .gender("Male")
+                .phone("0123456789")
+                .email("valid.email@example.com")
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("3500.00"))
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Họ không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(13)
+    void insert_invalidLastName_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("ValidFirstName")
+                .lastName("") // Invalid: Blank
+                .birthday(LocalDate.of(1990, 5, 15))
+                .gender("Male")
+                .phone("0123456789")
+                .email("valid.email@example.com")
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("3500.00"))
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Tên không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(14)
+    void insert_invalidBirthday_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("ValidFirstName")
+                .lastName("ValidLastName")
+                .birthday(LocalDate.now().plusDays(1)) // Invalid: Future date
+                .gender("Male")
+                .phone("0123456789")
+                .email("valid.email@example.com")
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("3500.00"))
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Ngày sinh phải là ngày trong quá khứ", exception.getMessage());
+    }
+
+    @Test
+    @Order(15)
+    void insert_invalidPhone_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("ValidFirstName")
+                .lastName("ValidLastName")
+                .birthday(LocalDate.of(1990, 5, 15))
+                .gender("Male")
+                .phone("12345") // Invalid: Does not match regex
+                .email("valid.email@example.com")
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("3500.00"))
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Số điện thoại không hợp lệ", exception.getMessage());
+    }
+
+    @Test
+    @Order(16)
+    void insert_invalidEmail_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("ValidFirstName")
+                .lastName("ValidLastName")
+                .birthday(LocalDate.of(1990, 5, 15))
+                .gender("Male")
+                .phone("0123456789")
+                .email("invalid-email") // Invalid: Not a valid email format
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("3500.00"))
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Email không hợp lệ", exception.getMessage());
+    }
+
+    @Test
+    @Order(17)
+    void insert_invalidBasicSalary_throwsException() {
+        EmployeeDTO invalidEmployee = EmployeeDTO.builder()
+                .firstName("ValidFirstName")
+                .lastName("ValidLastName")
+                .birthday(LocalDate.of(1990, 5, 15))
+                .gender("Male")
+                .phone("0123456789")
+                .email("valid.email@example.com")
+                .hireDate(LocalDate.of(2022, 1, 1))
+                .address("123 Test Street")
+                .basicSalary(new BigDecimal("-1000.00")) // Invalid: Negative salary
+                .status(1)
+                .positionId(testPosition.getPositionId())
+                .accountId(testAccount.getAccountId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeBUS.insert(invalidEmployee);
+        });
+        assertEquals("Lương cơ bản phải lớn hơn 0", exception.getMessage());
+    }
 
     @AfterAll
     static void tearDownAll() throws SQLException {

@@ -3,17 +3,21 @@ package com.example.medicinedistribution.BUS;
 import com.example.medicinedistribution.BUS.Interface.AccountBUS;
 import com.example.medicinedistribution.DAO.Interface.AccountDAO;
 import com.example.medicinedistribution.DTO.AccountDTO;
+import com.example.medicinedistribution.DTO.CategoryDTO;
 import com.example.medicinedistribution.DTO.UserSession;
 import com.example.medicinedistribution.Exception.AlreadyExistsException;
 import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.UpdateFailedException;
 import com.example.medicinedistribution.Exception.DeleteFailedException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class AccountBUSImpl implements AccountBUS {
@@ -21,11 +25,13 @@ public class AccountBUSImpl implements AccountBUS {
     private final AccountDAO accountDAO ;
     private final DataSource dataSource;
     private final UserSession userSession;
+    private final Validator validator;
 
-    public AccountBUSImpl(DataSource dataSource, AccountDAO accountDAO, UserSession userSession) {
+    public AccountBUSImpl(DataSource dataSource, AccountDAO accountDAO, UserSession userSession , Validator validator) {
         this.dataSource = dataSource;
         this.accountDAO = accountDAO;
         this.userSession = userSession;
+        this.validator = validator;
     }
     @Override
     public AccountDTO findByUsername(String username) {
@@ -45,6 +51,7 @@ public class AccountBUSImpl implements AccountBUS {
     @Override
     public boolean insert(AccountDTO accountDTO){
         if (userSession.hasPermission("INSERT_ACCOUNT")) {
+            valid(accountDTO);
             try(Connection connection = dataSource.getConnection()) {
                 if (accountDAO.findByUsername(accountDTO.getUsername(), connection) != null) {
                     log.error("Tài khoản đã tồn tại: {}", accountDTO);
@@ -72,7 +79,9 @@ public class AccountBUSImpl implements AccountBUS {
 
     @Override
     public boolean update(AccountDTO accountDTO) {
+
         if (userSession.hasPermission("UPDATE_ACCOUNT")) {
+            valid(accountDTO);
             try(Connection connection = dataSource.getConnection()) {
                 if (accountDAO.update(accountDTO, connection)) {
                     log.info("Cập nhật tài khoản thành công: {}", accountDTO);
@@ -139,6 +148,16 @@ public class AccountBUSImpl implements AccountBUS {
         }else {
             log.error("Không có quyền tìm tài khoản");
             throw new RuntimeException("Bạn không có quyền tìm tài khoản");
+        }
+    }
+
+    private void valid(AccountDTO accountDTO) {
+        Set<ConstraintViolation<AccountDTO>> violations = validator.validate(accountDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<AccountDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
         }
     }
 }

@@ -9,11 +9,14 @@ import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import com.example.medicinedistribution.Exception.UpdateFailedException;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class EmployeeBUSImpl implements EmployeeBUS {
@@ -21,18 +24,32 @@ public class EmployeeBUSImpl implements EmployeeBUS {
     private final EmployeeDAO employeeDAO;
     private final DataSource dataSource;
     private final UserSession userSession;
+    private final Validator validator;
 
     public EmployeeBUSImpl(EmployeeDAO employeeDAO,
                            UserSession userSession,
-                           DataSource dataSource) {
+                           DataSource dataSource,
+                           Validator validator) {
         this.dataSource = dataSource;
         this.userSession = userSession;
         this.employeeDAO = employeeDAO;
+        this.validator = validator;
+    }
+
+    private void valid(EmployeeDTO employeeDTO) {
+        Set<ConstraintViolation<EmployeeDTO>> violations = validator.validate(employeeDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<EmployeeDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
     }
 
     @Override
     public boolean insert(EmployeeDTO employeeDTO) {
         if (userSession.hasPermission("INSERT_EMPLOYEE")) {
+            valid(employeeDTO);
             try(Connection conn = dataSource.getConnection()) {
                 Integer employeeId = employeeDAO.insert(employeeDTO, conn);
                 if (employeeId>0) {
@@ -57,6 +74,7 @@ public class EmployeeBUSImpl implements EmployeeBUS {
     @Override
     public boolean update(EmployeeDTO employeeDTO) {
         if (userSession.hasPermission("UPDATE_EMPLOYEE")) {
+            valid(employeeDTO);
             try(Connection conn = dataSource.getConnection()) {
                 if (employeeDAO.update(employeeDTO, conn)) {
                     log.info("Update successful: {}", employeeDTO);

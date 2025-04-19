@@ -20,7 +20,7 @@ public class ProductDAOImpl implements ProductDAO {
             stmt.setString(3, productDTO.getUnit());
             stmt.setBoolean(4, productDTO.isStatus());
             stmt.setInt(5, productDTO.getStockQuantity());
-            stmt.setString(6, productDTO.getCategoryId());
+            stmt.setInt(6, productDTO.getCategoryId());
             if (stmt.executeUpdate() > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -43,7 +43,7 @@ public class ProductDAOImpl implements ProductDAO {
             stmt.setString(3, productDTO.getUnit());
             stmt.setBoolean(4, productDTO.isStatus());
             stmt.setInt(5, productDTO.getStockQuantity());
-            stmt.setString(6, productDTO.getCategoryId());
+            stmt.setInt(6, productDTO.getCategoryId());
             stmt.setInt(7, productDTO.getProductId());
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ProductDAOImpl implements ProductDAO {
                         .unit(rs.getString("unit"))
                         .status(rs.getBoolean("status"))
                         .stockQuantity(rs.getInt("stock_quantity"))
-                        .categoryId(rs.getString("categoryId"))
+                        .categoryId(rs.getInt("categoryId"))
                         .build();
             }
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class ProductDAOImpl implements ProductDAO {
                         .unit(rs.getString("unit"))
                         .status(rs.getBoolean("status"))
                         .stockQuantity(rs.getInt("stock_quantity"))
-                        .categoryId(rs.getString("categoryId"))
+                        .categoryId(rs.getInt("categoryId"))
                         .build();
                 productList.add(productDTO);
             }

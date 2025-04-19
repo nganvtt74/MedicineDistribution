@@ -10,11 +10,14 @@ import com.example.medicinedistribution.Exception.DeleteFailedException;
 import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class InvoiceBUSImpl implements InvoiceBUS {
@@ -24,19 +27,31 @@ public class InvoiceBUSImpl implements InvoiceBUS {
     private final DataSource dataSource;
     private final UserSession userSession;
     private final TransactionManager transactionManager;
+    private final Validator validator;
 
     public InvoiceBUSImpl(InvoiceDAO invoiceDAO, InvoiceDetailDAO invoiceDetailDAO,
-                          DataSource dataSource, UserSession userSession, TransactionManager transactionManager) {
+                          DataSource dataSource, UserSession userSession, TransactionManager transactionManager, Validator validator) {
         this.invoiceDAO = invoiceDAO;
         this.invoiceDetailDAO = invoiceDetailDAO;
         this.dataSource = dataSource;
         this.userSession = userSession;
         this.transactionManager = transactionManager;
+        this.validator = validator;
     }
 
+    private void valid(InvoiceDTO invoiceDTO) {
+        Set<ConstraintViolation<InvoiceDTO>> violations = validator.validate(invoiceDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<InvoiceDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
+    }
 
     @Override
     public boolean insert(InvoiceDTO invoiceDTO) {
+        valid(invoiceDTO);
         if(!userSession.hasPermission("INSERT_INVOICE")){
             log.error("User does not have permission to insert invoice");
             throw new PermissionDeniedException("Bạn không có quyền thêm hóa đơn");

@@ -9,7 +9,12 @@ import com.example.medicinedistribution.DAO.MySQLDAOFactory;
 import com.example.medicinedistribution.DTO.DepartmentDTO;
 import com.example.medicinedistribution.DTO.PositionDTO;
 import com.example.medicinedistribution.DTO.UserSession;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.*;
 
 import javax.sql.DataSource;
@@ -37,7 +42,13 @@ class PositionBUSImplTest {
         TransactionManager transactionManager = new TransactionManager(dataSource);
         DAOFactory daoFactory = new MySQLDAOFactory();
         UserSession userSession = new UserSession();
-        busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
         testDepartment = DepartmentDTO.builder()
                 .departmentName("TestDepartment")
                 .build();
@@ -119,6 +130,35 @@ class PositionBUSImplTest {
         assertNull(retrieved, "Position should be null after deletion");
     }
 
+    @Test
+    @Order(6)
+    void insert_invalidPositionName_throwsException() {
+        PositionDTO invalidPosition = PositionDTO.builder()
+                .positionName("") // Invalid: Blank
+                .departmentId(testDepartment.getDepartmentId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            positionBUS.insert(invalidPosition);
+        });
+        assertEquals("Tên chức vụ không được để trống", exception.getMessage());
+    }
+
+    @Test
+    @Order(7)
+    void update_invalidPositionName_throwsException() {
+        PositionDTO invalidPosition = PositionDTO.builder()
+                .positionId(testPositionId)
+                .positionName("") // Invalid: Blank
+                .departmentId(testDepartment.getDepartmentId())
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            positionBUS.update(invalidPosition);
+        });
+        assertEquals("Tên chức vụ không được để trống", exception.getMessage());
+    }
+
     @AfterAll
     static void tearDownAll() throws SQLException {
         // Dọn dẹp database test nếu cần (ví dụ: xóa tất cả dữ liệu sau khi test)
@@ -126,5 +166,6 @@ class PositionBUSImplTest {
         departmentBUS.delete(testDepartment.getDepartmentId());
 
     }
+
 
 }

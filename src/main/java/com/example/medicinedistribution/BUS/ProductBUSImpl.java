@@ -15,6 +15,9 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.crypto.DecapsulateException;
 import javax.sql.DataSource;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import java.util.Set;
 
 @Slf4j
 public class ProductBUSImpl implements ProductBUS {
@@ -22,15 +25,28 @@ public class ProductBUSImpl implements ProductBUS {
     private final ProductDAO productDAO;
     private final UserSession userSession;
     private final DataSource dataSource;
+    private final Validator validator;
 
-    public ProductBUSImpl(ProductDAO productDAO, UserSession userSession, DataSource dataSource) {
+    public ProductBUSImpl(ProductDAO productDAO, UserSession userSession, DataSource dataSource, Validator validator) {
         this.productDAO = productDAO;
         this.userSession = userSession;
         this.dataSource = dataSource;
+        this.validator = validator;
+    }
+
+    private void valid(ProductDTO productDTO) {
+        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<ProductDTO> violation : violations) {
+                log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
+                throw new IllegalArgumentException(violation.getMessage());
+            }
+        }
     }
 
     @Override
     public boolean insert(ProductDTO productDTO) {
+        valid(productDTO);
         if (!userSession.hasPermission("INSERT_PRODUCT")) {
             log.error("User does not have permission to insert product");
             throw new PermissionDeniedException("Bạn không có quyền thêm sản phẩm");
@@ -53,6 +69,7 @@ public class ProductBUSImpl implements ProductBUS {
 
     @Override
     public boolean update(ProductDTO productDTO) {
+        valid(productDTO);
         if (!userSession.hasPermission("UPDATE_PRODUCT")) {
             log.error("User does not have permission to update product");
             throw new PermissionDeniedException("Bạn không có quyền sửa sản phẩm");

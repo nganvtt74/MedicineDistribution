@@ -11,6 +11,11 @@ package com.example.medicinedistribution.BUS;
     import com.example.medicinedistribution.Exception.AlreadyExistsException;
     import com.example.medicinedistribution.Exception.NotExistsException;
     import com.example.medicinedistribution.Util.GenericTablePrinter;
+    import jakarta.validation.Validation;
+    import jakarta.validation.Validator;
+    import jakarta.validation.ValidatorFactory;
+    import org.hibernate.validator.HibernateValidator;
+    import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
     import org.junit.jupiter.api.*;
 
     import javax.sql.DataSource;
@@ -39,21 +44,30 @@ package com.example.medicinedistribution.BUS;
             TransactionManager transactionManager = new TransactionManager(dataSource);
             daoFactory = new MySQLDAOFactory();
             UserSession userSession = new UserSession();
-            busFactory = new BUSFactoryImpl(dataSource, daoFactory, transactionManager, userSession);
+                    ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator()) // Sử dụng interpolator không yêu cầu EL
+                .buildValidatorFactory();
+            Validator validator = factory.getValidator();
+
+            busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
             // Create a unique test role.
             permissions.add(PermissionDTO.builder()
                     .permissionCode("TEST_CODE")
                     .permName("testPermission")
                     .editableByPermissionCode("MANAGE_ROLE")
+                    .status(1)
                     .build());
             testRole = RoleDTO.builder()
                     .roleName("UniqueTestRole" + System.currentTimeMillis()) // ensure a unique name
                     .permissions(permissions)
+                    .status(1)
                     .build();
             testPermission = PermissionDTO.builder()
                     .permissionCode("TEST_CODE_2")
                     .permName("testPermission")
                     .editableByPermissionCode("MANAGE_ROLE")
+                    .status(1)
                     .build();
 
         }
@@ -91,6 +105,7 @@ package com.example.medicinedistribution.BUS;
                 RoleDTO duplicateRole = RoleDTO.builder()
                         .roleName(testRole.getRoleName())
                         .permissions(testRole.getPermissions())
+                        .status(1)
                         .build();
                 roleBUS.insert(duplicateRole);
                 fail("Expected AlreadyExistsException but none was thrown.");
@@ -108,6 +123,7 @@ package com.example.medicinedistribution.BUS;
             newPermissions.add(PermissionDTO.builder()
                     .permissionCode("TEST_CODE_2")
                     .permName("testPermission")
+                    .status(1)
                     .build());
             System.out.println("Permissions: " + newPermissions);
             testRole.setPermissions(newPermissions);
@@ -126,6 +142,7 @@ package com.example.medicinedistribution.BUS;
                 RoleDTO nonExistent = RoleDTO.builder()
                         .roleId(-1)
                         .roleName("NonExistentRole")
+                        .status(1)
                         .permissions(new ArrayList<>())
                         .build();
                 roleBUS.update(nonExistent);
