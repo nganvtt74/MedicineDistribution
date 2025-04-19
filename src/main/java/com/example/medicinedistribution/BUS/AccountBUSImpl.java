@@ -33,8 +33,8 @@ public class AccountBUSImpl implements AccountBUS {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.findByUsername(username, connection);
             } catch (Exception e) {
-                log.error("Không thể tìm thấy tài khoản với username: {}", username, e);
-                return null;
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền tìm tài khoản");
@@ -61,8 +61,8 @@ public class AccountBUSImpl implements AccountBUS {
                     }
                 }
             } catch (SQLException e) {
-                log.error("Không thể thêm tài khoản: {}", accountDTO, e);
-                throw new InsertFailedException("Lỗi hệ thống, không thể thêm tài khoản");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền thêm tài khoản");
@@ -82,8 +82,8 @@ public class AccountBUSImpl implements AccountBUS {
                     throw new UpdateFailedException("Cập nhật tài khoản thất bại");
                 }
             } catch (SQLException e) {
-                log.error("Không thể cập nhật tài khoản: {}", accountDTO, e);
-                throw new UpdateFailedException("Lỗi hệ thống, không thể cập nhật tài khoản");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền cập nhật tài khoản");
@@ -103,8 +103,8 @@ public class AccountBUSImpl implements AccountBUS {
                     throw new DeleteFailedException("Xóa tài khoản thất bại");
                 }
             } catch (SQLException e) {
-                log.error("Không thể xóa tài khoản: {}", s, e);
-                throw new DeleteFailedException("Lỗi hệ thống, không thể xóa tài khoản");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền xóa tài khoản");
@@ -118,8 +118,8 @@ public class AccountBUSImpl implements AccountBUS {
             try (Connection connection = dataSource.getConnection()) {
                 return accountDAO.findById(s, connection);
             } catch (SQLException e) {
-                log.error("Không thể tìm thấy tài khoản với ID: {}", s, e);
-                throw new RuntimeException("Lỗi hệ thống, không thể tìm thấy tài khoản");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền tìm tài khoản");
@@ -133,8 +133,8 @@ public class AccountBUSImpl implements AccountBUS {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.findAll(connection);
             } catch (SQLException e) {
-                log.error("Không thể tìm thấy danh sách tài khoản", e);
-                throw new RuntimeException("Lỗi hệ thống, không thể tìm thấy danh sách tài khoản");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("Không có quyền tìm tài khoản");

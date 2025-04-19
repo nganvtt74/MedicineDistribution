@@ -83,8 +83,8 @@ public class RoleBUSImpl implements RoleBUS{
                 }
 
             }  catch (SQLException e) {
-                log.error("Error while update role with ID: {}" , roleDTO.getRoleId(), e);
-                throw new DeleteFailedException("Lỗi hệ thống, không thể xóa vai trò");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to insert role");
@@ -133,8 +133,8 @@ public class RoleBUSImpl implements RoleBUS{
                 }
 
             } catch (SQLException e) {
-                log.error("Error while update role with ID: {}" , roleDTO.getRoleId(), e);
-                throw new DeleteFailedException("Lỗi hệ thống, không thể xóa vai trò");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to update role");
@@ -175,8 +175,8 @@ public class RoleBUSImpl implements RoleBUS{
                 }
 
             }catch (SQLException e) {
-                log.error("Error while deleting role with ID: {}", integer, e);
-                throw new DeleteFailedException("Lỗi hệ thống, không thể xóa vai trò");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to delete role");
@@ -199,8 +199,8 @@ public class RoleBUSImpl implements RoleBUS{
                 return roleDTO;
             }
         } catch (SQLException e) {
-            log.error("Error while finding role with ID: {}", integer, e);
-            throw new RuntimeException("Lỗi hệ thống, không thể kết nối đến cơ sở dữ liệu");
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
     }
 
@@ -215,8 +215,8 @@ public class RoleBUSImpl implements RoleBUS{
             }
             return roles;
         } catch (SQLException e) {
-            log.error("Error while finding all roles", e);
-            throw new RuntimeException("Lỗi hệ thống, không thể kết nối đến cơ sở dữ liệu");
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
     }
 
@@ -248,8 +248,8 @@ public class RoleBUSImpl implements RoleBUS{
                     return roleDTO;
                 }
             } catch (SQLException e) {
-                log.error("Error while finding role with ID: {}", roleId, e);
-                throw new RuntimeException("Lỗi hệ thống, không thể kết nối đến cơ sở dữ liệu");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to edit role");

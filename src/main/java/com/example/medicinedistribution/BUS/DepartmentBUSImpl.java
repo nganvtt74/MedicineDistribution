@@ -44,8 +44,8 @@ public class DepartmentBUSImpl implements DepartmentBUS {
                     throw new InsertFailedException("Thêm bộ phận không thành công");
                 }
             } catch (SQLException e){
-                log.error(e.getMessage());
-                throw new InsertFailedException("Thêm bộ phận không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to create department");
@@ -65,8 +65,8 @@ public class DepartmentBUSImpl implements DepartmentBUS {
                     throw new UpdateFailedException("Sửa bộ phận không thành công");
                 }
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new UpdateFailedException("Sửa bộ phận không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to update department");
@@ -86,8 +86,8 @@ public class DepartmentBUSImpl implements DepartmentBUS {
                     throw new DeleteFailedException("Xóa bộ phận không thành công");
                 }
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new DeleteFailedException("Xóa bộ phận không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to delete department");
@@ -101,8 +101,8 @@ public class DepartmentBUSImpl implements DepartmentBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return departmentDAO.findById(integer, conn);
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new RuntimeException("Lấy thông tin bộ phận không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to get department");
@@ -116,8 +116,8 @@ public class DepartmentBUSImpl implements DepartmentBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return departmentDAO.findAll(conn);
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new RuntimeException("Lấy danh sách bộ phận không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to get all departments");

@@ -48,7 +48,8 @@ public class AuthBUSImpl implements AuthBUS {
                 return true;
             }
         }catch (SQLException e){
-            log.error("Error while logging in: {}", e.getMessage());
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
         return false;
 
@@ -77,9 +78,9 @@ public class AuthBUSImpl implements AuthBUS {
             account.setRoleId(roleDTO.getRoleId());
             return accountDAO.insert(account, connection) > 0;
         } catch (SQLException e) {
-            log.error("Error while registering: {}", e.getMessage());
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
-        return false;
     }
 
     @Override

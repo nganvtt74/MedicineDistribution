@@ -45,8 +45,8 @@ public class EmployeeBUSImpl implements EmployeeBUS {
 
                 }
             } catch (SQLException e) {
-                log.error("Error inserting employee: {}", e.getMessage());
-                throw new InsertFailedException(e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to insert employee");
@@ -66,8 +66,8 @@ public class EmployeeBUSImpl implements EmployeeBUS {
                     throw new UpdateFailedException("Cập nhật nhân viên thất bại");
                 }
             } catch (SQLException e) {
-                log.error("Error updating employee: {}", e.getMessage());
-                throw new UpdateFailedException(e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to update employee");
@@ -87,8 +87,8 @@ public class EmployeeBUSImpl implements EmployeeBUS {
                     throw new DeleteFailedException("Xóa nhân viên thất bại");
                 }
             } catch (SQLException e) {
-                log.error("Error deleting employee: {}", e.getMessage());
-                throw new DeleteFailedException(e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to delete employee");
@@ -102,8 +102,8 @@ public class EmployeeBUSImpl implements EmployeeBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return employeeDAO.findById(integer, conn);
             } catch (SQLException e) {
-                log.error("Error finding employee: {}", e.getMessage());
-                throw new PermissionDeniedException("Tìm nhân viên thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to find employee");
@@ -117,12 +117,12 @@ public class EmployeeBUSImpl implements EmployeeBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return employeeDAO.findAll(conn);
             } catch (SQLException e) {
-                log.error("Error finding all employees: {}", e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("User does not have permission to find all employees");
             throw new PermissionDeniedException("Bạn không có quyền tìm tất cả nhân viên");
         }
-        return null;
     }
 }

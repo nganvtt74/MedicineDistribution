@@ -39,8 +39,8 @@ public class CategoryBUSImpl implements CategoryBUS {
                     throw new InsertFailedException("Thêm danh mục thất bại");
                 }
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new InsertFailedException("Thêm danh mục thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to insert category");
@@ -61,8 +61,8 @@ public class CategoryBUSImpl implements CategoryBUS {
                     throw new InsertFailedException("Cập nhật danh mục thất bại");
                 }
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new InsertFailedException("Cập nhật danh mục thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to update category");
@@ -83,8 +83,8 @@ public class CategoryBUSImpl implements CategoryBUS {
                     throw new InsertFailedException("Xóa danh mục thất bại");
                 }
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new InsertFailedException("Xóa danh mục thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to delete category");
@@ -98,8 +98,8 @@ public class CategoryBUSImpl implements CategoryBUS {
             try(Connection connection = dataSource.getConnection()) {
                 return categoryDAO.findById(integer, connection);
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new InsertFailedException("Tìm danh mục thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to view category");
@@ -113,8 +113,8 @@ public class CategoryBUSImpl implements CategoryBUS {
             try(Connection connection = dataSource.getConnection()) {
                 return categoryDAO.findAll(connection);
             } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new InsertFailedException("Tìm tất cả danh mục thất bại");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         }else {
             log.error("User does not have permission to view all categories");

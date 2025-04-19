@@ -42,7 +42,8 @@ public class PositionBUSImpl implements PositionBUS {
                     throw new InsertFailedException("Thêm chức vụ không thành công");
                 }
             } catch (SQLException e) {
-                throw new InsertFailedException("Thêm chức vụ không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("Permission denied for inserting position");
@@ -62,7 +63,8 @@ public class PositionBUSImpl implements PositionBUS {
                     throw new InsertFailedException("Cập nhật chức vụ không thành công");
                 }
             } catch (SQLException e) {
-                throw new InsertFailedException("Cập nhật chức vụ không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("Permission denied for updating position");
@@ -82,7 +84,8 @@ public class PositionBUSImpl implements PositionBUS {
                     throw new InsertFailedException("Xóa chức vụ không thành công");
                 }
             } catch (SQLException e) {
-                throw new InsertFailedException("Xóa chức vụ không thành công");
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("Permission denied for deleting position");
@@ -96,13 +99,13 @@ public class PositionBUSImpl implements PositionBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return positionDAO.findById(integer,conn);
             } catch (SQLException e) {
-                log.error(e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("Permission denied for finding position");
             throw new PermissionDeniedException("Bạn không có quyền xem chức vụ");
         }
-        return null;
     }
 
     @Override
@@ -111,12 +114,12 @@ public class PositionBUSImpl implements PositionBUS {
             try(Connection conn = dataSource.getConnection()) {
                 return positionDAO.findAll(conn);
             } catch (SQLException e) {
-                log.error(e.getMessage());
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
         } else {
             log.error("Permission denied for finding all positions");
             throw new PermissionDeniedException("Bạn không có quyền xem tất cả chức vụ");
         }
-        return null;
     }
 }
