@@ -66,4 +66,9 @@ public class BUSFactoryImpl extends BUSFactory{
         return new CustomerBUSImpl(mySQLDAOFactory.getCustomerDAO(), dataSource, userSession);
     }
 
+    @Override
+    public ManufacturerBUS getManufacturerBUS() {
+        return new ManufacturerBUSImpl(mySQLDAOFactory.getManufacturerDAO(), dataSource, userSession);
+    }
+
 }
