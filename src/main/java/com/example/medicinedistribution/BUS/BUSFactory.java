@@ -27,4 +27,6 @@ public abstract class BUSFactory {
     public abstract ProductBUS getProductBUS();
     public abstract CustomerBUS getCustomerBUS();
     public abstract ManufacturerBUS getManufacturerBUS();
+    public abstract GoodsReceiptBUS getGoodsReceiptBUS();
+    public abstract InvoiceBUS getInvoiceBUS();
 }

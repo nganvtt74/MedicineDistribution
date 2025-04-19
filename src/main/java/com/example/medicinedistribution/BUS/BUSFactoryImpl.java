@@ -71,4 +71,14 @@ public class BUSFactoryImpl extends BUSFactory{
         return new ManufacturerBUSImpl(mySQLDAOFactory.getManufacturerDAO(), dataSource, userSession);
     }
 
+    @Override
+    public GoodsReceiptBUS getGoodsReceiptBUS() {
+        return new GoodsReceiptBUSImpl(mySQLDAOFactory.getGoodsReceiptDAO(), mySQLDAOFactory.getGoodsReceiptDetailDAO(), dataSource, userSession, transactionManager);
+    }
+
+    @Override
+    public InvoiceBUS getInvoiceBUS() {
+        return new InvoiceBUSImpl(mySQLDAOFactory.getInvoiceDAO(), mySQLDAOFactory.getInvoiceDetailDAO(), dataSource, userSession, transactionManager);
+    }
+
 }
