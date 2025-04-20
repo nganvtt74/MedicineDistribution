@@ -136,4 +136,33 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
         }
         return null;
     }
+
+
+    @Override
+    public EmployeeDTO findByAccountId(Integer accountId, Connection conn) {
+        String sql = "SELECT * FROM employee WHERE accountId = ?";
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, accountId);
+            stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return EmployeeDTO.builder()
+                        .employeeId(rs.getInt("employeeId"))
+                        .accountId(rs.getInt("accountId"))
+                        .phone(rs.getString("phone"))
+                        .address(rs.getString("address"))
+                        .basicSalary(rs.getBigDecimal("basic_salary"))
+                        .birthday(rs.getDate("birthday").toLocalDate())
+                        .firstName(rs.getString("firstName"))
+                        .lastName(rs.getString("lastName"))
+                        .email(rs.getString("email"))
+                        .gender(rs.getString("gender"))
+                        .status(rs.getInt("status"))
+                        .build();
+            }
+        }catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return null;
+    }
 }

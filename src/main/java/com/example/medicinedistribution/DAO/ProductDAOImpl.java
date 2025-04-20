@@ -111,4 +111,42 @@ public class ProductDAOImpl implements ProductDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean updateQuantity(Integer productId, int quantity, Connection conn) {
+        String sql = "UPDATE product SET stock_quantity = stock_quantity - ? WHERE productId = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, productId);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public List<ProductDTO> getAllActiveProducts(Connection conn) {
+        String sql = "SELECT * FROM product WHERE status = 1";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            List<ProductDTO> productList = new ArrayList<>();
+            while (rs.next()) {
+                ProductDTO productDTO = ProductDTO.builder()
+                        .productId(rs.getInt("productId"))
+                        .productName(rs.getString("productName"))
+                        .price(rs.getBigDecimal("price"))
+                        .unit(rs.getString("unit"))
+                        .status(rs.getBoolean("status"))
+                        .stockQuantity(rs.getInt("stock_quantity"))
+                        .categoryId(rs.getInt("categoryId"))
+                        .build();
+                productList.add(productDTO);
+            }
+            return productList;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return null;
+    }
 }

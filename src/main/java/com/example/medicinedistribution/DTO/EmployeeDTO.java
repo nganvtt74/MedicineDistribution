@@ -48,4 +48,8 @@ public class EmployeeDTO {
     private Integer positionId;
     
     private Integer accountId;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

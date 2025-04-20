@@ -2,12 +2,17 @@ package com.example.medicinedistribution.DAO;
 
 import com.example.medicinedistribution.DAO.Interface.InvoiceDAO;
 import com.example.medicinedistribution.DTO.InvoiceDTO;
+import com.example.medicinedistribution.DTO.StatisticDTO;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class InvoiceDAOImpl implements InvoiceDAO {
@@ -94,5 +99,122 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public Map<String, BigDecimal> getRevenueByCategoryStatistics(LocalDate fromDate, LocalDate toDate, Connection conn) {
+        Map<String, BigDecimal> result = new HashMap<>();
+        String sql = """
+                SELECT 
+                    c.categoryName, 
+                    SUM(id.price * id.quantity) as total_revenue
+                FROM 
+                    invoicedetail id
+                JOIN 
+                    invoice i ON id.invoiceId = i.invoiceId
+                JOIN 
+                    product p ON id.productId = p.productId
+                JOIN 
+                    category c ON p.categoryId = c.categoryId
+                WHERE 
+                    i.date BETWEEN ? AND ?
+                GROUP BY 
+                    c.categoryId, c.categoryName
+                ORDER BY 
+                    total_revenue DESC
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(fromDate));
+            stmt.setDate(2, java.sql.Date.valueOf(toDate));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String categoryName = rs.getString("categoryName");
+                    BigDecimal totalRevenue = rs.getBigDecimal("total_revenue");
+                    result.put(categoryName, totalRevenue);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getRevenueByCategoryStatistics query", e);
+            throw new RuntimeException("Lỗi khi truy vấn thống kê doanh thu theo danh mục", e);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<StatisticDTO> getRevenueStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection conn) {
+        List<StatisticDTO> result = new ArrayList<>();
+        String sql = """
+                SELECT
+                    %s as period,
+                    SUM(total) as amount,
+                    COUNT(*) as count
+                FROM
+                    invoice
+                WHERE
+                    date BETWEEN ? AND ?
+                GROUP BY
+                    period
+                ORDER BY
+                    MIN(date)
+                """.formatted(groupBy);
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(fromDate));
+            stmt.setDate(2, java.sql.Date.valueOf(toDate));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String period = rs.getString("period");
+                    BigDecimal amount = rs.getBigDecimal("amount");
+                    int count = rs.getInt("count");
+
+                    // Format period for display based on viewType
+                    String displayPeriod = formatPeriodForDisplay(period, viewType);
+
+                    StatisticDTO dto = new StatisticDTO(displayPeriod, amount, count);
+                    result.add(dto);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getRevenueStatistics query", e);
+            throw new RuntimeException("Lỗi khi truy vấn thống kê doanh thu", e);
+        }
+
+        return result;
+    }
+
+    // Helper method to format period for display
+    private String formatPeriodForDisplay(String period, String viewType) {
+        try {
+            switch (viewType) {
+                case "Ngày":
+                    // Convert from yyyy-MM-dd to dd/MM/yyyy
+                    LocalDate date = LocalDate.parse(period);
+                    return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                case "Tuần":
+                    // Format for week (yearweek format)
+                    String[] parts = period.split("(?<=\\d{4})");
+                    return "Tuần " + parts[1] + "/" + parts[0];
+                case "Tháng":
+                    // Convert from yyyy-MM to MM/yyyy
+                    String[] monthParts = period.split("-");
+                    return monthParts[1] + "/" + monthParts[0];
+                case "Quý":
+                    // Quarter format is already "yyyy-Qn"
+                    return "Quý " + period.substring(period.length() - 1) + "/" + period.substring(0, 4);
+                case "Năm":
+                    // Year format is already good
+                    return period;
+                default:
+                    return period;
+            }
+        } catch (Exception e) {
+            // If any parsing error, return the original period
+            log.warn("Error formatting period {}: {}", period, e.getMessage());
+            return period;
+        }
     }
 }

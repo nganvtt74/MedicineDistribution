@@ -138,4 +138,47 @@ public class ProductBUSImpl implements ProductBUS {
             throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
     }
+
+    @Override
+    public boolean checkStock(Integer productId, int quantity) {
+        if (!userSession.hasPermission("INSERT_INVOICE")) {
+            log.error("User does not have permission to check stock");
+            throw new PermissionDeniedException("Bạn không có quyền kiểm tra tồn kho");
+        }
+        if (productId == null || quantity <= 0) {
+            log.error("Invalid product ID or quantity");
+            throw new IllegalArgumentException("Mã sản phẩm không hợp lệ hoặc số lượng không hợp lệ");
+        }
+        try(Connection conn = dataSource.getConnection()){
+            ProductDTO product = productDAO.findById(productId, conn);
+            if (product == null) {
+                log.error("Product not found");
+                throw new IllegalArgumentException("Sản phẩm không tồn tại");
+            }
+
+            if (product.getStockQuantity() < quantity) {
+                log.error("Insufficient stock");
+                throw new IllegalArgumentException("Tồn kho không đủ");
+            }
+            log.info("Stock check successful");
+            return true;
+        }catch (SQLException e){
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+
+    @Override
+    public List<ProductDTO> getAllActiveProducts() {
+        if (!userSession.hasPermission("VIEW_PRODUCT")) {
+            log.error("User does not have permission to find product");
+            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
+        }
+        try(Connection conn = dataSource.getConnection()){
+            return productDAO.getAllActiveProducts(conn);
+        }catch (SQLException e){
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
 }

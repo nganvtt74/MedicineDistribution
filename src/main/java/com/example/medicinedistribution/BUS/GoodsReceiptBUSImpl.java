@@ -5,6 +5,7 @@ import com.example.medicinedistribution.DAO.Interface.GoodsReceiptDAO;
 import com.example.medicinedistribution.DAO.Interface.GoodsReceiptDetailDAO;
 import com.example.medicinedistribution.DTO.GoodsReceiptDTO;
 import com.example.medicinedistribution.DTO.GoodsReceiptDetailDTO;
+import com.example.medicinedistribution.DTO.StatisticDTO;
 import com.example.medicinedistribution.DTO.UserSession;
 import com.example.medicinedistribution.Exception.DeleteFailedException;
 import com.example.medicinedistribution.Exception.InsertFailedException;
@@ -14,9 +15,12 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -157,6 +161,35 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
                 }
             }
             return goodsReceiptDTOs;
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+    @Override
+    public List<StatisticDTO> getExpenseSummary(LocalDate fromDate, LocalDate toDate, String viewType) {
+        // Group by time period based on viewType (day, week, month, quarter, year)
+        String groupBy = switch (viewType) {
+            case "Ngày" -> "DATE(date)";
+// Better week grouping options
+            case "Tuần" -> "CONCAT(YEAR(date), '-W', WEEK(date))"; // Format: "2024-W45"            case "Tháng" -> "DATE_FORMAT(date, '%Y-%m')";
+            case "Quý" -> "CONCAT(YEAR(date), '-Q', QUARTER(date))";
+            case "Năm" -> "YEAR(date)";
+            default -> "DATE_FORMAT(date, '%Y-%m')"; // default to month
+        };
+
+        try (Connection conn = dataSource.getConnection()) {
+            return goodsReceiptDAO.getExpenseStatistics(fromDate, toDate, groupBy, viewType, conn);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+
+    @Override
+    public Map<String, BigDecimal> getExpenseByManufacturerSummary(LocalDate fromDate, LocalDate toDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            return goodsReceiptDAO.getExpenseByManufacturerStatistics(fromDate, toDate, conn);
         } catch (SQLException e) {
             log.error("Error while getting connection", e);
             throw new RuntimeException("Lỗi khi lấy kết nối", e);

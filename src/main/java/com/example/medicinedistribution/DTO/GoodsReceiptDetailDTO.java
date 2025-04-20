@@ -15,13 +15,13 @@ public class GoodsReceiptDetailDTO {
     private Integer productId;
     
     @NotNull(message = "Giá không được để trống")
-    @DecimalMin(value = "0.0", message = "Giá phải lớn hơn hoặc bằng 0")
+    @DecimalMin(value = "0.01", message = "Giá phải lớn hơn 0")
     private BigDecimal price;
     
     @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     private int quantity;
     
     @NotNull(message = "Tổng tiền không được để trống")
-    @DecimalMin(value = "0.0", message = "Tổng tiền phải lớn hơn hoặc bằng 0")
+    @DecimalMin(value = "0.01", message = "Tổng tiền phải lớn hơn hoặc bằng 0")
     private BigDecimal total;
 }

@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserSession {
     private AccountDTO account;
+    private EmployeeDTO employee;
     private RoleDTO role;
     private HashMap<String ,PermissionDTO> permissions;
 

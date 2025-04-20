@@ -21,8 +21,11 @@ public class ManufacturerDTO {
     
     @Email(message = "Email không hợp lệ")
     private String email;
-    
-    @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
+
+    @Pattern(
+            regexp = "^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$",
+            message = "Số điện thoại không hợp lệ"
+    )
     private String phone;
     
     @NotBlank(message = "Địa chỉ không được để trống")

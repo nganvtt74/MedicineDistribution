@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="750.0" prefWidth="960.0" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+    <TabPane styleClass="invoice-tabs" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Tab text="Bán hàng">
+            <BorderPane styleClass="content-area">
+                <!-- Left panel for product listing -->
+                <left>
+                    <VBox prefHeight="707.0" prefWidth="533.0" spacing="10">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+
+                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Danh sách sản phẩm" />
+
+                        <!-- Search panel -->
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <TextField fx:id="txtSearchProduct" prefHeight="35.0" prefWidth="259.0" promptText="Tìm kiếm" HBox.hgrow="ALWAYS" />
+                            <ComboBox fx:id="cboSearchType" prefWidth="150.0" promptText="Tất cả loại" HBox.hgrow="NEVER" />
+                        </HBox>
+
+                        <!-- Products table -->
+                        <TableView fx:id="tblProducts" styleClass="product-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colProductId" prefWidth="50.0" text="Mã" />
+                                <TableColumn fx:id="colProductName" prefWidth="150.0" text="Tên sản phẩm" />
+                                <TableColumn fx:id="colQuantity" prefWidth="100.0" text="Số lượng" />
+                                <TableColumn fx:id="colPrice" prefWidth="80.0" text="Giá" />
+                                <TableColumn fx:id="colAction" prefWidth="80.0" text="Thao tác" />
+                            </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                        </TableView>
+                    </VBox>
+                </left>
+
+                <!-- Right panel for invoice details -->
+                <center>
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+
+                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Thông tin hóa đơn" />
+
+                        <!-- Customer information -->
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label prefHeight="17.0" prefWidth="74.0" text="Khách hàng:" />
+                     <TextField fx:id="txtCustomer" disable="true" editable="false" prefHeight="35.0" prefWidth="175.0" promptText="Chọn khách hàng" text="Chọn khách hàng">
+                        <cursor>
+                           <Cursor fx:constant="DEFAULT" />
+                        </cursor></TextField>
+                     <Button fx:id="btnSelectCustomer" layoutX="330.0" layoutY="15.0" styleClass="primary-button" text="...">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                            <Button fx:id="btnAddCustomer" styleClass="primary-button" text="+">
+                        <font>
+                           <Font size="15.0" />
+                        </font></Button>
+                        </HBox>
+
+                        <Label style="-fx-font-weight: bold;" text="Chi tiết đơn hàng" />
+
+                        <!-- Invoice items table -->
+                        <TableView fx:id="tblInvoiceDetails" prefHeight="350.0" prefWidth="380.0" styleClass="invoice-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colItemProductName" prefWidth="130.0" text="Tên sản phẩm" />
+                                <TableColumn fx:id="colItemPrice" prefWidth="77.0" text="Đơn giá" />
+                                <TableColumn fx:id="colItemQuantity" text="Số lượng" />
+                                <TableColumn fx:id="colItemTotal" prefWidth="123.0" text="Thành tiền" />
+                                <TableColumn fx:id="colItemAction" prefWidth="50.0" text="Xóa" />
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                        </TableView>
+                  <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT">
+                     <children>
+      
+                               <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Tổng tiền:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                               <Label fx:id="lblTotal" style="-fx-font-weight: bold; -fx-text-fill: -action-secondary; -fx-font-size: 26;" text="0₫">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="60.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+
+                        <!-- Action buttons -->
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="380.0" spacing="10">
+                            <Button fx:id="btnClear" styleClass="secondary-button" text="Làm mới">
+                        <font>
+                           <Font size="18.0" />
+                        </font></Button>
+                            <Button fx:id="btnSave" styleClass="primary-button" text="Xuất hoá đơn">
+                        <font>
+                           <Font size="18.0" />
+                        </font></Button>
+                            <Button fx:id="btnPrint" styleClass="primary-button" text="In hóa đơn">
+                        <font>
+                           <Font size="18.0" />
+                        </font></Button>
+                        </HBox>
+                    </VBox>
+                </center>
+            </BorderPane>
+        </Tab>
+
+        <Tab fx:id="tabInvoice" text="Danh sách hóa đơn">
+            <VBox spacing="10" styleClass="content-area">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Tìm kiếm:" />
+                    <TextField fx:id="txtSearchInvoice" promptText="Tìm kiếm theo tên, khách hàng, nhân viên" HBox.hgrow="ALWAYS" />
+               <Separator orientation="VERTICAL" />
+                    <DatePicker fx:id="dpFromDate" editable="false" promptText="Từ ngày" />
+                    <Label text="-">
+                  <font>
+                     <Font name="System Bold" size="26.0" />
+                  </font></Label>
+                    <DatePicker fx:id="dpToDate" editable="false" promptText="Đến ngày" />
+                    <Button fx:id="btnSearchInvoice" styleClass="primary-button" text="Tìm kiếm">
+                  <font>
+                     <Font size="15.0" />
+                  </font></Button>
+               <Button fx:id="btnRefresh" layoutX="809.0" layoutY="13.0" styleClass="primary-button" text="🔃">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+                </HBox>
+
+                <TableView fx:id="tblInvoices" styleClass="invoice-list-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colInvoiceId" prefWidth="70.0" text="Mã HĐ" />
+                        <TableColumn fx:id="colInvoiceCustomer" prefWidth="239.0" text="Khách hàng" />
+                        <TableColumn fx:id="colInvoiceEmployee" prefWidth="160.0" text="Nhân viên" />
+                        <TableColumn fx:id="colInvoiceDate" prefWidth="100.0" text="Ngày tạo" />
+                        <TableColumn fx:id="colInvoiceTotal" prefWidth="185.0" text="Tổng tiền" />
+                        <TableColumn fx:id="colInvoiceActions" prefWidth="98.0" text="Thao tác" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+</AnchorPane>

@@ -94,7 +94,7 @@ public class CustomerBUSImpl implements CustomerBUS {
                 return true;
             } else {
                 log.error("Failed to delete customer with ID: {}", integer);
-                throw new DeleteFailedException("Xóa khách hàng thất bại");
+                throw new DeleteFailedException("Không thể xóa khách hàng này");
             }
         } catch (SQLException e) {
             log.error("Error while getting connection", e);

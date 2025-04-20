@@ -14,11 +14,14 @@ import jakarta.validation.ValidatorFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 
 public class App extends Application {
@@ -47,8 +50,10 @@ public class App extends Application {
         LoginController loginController = new LoginController(busFactory);
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("GUI/login.fxml"));
         fxmlLoader.setController(loginController);
+        ImageView icon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("../../../img/logo.png")).toExternalForm()));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Medicine Distribution");
+        stage.setTitle("Medicine Distribution Management");
+        stage.getIcons().add(icon.getImage());
         stage.setScene(scene);
         stage.show();
 

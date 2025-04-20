@@ -13,9 +13,13 @@ public class CustomerDTO {
     @NotBlank(message = "Tên khách hàng không được để trống")
     @Size(max = 100, message = "Tên khách hàng không được vượt quá 100 ký tự")
     private String customerName;
-    
-    @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
+
+    @Pattern(
+            regexp = "^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$",
+            message = "Số điện thoại không hợp lệ"
+    )
     private String phone;
+
     
     @Email(message = "Email không hợp lệ")
     private String email;

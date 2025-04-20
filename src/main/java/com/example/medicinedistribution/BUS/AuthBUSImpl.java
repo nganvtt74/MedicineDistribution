@@ -3,10 +3,8 @@ package com.example.medicinedistribution.BUS;
 import com.example.medicinedistribution.BUS.Interface.AuthBUS;
 import com.example.medicinedistribution.BUS.Interface.RoleBUS;
 import com.example.medicinedistribution.DAO.Interface.AccountDAO;
-import com.example.medicinedistribution.DTO.AccountDTO;
-import com.example.medicinedistribution.DTO.PermissionDTO;
-import com.example.medicinedistribution.DTO.RoleDTO;
-import com.example.medicinedistribution.DTO.UserSession;
+import com.example.medicinedistribution.DAO.Interface.EmployeeDAO;
+import com.example.medicinedistribution.DTO.*;
 import com.example.medicinedistribution.Util.PasswordUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,16 +16,18 @@ import java.util.HashMap;
 @Slf4j
 public class AuthBUSImpl implements AuthBUS {
 
-    private AccountDAO accountDAO;
-    private RoleBUS roleBUS;
-    private UserSession userSession;
-    private DataSource dataSource;
+    private final AccountDAO accountDAO;
+    private final RoleBUS roleBUS;
+    private final UserSession userSession;
+    private final DataSource dataSource;
+    private final EmployeeDAO employeeDAO;
 
-    public AuthBUSImpl(DataSource dataSource ,AccountDAO accountDAO, RoleBUS roleBUS, UserSession userSession) {
+    public AuthBUSImpl(DataSource dataSource , AccountDAO accountDAO, RoleBUS roleBUS, UserSession userSession, EmployeeDAO employeeDAO) {
         this.accountDAO = accountDAO;
         this.roleBUS = roleBUS;
         this.userSession = userSession;
         this.dataSource = dataSource;
+        this.employeeDAO = employeeDAO;
     }
 
     @Override
@@ -43,6 +43,14 @@ public class AuthBUSImpl implements AuthBUS {
                 for (PermissionDTO permission : role.getPermissions()) {
                     permissions.put(permission.getPermissionCode(), permission);
                 }
+                EmployeeDTO employee = employeeDAO.findByAccountId(account.getAccountId(), connection);
+                if (employee != null) {
+                    userSession.setEmployee(employee);
+                } else {
+                    log.error("Employee not found for account ID: {}", account.getAccountId());
+                    throw new RuntimeException("Nhân viên không tồn tại");
+                }
+                userSession.setEmployee(employee);
                 userSession.setRole(role);
                 userSession.setPermissions(permissions);
                 return true;

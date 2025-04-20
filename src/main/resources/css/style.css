@@ -1,0 +1,189 @@
+/* Base styles */
+    .root {
+        -fx-background-color: #f5f5f5;
+        -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Logo container styling - left side */
+    .logo-container {
+        -fx-background-color: linear-gradient(to bottom right, #1565C0, #0D47A1);
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    }
+
+    .app-title {
+        -fx-text-fill: white;
+        -fx-font-size: 20px;
+        -fx-font-weight: bold;
+    }
+
+    /* Login form container - right side */
+    .login-form-container {
+        -fx-background-color: white;
+        -fx-background-radius: 0;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, -5, 0);
+    }
+
+    /* Header styles */
+    .h2 {
+        -fx-font-size: 24px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #2c3e50;
+    }
+
+    /* Form controls */
+    .form-label {
+        -fx-font-size: 14px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #34495e;
+    }
+
+    .form-control {
+        -fx-background-color: #f5f7fa;
+        -fx-background-radius: 4px;
+        -fx-border-color: #dfe4ea;
+        -fx-border-radius: 4px;
+        -fx-border-width: 1px;
+        -fx-padding: 10px;
+        -fx-font-size: 14px;
+    }
+
+    .form-control:focused {
+        -fx-border-color: #3498db;
+        -fx-background-color: white;
+        -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.25), 5, 0, 0, 0);
+    }
+
+    /* Button styles */
+    .btn {
+        -fx-background-radius: 4px;
+        -fx-cursor: hand;
+        -fx-font-weight: bold;
+        -fx-font-size: 14px;
+        -fx-text-fill: white;
+        -fx-padding: 10px 20px;
+    }
+
+    .btn-primary {
+        -fx-background-color: #3498db;
+    }
+
+    .btn-primary:hover {
+        -fx-background-color: #2980b9;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    }
+
+    .btn-primary:pressed {
+        -fx-background-color: #1f6aa5;
+    }
+
+    /* Error message styling */
+    .error-label {
+        -fx-text-fill: #e74c3c;
+        -fx-font-size: 12px;
+    }
+
+    /* Transitions */
+    .form-control, .btn {
+        -fx-transition: all 0.3s ease;
+    }
+
+    /* ImageView styling */
+    #imgLogo {
+        -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.5), 10, 0, 0, 0);
+    }
+/* Alert Dialog Styling */
+.custom-alert {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+}
+
+.custom-alert > *.header-panel {
+    -fx-background-color: white;
+}
+
+.custom-alert > *.header-panel *.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.custom-alert > *.content.label {
+    -fx-padding: 15px;
+    -fx-alignment: center-left;
+    -fx-text-alignment: left;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 600px;
+    -fx-text-fill: #333333;
+}
+
+.custom-alert:focused > *.content.label {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 0);
+}
+
+.custom-alert .button-bar .button {
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 8px 16px;
+    -fx-text-fill: white;
+    -fx-background-color: #3498db;
+    -fx-transition: -fx-background-color 0.2s, -fx-scale-x 0.1s, -fx-scale-y 0.1s;
+}
+
+.custom-alert .button-bar .button:hover {
+    -fx-background-color: #2980b9;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.custom-alert .button-bar .button:pressed {
+    -fx-background-color: #1f6aa5;
+}
+
+/* Error alert styling */
+.error-alert .button-bar .button {
+    -fx-background-color: #e74c3c;
+}
+
+.error-alert .button-bar .button:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Success alert styling */
+.success-alert .button-bar .button {
+    -fx-background-color: #2ecc71;
+}
+
+.success-alert .button-bar .button:hover {
+    -fx-background-color: #27ae60;
+}
+
+/* Info alert styling */
+.info-alert .button-bar .button {
+    -fx-background-color: #3498db;
+}
+
+.info-alert .button-bar .button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Confirmation alert styling */
+.confirm-alert .button-bar .button:default {
+    -fx-background-color: #3498db;
+}
+
+.confirm-alert .button-bar .button:default:hover {
+    -fx-background-color: #2980b9;
+}
+
+.confirm-alert .button-bar .button {
+    -fx-background-color: #95a5a6;
+}
+
+.confirm-alert .button-bar .button:hover {
+    -fx-background-color: #7f8c8d;
+}

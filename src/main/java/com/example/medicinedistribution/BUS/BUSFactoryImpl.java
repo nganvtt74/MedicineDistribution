@@ -3,6 +3,7 @@ import com.example.medicinedistribution.BUS.Interface.*;
 import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DTO.UserSession;
 import jakarta.validation.Validator;
+import lombok.Getter;
 
 import javax.sql.DataSource;
 
@@ -10,6 +11,7 @@ public class BUSFactoryImpl extends BUSFactory{
     private final DataSource dataSource;
     private final DAOFactory mySQLDAOFactory;
     private final TransactionManager transactionManager;
+    @Getter
     private final UserSession userSession;
     private final Validator validator;
 
@@ -40,7 +42,7 @@ public class BUSFactoryImpl extends BUSFactory{
     @Override
     public AuthBUS getAuthBUS() {
         RoleBUS roleBUS = getRoleBUS();
-        return new AuthBUSImpl(dataSource, mySQLDAOFactory.getAccountDAO(), roleBUS,userSession);
+        return new AuthBUSImpl(dataSource, mySQLDAOFactory.getAccountDAO(), roleBUS,userSession,mySQLDAOFactory.getEmployeeDAO());
     }
 
     @Override
@@ -86,7 +88,12 @@ public class BUSFactoryImpl extends BUSFactory{
     @Override
     public InvoiceBUS getInvoiceBUS() {
         return new InvoiceBUSImpl(mySQLDAOFactory.getInvoiceDAO(), mySQLDAOFactory.getInvoiceDetailDAO(),
-                dataSource, userSession, transactionManager , validator);
+                dataSource, userSession, transactionManager , validator , mySQLDAOFactory.getProductDAO());
+    }
+
+    @Override
+    public StatisticsBUS getStatisticsBUS() {
+        return new StatisticsBUSImpl(getInvoiceBUS(), getGoodsReceiptBUS(), userSession);
     }
 
 }
