@@ -63,9 +63,9 @@ public class AccountBUSImpl implements AccountBUS {
                 }
                 updatedAccount.setPassword(PasswordUtil.hashPassword(updatedAccount.getPassword()));
                 if (accountDAO.updatePassword(updatedAccount, connection)) {
-                    log.info("Cập nhật mật khẩu tài khoản thành công: {}", updatedAccount);
+                    log.info("Cập nhật mật khẩu tài khoản thành công: {}", updatedAccount.getUsername());
                 } else {
-                    log.error("Cập nhật mật khẩu tài khoản thất bại: {}", updatedAccount);
+                    log.error("Cập nhật mật khẩu tài khoản thất bại: {}", updatedAccount.getUsername());
                     throw new UpdateFailedException("Cập nhật mật khẩu tài khoản thất bại");
                 }
             } catch (SQLException e) {
@@ -122,10 +122,10 @@ public class AccountBUSImpl implements AccountBUS {
                     Integer accountId = accountDAO.insert(accountDTO, connection);
                     if (accountId > 0) {
                         accountDTO.setAccountId(accountId);
-                        log.info("Thêm tài khoản thành công: {}", accountDTO);
+                        log.info("Thêm tài khoản thành công: {}", accountDTO.getUsername());
                         return true;
                     } else {
-                        log.error("Thêm tài khoản thất bại: {}", accountDTO);
+                        log.error("Thêm tài khoản thất bại: {}", accountDTO.getUsername());
                         throw new InsertFailedException("Thêm tài khoản thất bại");
                     }
                 }
@@ -146,10 +146,10 @@ public class AccountBUSImpl implements AccountBUS {
             valid(accountDTO);
             try(Connection connection = dataSource.getConnection()) {
                 if (accountDAO.update(accountDTO, connection)) {
-                    log.info("Cập nhật tài khoản thành công: {}", accountDTO);
+                    log.info("Cập nhật tài khoản thành công: {}", accountDTO.getUsername());
                     return true;
                 } else {
-                    log.error("Cập nhật tài khoản thất bại: {}", accountDTO);
+                    log.error("Cập nhật tài khoản thất bại: {}", accountDTO.getUsername());
                     throw new UpdateFailedException("Cập nhật tài khoản thất bại");
                 }
             } catch (SQLException e) {
