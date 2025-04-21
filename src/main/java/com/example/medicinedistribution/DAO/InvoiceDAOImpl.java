@@ -2,6 +2,7 @@ package com.example.medicinedistribution.DAO;
 
 import com.example.medicinedistribution.DAO.Interface.InvoiceDAO;
 import com.example.medicinedistribution.DTO.InvoiceDTO;
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -201,6 +202,94 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             throw new RuntimeException("Lỗi khi truy vấn doanh thu hàng ngày", e);
         }
         return BigDecimal.ZERO;
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection connection) {
+        // public ProductStatisticDTO(Integer productId, String productName,
+        //                             String categoryName, int quantity)
+        List<ProductStatisticDTO> result = new ArrayList<>();
+        String sql = """
+                SELECT
+                    p.productId,
+                    p.productName,
+                    c.categoryName,
+                    SUM(id.quantity) as quantity
+                FROM
+                    invoicedetail id
+                JOIN
+                    invoice i ON id.invoiceId = i.invoiceId
+                JOIN
+                    product p ON id.productId = p.productId
+                JOIN
+                    category c ON p.categoryId = c.categoryId
+                WHERE
+                    i.date BETWEEN ? AND ?
+                GROUP BY
+                    %s, p.productId, p.productName, c.categoryName
+                ORDER BY
+                    quantity DESC
+                """.formatted(groupBy);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(fromDate));
+            stmt.setDate(2, java.sql.Date.valueOf(toDate));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int productId = rs.getInt("productId");
+                    String productName = rs.getString("productName");
+                    String categoryName = rs.getString("categoryName");
+                    int quantity = rs.getInt("quantity");
+
+                    ProductStatisticDTO dto = new ProductStatisticDTO(productId, productName, categoryName, quantity);
+                    result.add(dto);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getProductSalesStatistics query", e);
+            throw new RuntimeException("Lỗi khi truy vấn thống kê doanh thu theo sản phẩm", e);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Integer> getProductSalesByCategoryStatistics(LocalDate fromDate, LocalDate toDate, Connection connection) {
+        Map<String, Integer> result = new HashMap<>();
+        String sql = """
+                SELECT
+                    c.categoryName,
+                    SUM(id.quantity) as quantity
+                FROM
+                    invoicedetail id
+                JOIN
+                    invoice i ON id.invoiceId = i.invoiceId
+                JOIN
+                    product p ON id.productId = p.productId
+                JOIN
+                    category c ON p.categoryId = c.categoryId
+                WHERE
+                    i.date BETWEEN ? AND ?
+                GROUP BY
+                    c.categoryName
+                ORDER BY
+                    quantity DESC
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(fromDate));
+            stmt.setDate(2, java.sql.Date.valueOf(toDate));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String categoryName = rs.getString("categoryName");
+                    int quantity = rs.getInt("quantity");
+                    result.put(categoryName, quantity);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getProductSalesByCategoryStatistics query", e);
+            throw new RuntimeException("Lỗi khi truy vấn thống kê doanh thu theo danh mục sản phẩm", e);
+        }
+        return result;
     }
 
     // Helper method to format period for display

@@ -1,6 +1,7 @@
 package com.example.medicinedistribution.GUI;
 
 import com.example.medicinedistribution.BUS.BUSFactory;
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 import com.example.medicinedistribution.BUS.Interface.StatisticsBUS;
 import com.example.medicinedistribution.Util.NotificationUtil;
@@ -122,6 +123,7 @@ public class SalesStatisticController implements Initializable {
         filterRevenueData();
         filterExpenseData();
         filterProfitData();
+        filterProductData();
     }
 
     private void removeAnimation() {
@@ -148,6 +150,18 @@ public class SalesStatisticController implements Initializable {
 // Make sure legends are visible
         pieChartExpense.setLegendVisible(true);
         pieChartRevenue.setLegendVisible(true);
+
+        cboProductView.setItems(FXCollections.observableArrayList(
+                "Ngày", "Tuần", "Tháng", "Quý", "Năm"
+        ));
+        cboProductView.getSelectionModel().select(2); // Default to monthly view
+
+        // Remove animations for better performance
+        chartProductSales.setAnimated(false);
+        pieChartProduct.setAnimated(false);
+        pieChartProduct.setLabelLineLength(0);
+        pieChartProduct.setLabelsVisible(false);
+        pieChartProduct.setLegendVisible(true);
 
 
     }
@@ -183,6 +197,13 @@ public class SalesStatisticController implements Initializable {
                 new SimpleStringProperty(CurrencyUtils.formatVND(cellData.getValue().getExpense())));
         colProfitAmount.setCellValueFactory(cellData ->
                 new SimpleStringProperty(CurrencyUtils.formatVND(cellData.getValue().getProfit())));
+
+        colProductId.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colProductCategory.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
+        colProductQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        tblProductDetails.setPlaceholder(new Label("Không có dữ liệu"));
     }
 
     private void setupEventHandlers() {
@@ -197,6 +218,9 @@ public class SalesStatisticController implements Initializable {
         // Profit tab event handlers
         btnProfitFilter.setOnAction(this::handleProfitFilter);
         btnProfitExport.setOnAction(this::handleProfitExport);
+
+        btnProductFilter.setOnAction(e -> filterProductData());
+        btnProductExport.setOnAction(e -> exportProductData());
     }
 
     private void setDateRanges(LocalDate startDate, LocalDate endDate) {
@@ -209,6 +233,9 @@ public class SalesStatisticController implements Initializable {
 
         dpProfitFromDate.setValue(startDate);
         dpProfitToDate.setValue(endDate);
+
+        dpProductFromDate.setValue(startDate);
+        dpProductToDate.setValue(endDate);
     }
 
     // ======== REVENUE TAB HANDLERS ========
@@ -498,5 +525,137 @@ public class SalesStatisticController implements Initializable {
         }
 
         chartCompare.getData().addAll(revenueSeries, expenseSeries);
+    }
+        @FXML private BarChart<String, Number> chartProductSales;
+        @FXML private CategoryAxis xAxisProduct;
+        @FXML private NumberAxis yAxisProduct;
+        @FXML private PieChart pieChartProduct;
+
+        // Filter controls
+        @FXML private DatePicker dpProductFromDate;
+        @FXML private DatePicker dpProductToDate;
+        @FXML private ComboBox<String> cboProductView;
+        @FXML private Button btnProductFilter;
+        @FXML private Button btnProductExport;
+
+        // Summary labels
+        @FXML private Label lblTotalQuantity;
+        @FXML private Label lblTotalProducts;
+        @FXML private Label lblAverageQuantity;
+
+        // Table components
+        @FXML private TableView<ProductStatisticDTO> tblProductDetails;
+        @FXML private TableColumn<ProductStatisticDTO, String> colProductId;
+        @FXML private TableColumn<ProductStatisticDTO, String> colProductName;
+        @FXML private TableColumn<ProductStatisticDTO, String> colProductCategory;
+        @FXML private TableColumn<ProductStatisticDTO, Integer> colProductQuantity;
+
+    private void filterProductData() {
+        LocalDate fromDate = dpProductFromDate.getValue();
+        LocalDate toDate = dpProductToDate.getValue();
+        String viewType = cboProductView.getValue();
+
+        if (fromDate == null || toDate == null || viewType == null) {
+            NotificationUtil.showErrorNotification(
+                    "Thiếu thông tin",
+                    "Vui lòng chọn đầy đủ thông tin để lọc"
+            );
+            return;
+        }
+
+        if (fromDate.isAfter(toDate)) {
+            NotificationUtil.showErrorNotification(
+                    "Ngày không hợp lệ",
+                    "Ngày bắt đầu phải trước ngày kết thúc"
+            );
+            return;
+        }
+
+        try {
+            // Get product sales statistics
+            List<ProductStatisticDTO> productStats = statisticBUS.getProductSalesStatistics(
+                    fromDate, toDate, viewType
+            );
+            tblProductDetails.setItems(FXCollections.observableArrayList(productStats));
+
+            // Update bar chart
+            updateBarChart(productStats);
+
+            // Update pie chart
+            Map<String, Integer> categoryStats = statisticBUS.getProductSalesByCategory(
+                    fromDate, toDate
+            );
+            updatePieChart(categoryStats);
+
+            // Update summary
+            updateSummary(productStats);
+
+        } catch (Exception e) {
+            NotificationUtil.showErrorNotification(
+                    "Lỗi truy vấn dữ liệu",
+                    "Đã xảy ra lỗi khi lấy dữ liệu sản phẩm: " + e.getMessage()
+            );
+        }
+    }
+
+    private void updateBarChart(List<ProductStatisticDTO> stats) {
+        chartProductSales.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Số lượng bán");
+
+        // Show top 10 products by quantity
+        stats.stream()
+                .sorted((a, b) -> b.getQuantity() - a.getQuantity())
+                .limit(10)
+                .forEach(stat -> series.getData().add(
+                        new XYChart.Data<>(stat.getProductName(), stat.getQuantity())
+                ));
+
+        chartProductSales.getData().add(series);
+    }
+
+    private void updatePieChart(Map<String, Integer> categoryStats) {
+        pieChartProduct.getData().clear();
+        categoryStats.forEach((category, quantity) ->
+                pieChartProduct.getData().add(new PieChart.Data(category, quantity))
+        );
+    }
+
+    private void updateSummary(List<ProductStatisticDTO> stats) {
+        int totalQuantity = stats.stream()
+                .mapToInt(ProductStatisticDTO::getQuantity)
+                .sum();
+
+        int totalProducts = stats.size();
+
+        double averageQuantity = totalProducts > 0 ?
+                (double) totalQuantity / totalProducts : 0;
+
+        lblTotalQuantity.setText(String.format("%,d", totalQuantity));
+        lblTotalProducts.setText(String.format("%,d", totalProducts));
+        lblAverageQuantity.setText(String.format("%.1f", averageQuantity));
+    }
+
+    private void exportProductData() {
+        try {
+            ExportUtils.exportProductSalesStatistics(
+                    tblProductDetails.getItems(),
+                    dpProductFromDate.getValue(),
+                    dpProductToDate.getValue(),
+                    Integer.parseInt(lblTotalQuantity.getText().replace(",", "")),
+                    Integer.parseInt(lblTotalProducts.getText().replace(",", "")),
+                    Double.parseDouble(lblAverageQuantity.getText())
+            );
+
+            NotificationUtil.showSuccessNotification(
+                    "Xuất báo cáo thành công",
+                    "Báo cáo thống kê sản phẩm đã được xuất thành công"
+            );
+        } catch (Exception e) {
+            NotificationUtil.showErrorNotification(
+                    "Lỗi xuất báo cáo",
+                    "Đã xảy ra lỗi khi xuất báo cáo sản phẩm: " + e.getMessage()
+            );
+        }
     }
 }

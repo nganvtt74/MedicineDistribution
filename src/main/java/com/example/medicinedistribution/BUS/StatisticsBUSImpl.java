@@ -6,6 +6,7 @@ import com.example.medicinedistribution.BUS.Interface.StatisticsBUS;
 import com.example.medicinedistribution.DAO.Interface.GoodsReceiptDAO;
 import com.example.medicinedistribution.DAO.Interface.InvoiceDAO;
 import com.example.medicinedistribution.DAO.Interface.InvoiceDetailDAO;
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 import com.example.medicinedistribution.DTO.UserSession;
 
@@ -119,6 +120,35 @@ public List<StatisticDTO> getProfitStatistics(LocalDate fromDate, LocalDate toDa
             String category = entry.getKey();
             BigDecimal amount = entry.getValue();
             result.put(category, amount);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String viewType) {
+        // Get product sales statistics
+        List<ProductStatisticDTO> productStats = invoiceBUS.getProductSalesSummary(fromDate, toDate, viewType);
+        List<ProductStatisticDTO> result = new ArrayList<>();
+
+        for (ProductStatisticDTO stat : productStats) {
+            ProductStatisticDTO productStat = new ProductStatisticDTO(stat.getProductId(), stat.getProductName(), stat.getCategoryName(), stat.getQuantity());
+            result.add(productStat);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Integer> getProductSalesByCategory(LocalDate fromDate, LocalDate toDate) {
+        // Get product sales grouped by category
+        Map<String, Integer> productStats = invoiceBUS.getProductSalesByCategorySummary(fromDate, toDate);
+        Map<String, Integer> result = new HashMap<>();
+
+        for (Map.Entry<String, Integer> entry : productStats.entrySet()) {
+            String category = entry.getKey();
+            Integer quantity = entry.getValue();
+            result.put(category, quantity);
         }
 
         return result;

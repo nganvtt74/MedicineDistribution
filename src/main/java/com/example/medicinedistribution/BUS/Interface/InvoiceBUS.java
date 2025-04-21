@@ -1,6 +1,7 @@
 package com.example.medicinedistribution.BUS.Interface;
 
 import com.example.medicinedistribution.DTO.InvoiceDTO;
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 
 import java.math.BigDecimal;
@@ -14,4 +15,8 @@ List<StatisticDTO> getRevenueSummary(LocalDate fromDate, LocalDate toDate, Strin
 Map<String, BigDecimal> getRevenueByCategorySummary(LocalDate fromDate, LocalDate toDate);
 
     BigDecimal getDailySales(LocalDate now);
+
+    List<ProductStatisticDTO> getProductSalesSummary(LocalDate fromDate, LocalDate toDate, String viewType);
+
+    Map<String, Integer> getProductSalesByCategorySummary(LocalDate fromDate, LocalDate toDate);
 }

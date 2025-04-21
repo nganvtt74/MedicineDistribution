@@ -1,6 +1,7 @@
 package com.example.medicinedistribution.DAO.Interface;
 
 import com.example.medicinedistribution.DTO.InvoiceDTO;
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 
 import java.math.BigDecimal;
@@ -16,4 +17,8 @@ public interface InvoiceDAO extends BaseDAO<InvoiceDTO, Integer> {
     List<StatisticDTO> getRevenueStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection connection);
 
     BigDecimal getDailySales(LocalDate now, Connection connection);
+
+    List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection connection);
+
+    Map<String, Integer> getProductSalesByCategoryStatistics(LocalDate fromDate, LocalDate toDate, Connection connection);
 }

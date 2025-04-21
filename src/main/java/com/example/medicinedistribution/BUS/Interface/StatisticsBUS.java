@@ -1,5 +1,6 @@
 package com.example.medicinedistribution.BUS.Interface;
 
+import com.example.medicinedistribution.DTO.ProductStatisticDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
 
 import java.math.BigDecimal;
@@ -19,4 +20,8 @@ public interface StatisticsBUS {
     BigDecimal getSalesBetweenDates(LocalDate firstDayOfMonth, LocalDate now);
 
     Map<String, BigDecimal> getProductCategoryDistribution();
+
+    List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String viewType);
+
+    Map<String, Integer> getProductSalesByCategory(LocalDate fromDate, LocalDate toDate);
 }

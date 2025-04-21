@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="650.0" prefWidth="960.0" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TabPane fx:id="tabPaneStatistics" prefHeight="650.0" prefWidth="1000.0" styleClass="invoice-tabs" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -78,7 +78,7 @@
                                        <!-- Revenue chart -->
                                        <LineChart fx:id="chartRevenue" title="Biểu đồ doanh thu" VBox.vgrow="ALWAYS">
                                          <xAxis>
-                                           <CategoryAxis side="BOTTOM" fx:id="xAxisRevenue" label="Thời gian" />
+                                           <CategoryAxis label="Thời gian" side="BOTTOM" fx:id="xAxisRevenue" />
                                          </xAxis>
                                          <yAxis>
                                            <NumberAxis fx:id="yAxisRevenue" label="Doanh thu (VNĐ)" side="LEFT" />
@@ -223,7 +223,7 @@
                                        <!-- Expense chart -->
                                        <BarChart fx:id="chartExpense" title="Biểu đồ chi phí" VBox.vgrow="ALWAYS">
                                          <xAxis>
-                                           <CategoryAxis side="BOTTOM" fx:id="xAxisExpense" label="Thời gian" />
+                                           <CategoryAxis label="Thời gian" side="BOTTOM" fx:id="xAxisExpense" />
                                          </xAxis>
                                          <yAxis>
                                            <NumberAxis fx:id="yAxisExpense" label="Chi phí (VNĐ)" side="LEFT" />
@@ -368,7 +368,7 @@
                                        <!-- Profit chart -->
                                        <LineChart fx:id="chartProfit" title="Biểu đồ lợi nhuận" VBox.vgrow="ALWAYS">
                                          <xAxis>
-                                           <CategoryAxis side="BOTTOM" fx:id="xAxisProfit" label="Thời gian" />
+                                           <CategoryAxis label="Thời gian" side="BOTTOM" fx:id="xAxisProfit" />
                                          </xAxis>
                                          <yAxis>
                                            <NumberAxis fx:id="yAxisProfit" label="Lợi nhuận (VNĐ)" side="LEFT" />
@@ -465,6 +465,151 @@
                   </AnchorPane>
             </content>
           </Tab>
+           <!-- Tab 4: Product Sales Statistics -->
+           <Tab text="Thống kê sản phẩm">
+             <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                 <children>
+                   <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <!-- Header -->
+                     <HBox alignment="CENTER" styleClass="header-hBox">
+                       <Label alignment="CENTER" styleClass="heading-label" text="Thống kê sản phẩm">
+                         <font>
+                           <Font name="System Bold" size="24.0" />
+                         </font>
+                       </Label>
+                     </HBox>
+
+                     <!-- Filter options -->
+                     <HBox alignment="CENTER_LEFT" spacing="15.0">
+                       <padding>
+                         <Insets left="15.0" right="15.0" />
+                       </padding>
+                       <children>
+                         <Label text="Từ ngày:">
+                           <font>
+                             <Font size="14.0" />
+                           </font>
+                         </Label>
+                         <DatePicker fx:id="dpProductFromDate" prefWidth="150.0" />
+                         <Label text="Đến ngày:">
+                           <font>
+                             <Font size="14.0" />
+                           </font>
+                         </Label>
+                         <DatePicker fx:id="dpProductToDate" prefWidth="150.0" />
+                         <Label text="Xem theo:">
+                           <font>
+                             <Font size="14.0" />
+                           </font>
+                         </Label>
+                         <ComboBox fx:id="cboProductView" prefWidth="120.0" />
+                         <Button fx:id="btnProductFilter" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" styleClass="primary-button" text="Lọc" />
+                         <Button fx:id="btnProductExport" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="secondary-button" text="Xuất báo cáo" />
+                       </children>
+                     </HBox>
+
+                     <!-- Charts and Tables -->
+                     <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+                       <padding>
+                         <Insets bottom="10.0" left="15.0" right="15.0" />
+                       </padding>
+                       <children>
+                         <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                             <!-- Product sales chart -->
+                             <BarChart fx:id="chartProductSales" prefHeight="373.0" prefWidth="395.0" title="Biểu đồ số lượng bán" VBox.vgrow="ALWAYS">
+                               <xAxis>
+                                 <CategoryAxis label="Sản phẩm" side="BOTTOM" fx:id="xAxisProduct" />
+                               </xAxis>
+                               <yAxis>
+                                 <NumberAxis fx:id="yAxisProduct" label="Số lượng đã bán" side="LEFT" />
+                               </yAxis>
+                             </BarChart>
+
+                             <!-- Product summary -->
+                             <HBox alignment="CENTER_LEFT" spacing="20.0">
+                               <children>
+                                 <VBox alignment="CENTER" spacing="5.0" styleClass="summary-box" HBox.hgrow="ALWAYS">
+                                   <children>
+                                     <Label text="Tổng số lượng bán">
+                                       <font>
+                                         <Font size="14.0" />
+                                       </font>
+                                     </Label>
+                                     <Label fx:id="lblTotalQuantity" styleClass="label-total-value" text="0">
+                                       <font>
+                                         <Font name="System Bold" size="18.0" />
+                                       </font>
+                                     </Label>
+                                   </children>
+                                   <padding>
+                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                   </padding>
+                                 </VBox>
+                                 <VBox alignment="CENTER" spacing="5.0" styleClass="summary-box" HBox.hgrow="ALWAYS">
+                                   <children>
+                                     <Label text="Số sản phẩm">
+                                       <font>
+                                         <Font size="14.0" />
+                                       </font>
+                                     </Label>
+                                     <Label fx:id="lblTotalProducts" styleClass="label-total-value" text="0">
+                                       <font>
+                                         <Font name="System Bold" size="18.0" />
+                                       </font>
+                                     </Label>
+                                   </children>
+                                   <padding>
+                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                   </padding>
+                                 </VBox>
+                                 <VBox alignment="CENTER" spacing="5.0" styleClass="summary-box" HBox.hgrow="ALWAYS">
+                                   <children>
+                                     <Label text="Trung bình mỗi sản phẩm">
+                                       <font>
+                                         <Font size="14.0" />
+                                       </font>
+                                     </Label>
+                                     <Label fx:id="lblAverageQuantity" styleClass="label-total-value" text="0">
+                                       <font>
+                                         <Font name="System Bold" size="18.0" />
+                                       </font>
+                                     </Label>
+                                   </children>
+                                   <padding>
+                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                   </padding>
+                                 </VBox>
+                               </children>
+                             </HBox>
+                           </children>
+                         </VBox>
+
+                         <VBox prefHeight="455.0" prefWidth="456.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <!-- Product category distribution -->
+                           <PieChart fx:id="pieChartProduct" prefHeight="322.0" prefWidth="501.0" title="Phân bố theo danh mục" VBox.vgrow="ALWAYS" />
+
+                           <!-- Product details table -->
+                           <TableView fx:id="tblProductDetails" prefHeight="200.0" VBox.vgrow="ALWAYS">
+                             <columns>
+                               <TableColumn fx:id="colProductId" prefWidth="100.0" text="Mã SP" />
+                               <TableColumn fx:id="colProductName" prefWidth="200.0" text="Tên sản phẩm" />
+                               <TableColumn fx:id="colProductCategory" prefWidth="150.0" text="Danh mục" />
+                               <TableColumn fx:id="colProductQuantity" prefWidth="100.0" text="Số lượng bán" />
+                             </columns>
+                             <columnResizePolicy>
+                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                             </columnResizePolicy>
+                           </TableView>
+                         </VBox>
+                       </children>
+                     </HBox>
+                   </VBox>
+                 </children>
+               </AnchorPane>
+             </content>
+           </Tab>
         </tabs>
       </TabPane>
    </children>
