@@ -115,9 +115,9 @@ public class LoginController {
                         case "SALES_MANAGEMENT" ->
                                 openStage(componentInfo.getFxmlPath(), new SalesManagementController(busFactory, permissionCount));
                         case "HUMAN_RESOURCES" ->
-                                openStage(componentInfo.getFxmlPath(), new HumanResourcesController(busFactory));
+                                openStage(componentInfo.getFxmlPath(), new HumanResourcesController(busFactory, permissionCount));
                         case "SYSTEM_MANAGEMENT" ->
-                                openStage(componentInfo.getFxmlPath(), new SystemManagementController(busFactory));
+                                openStage(componentInfo.getFxmlPath(), new SystemManagementController(busFactory, permissionCount));
                         default -> {
                             // Handle unknown permission case
                             NotificationUtil.showErrorNotification("Lỗi", "Bạn không có quyền truy cập vào hệ thống này");

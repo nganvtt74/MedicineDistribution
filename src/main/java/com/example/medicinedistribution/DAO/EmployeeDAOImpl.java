@@ -15,11 +15,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     @Override
     public Integer insert(EmployeeDTO employeeDTO, Connection conn) {
         String sql = "INSERT INTO employee (firstName, lastName, birthday, gender, phone, email, hireDate, address" +
-                ", basic_salary, status, positionId, accountId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                ", basic_salary, status, positionId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             Statement(employeeDTO, stmt);
             stmt.setInt(11, employeeDTO.getPositionId());
-            stmt.setInt(12, employeeDTO.getAccountId());
             if (stmt.executeUpdate() > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -36,11 +35,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 @Override
 public boolean update(EmployeeDTO employeeDTO, Connection conn) {
     String sql = "UPDATE employee SET firstName = ?, lastName = ?, birthday = ?, gender = ?, phone = ?, email = ?, " +
-                 "hireDate = ?, address = ?, basic_salary = ?, status = ?,  accountId = ? WHERE employeeId = ?";
+                 "hireDate = ?, address = ?, basic_salary = ?, status = ? WHERE employeeId = ?";
 
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
         Statement(employeeDTO, stmt);
-        stmt.setInt(11, employeeDTO.getAccountId());
         stmt.setInt(12, employeeDTO.getEmployeeId());
         return stmt.executeUpdate() > 0;
     } catch (SQLException e) {
@@ -91,7 +89,6 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .birthday(rs.getDate("birthday").toLocalDate())
                         .hireDate(rs.getDate("hireDate").toLocalDate())
                         .status(rs.getInt("status"))
-                        .accountId(rs.getInt("accountId"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
                         .email(rs.getString("email"))
@@ -123,7 +120,6 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .birthday(rs.getDate("birthday").toLocalDate())
                         .hireDate(rs.getDate("hireDate").toLocalDate())
                         .status(rs.getInt("status"))
-                        .accountId(rs.getInt("accountId"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
                         .email(rs.getString("email"))
@@ -137,32 +133,33 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
         return null;
     }
 
-
     @Override
-    public EmployeeDTO findByAccountId(Integer accountId, Connection conn) {
-        String sql = "SELECT * FROM employee WHERE accountId = ?";
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
-            stmt.setInt(1, accountId);
-            stmt.executeQuery();
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return EmployeeDTO.builder()
+    public List<EmployeeDTO> getEmployeeWithoutAccount(Connection conn) {
+        String sql = "SELECT * FROM employee WHERE employeeId NOT IN (SELECT employeeId FROM account)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.execute();
+            List<EmployeeDTO> employees = new ArrayList<>();
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                employees.add(EmployeeDTO.builder()
                         .employeeId(rs.getInt("employeeId"))
-                        .accountId(rs.getInt("accountId"))
-                        .phone(rs.getString("phone"))
-                        .address(rs.getString("address"))
-                        .basicSalary(rs.getBigDecimal("basic_salary"))
-                        .birthday(rs.getDate("birthday").toLocalDate())
                         .firstName(rs.getString("firstName"))
                         .lastName(rs.getString("lastName"))
+                        .basicSalary(rs.getBigDecimal("basic_salary"))
+                        .phone(rs.getString("phone"))
+                        .birthday(rs.getDate("birthday").toLocalDate())
+                        .hireDate(rs.getDate("hireDate").toLocalDate())
+                        .status(rs.getInt("status"))
+                        .positionId(rs.getInt("positionId"))
+                        .address(rs.getString("address"))
                         .email(rs.getString("email"))
                         .gender(rs.getString("gender"))
-                        .status(rs.getInt("status"))
-                        .build();
+                        .build());
             }
-        }catch (SQLException e) {
-            log.error(e.getMessage());
+            return employees;
+        } catch (SQLException e) {
+            log.error("Error getting employees without accounts: {}", e.getMessage());
         }
-        return null;
+        return new ArrayList<>(); // Return empty list instead of null when an exception occurs
     }
 }

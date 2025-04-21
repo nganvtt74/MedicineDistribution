@@ -43,7 +43,7 @@ public class AuthBUSImpl implements AuthBUS {
                 for (PermissionDTO permission : role.getPermissions()) {
                     permissions.put(permission.getPermissionCode(), permission);
                 }
-                EmployeeDTO employee = employeeDAO.findByAccountId(account.getAccountId(), connection);
+                EmployeeDTO employee = employeeDAO.findById(account.getEmployeeId(), connection);
                 if (employee != null) {
                     userSession.setEmployee(employee);
                 } else {

@@ -29,10 +29,11 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public boolean update(RoleDTO roleDTO, Connection conn) {
-        String sql = "UPDATE role SET roleName = ? WHERE roleId = ?";
+        String sql = "UPDATE role SET roleName = ? ,status = ? WHERE roleId = ?";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, roleDTO.getRoleName());
-            stmt.setInt(2, roleDTO.getRoleId());
+            stmt.setInt(2, roleDTO.getStatus());
+            stmt.setInt(3, roleDTO.getRoleId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             log.error(e.getMessage());

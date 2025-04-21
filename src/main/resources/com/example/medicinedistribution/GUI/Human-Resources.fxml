@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutX="5.0" layoutY="3.0" prefHeight="817.0" prefWidth="1213.0" styleClass="main-container" stylesheets="@../../../../css/main-style.css">
+
+          <!-- Top Header Bar with App Title -->
+          <top>
+              <HBox alignment="CENTER_LEFT" prefHeight="60.0" styleClass="header-bar">
+                  <padding>
+                      <Insets left="20.0" right="20.0" />
+                  </padding>
+                  <Label styleClass="app-title" text="Quản Lý Nhân Sự">
+                      <font>
+                          <Font name="System Bold" size="18.0" />
+                      </font>
+                  </Label>
+                  <HBox alignment="CENTER_RIGHT" spacing="15.0" HBox.hgrow="ALWAYS">
+                  <Button fx:id="btnBack" styleClass="primary-button">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                      <Circle radius="15" styleClass="user-avatar" />
+                      <Label fx:id="headerUserName" styleClass="header-username" text="Người dùng" />
+                  </HBox>
+              </HBox>
+          </top>
+
+          <!-- Left Navigation Panel -->
+          <left>
+              <VBox fx:id="parentVBOX" prefHeight="620.0" prefWidth="220.0" spacing="5.0" styleClass="nav-panel">
+                  <!-- Logo -->
+                  <VBox alignment="CENTER" spacing="10" styleClass="logo-container">
+                  <StackPane fx:id="logoContainer" styleClass="logo-container">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                     <children>
+                            <ImageView fx:id="logoImage" fitHeight="128.0" fitWidth="109.0" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../img/logo.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                            </ImageView>
+                     </children>
+                  </StackPane>
+
+                      <Label styleClass="logo-text" text="Dashboard">
+                          <font>
+                              <Font name="System Bold" size="16.0" />
+                          </font>
+                      </Label>
+                  </VBox>
+
+                  <Separator styleClass="menu-separator">
+                      <VBox.margin>
+                          <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                      </VBox.margin>
+                  </Separator>
+
+                  <!-- Navigation Buttons -->
+                  <Label styleClass="menu-category" text="MENU CHÍNH">
+                      <VBox.margin>
+                          <Insets bottom="5.0" left="15.0" />
+                      </VBox.margin>
+                  </Label>
+
+                  <VBox fx:id="button_group_vbox" spacing="3.0" VBox.vgrow="NEVER">
+                      <Button fx:id="btnEmployees" maxWidth="Infinity" styleClass="nav-button" text="Nhân viên" />
+                      <Button fx:id="btnDepartments" maxWidth="Infinity" styleClass="nav-button" text="Phòng ban" />
+                      <Button fx:id="btnPositions" maxWidth="Infinity" styleClass="nav-button" text="Chức vụ" />
+                      <Button fx:id="btnAttendance" maxWidth="Infinity" styleClass="nav-button" text="Chấm công" />
+                  </VBox>
+
+                  <Label styleClass="menu-category" text="LƯƠNG &amp; CHẾ ĐỘ">
+                      <VBox.margin>
+                          <Insets bottom="5.0" left="15.0" top="15.0" />
+                      </VBox.margin>
+                  </Label>
+
+                  <VBox spacing="3.0" VBox.vgrow="NEVER">
+                      <Button fx:id="btnPayroll" maxWidth="Infinity" styleClass="nav-button" text="Tính lương" />
+                      <Button fx:id="btnBenefits" maxWidth="Infinity" styleClass="nav-button" text="Phúc lợi" />
+                  </VBox>
+
+                  <VBox spacing="3.0" VBox.vgrow="ALWAYS">
+                      <VBox.margin>
+                          <Insets top="15.0" />
+                      </VBox.margin>
+                  </VBox>
+
+                  <!-- Settings and Logout Buttons -->
+                  <VBox alignment="BOTTOM_CENTER" spacing="10" VBox.vgrow="NEVER">
+                      <Button fx:id="btnSettings" maxWidth="Infinity" styleClass="nav-button" text="⚙ Cài đặt" />
+                      <Separator styleClass="menu-separator">
+                          <VBox.margin>
+                              <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                          </VBox.margin>
+                      </Separator>
+                      <Button fx:id="btnLogout" maxWidth="180.0" styleClass="logout-button" text="Đăng xuất">
+                          <VBox.margin>
+                              <Insets bottom="15.0" />
+                          </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                      </Button>
+                  </VBox>
+              </VBox>
+          </left>
+
+          <!-- Main Content Area -->
+          <center>
+              <StackPane fx:id="contentArea" prefHeight="757.0" prefWidth="965.0" styleClass="content-area" />
+          </center>
+
+      </BorderPane>
+   </children>
+</AnchorPane>

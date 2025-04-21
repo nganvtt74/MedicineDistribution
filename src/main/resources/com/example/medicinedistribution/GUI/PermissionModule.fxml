@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" styleClass="edge-to-edge, permission-scrollpane" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox fx:id="permissionsContainer" spacing="15">
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+
+         <!-- Module Section Template (will be created programmatically) -->
+         <VBox fx:id="exampleContent" styleClass="permission-section, card">
+            <padding>
+               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+
+            <!-- Module Header -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+               <CheckBox mnemonicParsing="false" styleClass="module-checkbox" />
+               <Label styleClass="module-title" text="Quản lý bán hàng">
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font>
+               </Label>
+            </HBox>
+
+            <Separator>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="5.0" />
+               </VBox.margin>
+            </Separator>
+
+            <!-- Sub-modules grid -->
+            <GridPane hgap="20" vgap="15">
+               <!-- Submodule Template (will be created programmatically) -->
+               <VBox styleClass="submodule-container" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                  <HBox alignment="CENTER_LEFT" spacing="10">
+                     <CheckBox mnemonicParsing="false" styleClass="submodule-checkbox" text="Sản phẩm" />
+                  </HBox>
+
+                  <HBox spacing="15" styleClass="permission-actions">
+                     <padding>
+                        <Insets left="25.0" top="5.0" />
+                     </padding>
+                     <CheckBox mnemonicParsing="false" styleClass="action-checkbox" text="Thêm" />
+                     <CheckBox mnemonicParsing="false" styleClass="action-checkbox" text="Sửa" />
+                     <CheckBox mnemonicParsing="false" styleClass="action-checkbox" text="Xoá" />
+                     <CheckBox mnemonicParsing="false" styleClass="action-checkbox" text="Xem" />
+                  </HBox>
+               </VBox>
+               <columnConstraints>
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+         </VBox>
+      </VBox>
+   </content>
+</ScrollPane>

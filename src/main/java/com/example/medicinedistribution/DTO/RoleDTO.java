@@ -27,4 +27,9 @@ public class RoleDTO {
     
     @Valid
     private List<PermissionDTO> permissions;
+
+    @Override
+    public String toString() {
+        return roleName;
+    }
 }

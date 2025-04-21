@@ -46,7 +46,7 @@ public class ManufacturerSelectController {
     private ObservableList<ManufacturerDTO> manufacturerList;
 
     @Setter
-    private ManufacturerSelectionHandler selectionHandler;
+    private SelectionHandler<ManufacturerDTO> selectionHandler;
 
 
     public ManufacturerSelectController(BUSFactory busFactory) {
@@ -90,7 +90,7 @@ public class ManufacturerSelectController {
             if (selectedManufacturer != null) {
                 // Handle the selection of the manufacturer
                 // For example, you can pass the selected manufacturer to another controller or close the dialog
-                selectionHandler.onManufacturerSelected(selectedManufacturer);
+                selectionHandler.onItemSelected(selectedManufacturer);
                 closeDialog();
             } else {
                 NotificationUtil.showErrorNotification("Lỗi","Vui lòng chọn nhà sản xuất");
@@ -98,8 +98,10 @@ public class ManufacturerSelectController {
         });
 
         btnCancel.setOnAction(event -> {
-            // Handle cancel action
-            System.out.println("Cancelled");
+            if (selectionHandler != null) {
+                selectionHandler.onSelectionCancelled();
+            }
+            closeDialog();
         });
     }
 
@@ -139,10 +141,6 @@ public class ManufacturerSelectController {
         // You can use the appropriate method to close the dialog based on your application structure
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
-    }
-
-    public interface ManufacturerSelectionHandler {
-        void onManufacturerSelected(ManufacturerDTO manufacturer);
     }
 
 }

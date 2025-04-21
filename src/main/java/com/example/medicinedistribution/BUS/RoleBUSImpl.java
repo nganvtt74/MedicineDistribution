@@ -9,6 +9,7 @@ import com.example.medicinedistribution.DTO.RoleDTO;
 import com.example.medicinedistribution.DTO.RolePermDTO;
 import com.example.medicinedistribution.DTO.UserSession;
 import com.example.medicinedistribution.Exception.*;
+import com.example.medicinedistribution.Util.GenericTablePrinter;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -16,10 +17,7 @@ import jakarta.validation.Validator;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -57,6 +55,7 @@ public class RoleBUSImpl implements RoleBUS{
 
     @Override
     public boolean insert(RoleDTO roleDTO) {
+        roleDTO.setStatus(1);
         valid(roleDTO);
         if (userSession.hasPermission("INSERT_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
@@ -237,6 +236,29 @@ public class RoleBUSImpl implements RoleBUS{
     }
 
 
+
+    public List<PermissionDTO> getNewPermissionsForEdit(){
+        if (userSession.hasPermission("MANAGE_ROLE")) {
+            try(Connection connection = dataSource.getConnection()) {
+                List<PermissionDTO> allPermissions = permissionDAO.findAll(connection);
+
+                for (PermissionDTO perm : allPermissions) {
+                    perm.setEditable(userSession.hasPermission(perm.getEditableByPermissionCode()));
+                }
+
+                return allPermissions;
+
+            } catch (SQLException e) {
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
+            }
+        }else {
+            log.error("User does not have permission to edit role");
+            throw new PermissionDeniedException("Bạn không có quyền chỉnh sửa vai trò");
+        }
+    }
+
+
     @Override
     public RoleDTO getRoleForEdit(Integer roleId) {
         if (userSession.hasPermission("MANAGE_ROLE")) {
@@ -270,6 +292,105 @@ public class RoleBUSImpl implements RoleBUS{
         }else {
             log.error("User does not have permission to edit role");
             throw new PermissionDeniedException("Bạn không có quyền chỉnh sửa vai trò");
+        }
+    }
+
+    @Override
+    public List<RoleDTO> getRolesWithoutEditablePermissions() {
+        PermissionDTO highestPermission = getHighestPermission(userSession.getPermissions());
+        if (highestPermission == null) {
+            log.error("No highest permission found");
+            throw new NotExistsException("Không tìm thấy quyền cao nhất");
+        }
+        List<RoleDTO> roles;
+        try(Connection connection = dataSource.getConnection()) {
+            roles = roleDao.findAll(connection);
+            if (roles.isEmpty()) {
+                log.error("No roles found");
+                throw new NotExistsException("Không tìm thấy vai trò nào");
+            }
+            // Lấy tất cả permission trong hệ thống
+            for (RoleDTO role : roles) {
+                List<PermissionDTO> permissions = rolePermDAO.findByRoleId(role.getRoleId(), connection);
+                role.setPermissions(permissions);
+            }
+            // Lọc các vai trò không có quyền chỉnh sửa
+            return roles.stream()
+                    .filter(role -> role.getPermissions().stream()
+                            .noneMatch(permission -> permission.getPermissionCode().equals(highestPermission.getPermissionCode())))
+                    .collect(Collectors.toList());
+
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+    private PermissionDTO getHighestPermission(HashMap<String, PermissionDTO> permissionMap) {
+        // Tìm điểm bắt đầu - permission của user hiện tại
+    PermissionDTO currentPermission = permissionMap.values().stream().findFirst().orElse(null);
+        if (currentPermission == null) {
+            return null; // Không tìm thấy permission của user
+        }
+        // Đi lên chuỗi phân cấp đến khi không còn editable permission
+        PermissionDTO highestPermission = currentPermission;
+        String editableByCode = currentPermission.getEditableByPermissionCode();
+
+        while (editableByCode != null) {
+            PermissionDTO nextPermission = permissionMap.get(editableByCode);
+            if (nextPermission == null) {
+                break; // Không tìm thấy permission tiếp theo trong map
+            }
+
+            highestPermission = nextPermission;
+            editableByCode = nextPermission.getEditableByPermissionCode();
+        }
+
+        return highestPermission;
+    }
+
+    /**
+     * Lấy tất cả các permission mà user có thể truy cập dựa vào permission cao nhất
+     * @param highestPermissionCode Permission cao nhất của user
+     * @param allPermissions Map chứa tất cả permission trong hệ thống
+     * @return Danh sách tất cả permission mà user có quyền truy cập
+     */
+    private List<PermissionDTO> getAllAccessiblePermissions(String highestPermissionCode,
+                                                            HashMap<String, PermissionDTO> allPermissions) {
+        List<PermissionDTO> accessiblePermissions = new ArrayList<>();
+        Set<String> processedCodes = new HashSet<>(); // Tránh xử lý lặp lại
+
+        // Bắt đầu từ permission cao nhất
+        collectPermissionsRecursively(highestPermissionCode, allPermissions, accessiblePermissions, processedCodes);
+
+        return accessiblePermissions;
+    }
+
+    /**
+     * Duyệt đệ quy để thu thập tất cả các permission có thể truy cập
+     */
+    private void collectPermissionsRecursively(String permissionCode,
+                                               HashMap<String, PermissionDTO> allPermissions,
+                                               List<PermissionDTO> result,
+                                               Set<String> processedCodes) {
+        // Kiểm tra nếu đã xử lý permission này rồi hoặc không tồn tại
+        if (permissionCode == null || processedCodes.contains(permissionCode) ||
+                !allPermissions.containsKey(permissionCode)) {
+            return;
+        }
+
+        // Đánh dấu đã xử lý
+        processedCodes.add(permissionCode);
+
+        // Thêm permission hiện tại vào kết quả
+        PermissionDTO currentPermission = allPermissions.get(permissionCode);
+        result.add(currentPermission);
+
+        // Tìm tất cả permission có editable_by_permission_code là permission hiện tại
+        for (PermissionDTO perm : allPermissions.values()) {
+            if (permissionCode.equals(perm.getEditableByPermissionCode())) {
+                // Đệ quy để thu thập các permission con
+                collectPermissionsRecursively(perm.getPermissionCode(), allPermissions, result, processedCodes);
+            }
         }
     }
 }

@@ -1,40 +1,28 @@
 package com.example.medicinedistribution.GUI;
 
 import com.example.medicinedistribution.BUS.BUSFactory;
-import com.example.medicinedistribution.BUS.Interface.*;
 import com.example.medicinedistribution.DTO.ComponentInfo;
 import com.example.medicinedistribution.DTO.UserSession;
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
-public class SalesManagementController implements BackButtonHandler{
+public class SalesManagementController extends ManagementController {
     //UI fields
     @FXML
     public Label headerUserName;
-    @FXML
-    public ImageView logoImage;
+
     @FXML
     public StackPane logoContainer;
     @FXML
@@ -47,7 +35,6 @@ public class SalesManagementController implements BackButtonHandler{
             btnProduct,
             btnGoodsReceipt,
             btnManufacturer,
-            btnLogout,
             btnStatistics,
             btnSettings,
             btnBack;
@@ -64,18 +51,12 @@ public class SalesManagementController implements BackButtonHandler{
     private Button activeButton;
 
     //Functional fields
-    private final BUSFactory busFactory;
     private UserSession userSession;
     private List<ComponentInfo> componentInfoList;
     private final int permissionCount;
-    private Runnable backFunction;
 
-    @Override
-    public void setBackFunction(Runnable backFunction) {
-        this.backFunction = backFunction;
-    }
     public SalesManagementController(BUSFactory busFactory , int PermissionCount) {
-        this.busFactory = busFactory;
+        super(busFactory);
         this.permissionCount = PermissionCount;
     }
 
@@ -91,21 +72,7 @@ public class SalesManagementController implements BackButtonHandler{
             btnBack.setManaged(false);
         }
     }
-    public void handleBackButton() {
-        if (backFunction != null) {
-            backFunction.run();
-        }
-    }
-    private void setupBtnBack() {
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResource("../../../../icon/Undo.png")).toExternalForm());
-        btnBack.setText("Quay lại");
-        btnBack.setGraphic(new ImageView(backImage));
 
-
-        btnBack.setOnAction(event -> {
-            handleBackButton();
-        });
-    }
 
     public void setup(){
         headerUserName.setText(userSession.getAccount().getUsername());
@@ -151,28 +118,7 @@ public class SalesManagementController implements BackButtonHandler{
 
     }
 
-    private void logout() {
-        // Perform logout logic here
-        // For example, clear user session, redirect to login screen, etc.
-        busFactory.getUserSession().clearSession();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-            loader.setController(new LoginController(busFactory));
-            HBox loginScreen = loader.load();
-            Stage currentStage = (Stage) btnLogout.getScene().getWindow();
-            Stage newStage = new Stage();
-            newStage.setTitle("Medicine Distribution");
-            newStage.getIcons().add(logoImage.getImage());
-            newStage.setScene(new Scene(loginScreen));
-            newStage.setResizable(false);
-            newStage.show();
-            currentStage.close();
 
-
-        } catch (IOException e) {
-            log.error("Error loading Login screen: ", e);
-        }
-    }
 
     public void loadDashboard() {
         try {

@@ -80,7 +80,7 @@ public class PostLoginController {
          if (!isProcessingClick && !imgHumanResources.isDisabled()) {
              isProcessingClick = true;
              log.info("Human resources clicked");
-             openModule("Human-Resources.fxml", "HUMAN_RESOURCES", new HumanResourcesController(busFactory));
+             openModule("Human-Resources.fxml", "HUMAN_RESOURCES", new HumanResourcesController(busFactory,componentInfoList.size()));
          }
      });
      salesManagementVBox.setOnMouseClicked(event -> {
@@ -92,7 +92,7 @@ public class PostLoginController {
      systemManagementVBox.setOnMouseClicked(event -> {
          if (!isProcessingClick && !imgSystemManagement.isDisabled()) {
              isProcessingClick = true;
-             openModule("System-Management.fxml", "SYSTEM_MANAGEMENT",new SystemManagementController(busFactory));
+             openModule("System-Management.fxml", "SYSTEM_MANAGEMENT",new SystemManagementController(busFactory,componentInfoList.size()));
          }
      });
  }
@@ -103,9 +103,9 @@ public class PostLoginController {
          try {
              FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
-             if (controller instanceof BackButtonHandler) {
+             if (controller instanceof ManagementController) {
                  Stage currentStage = (Stage) lblEmployeeName.getScene().getWindow();
-                 ((BackButtonHandler) controller).setBackFunction(() -> {
+                 ((ManagementController) controller).setBackFunction(() -> {
                      currentStage.show();
                      // Get the current active window and close it
                      for (Window stage : javafx.stage.Window.getWindows().filtered(window ->

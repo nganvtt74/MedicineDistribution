@@ -3,6 +3,7 @@ package com.example.medicinedistribution.GUI.SubSelect;
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.BUS.Interface.CustomerBUS;
 import com.example.medicinedistribution.DTO.CustomerDTO;
+import com.example.medicinedistribution.DTO.ManufacturerDTO;
 import com.example.medicinedistribution.Util.NotificationUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lombok.Setter;
 
-public class CustomerSelectController {
+public class CustomerSelectController{
 
     @FXML
     private Label lblTitle;
@@ -42,7 +43,7 @@ public class CustomerSelectController {
     private ObservableList<CustomerDTO> customerList;
     // Method to set the selection handler
     @Setter
-    private CustomerSelectionHandler selectionHandler;
+    private SelectionHandler<CustomerDTO> selectionHandler;
 
     public CustomerSelectController(BUSFactory busFactory) {
         this.customerBUS = busFactory.getCustomerBUS();
@@ -116,7 +117,7 @@ public class CustomerSelectController {
         btnSelect.setOnAction(event -> {
             CustomerDTO selectedCustomer = tblItems.getSelectionModel().getSelectedItem();
             if (selectedCustomer != null && selectionHandler != null) {
-                selectionHandler.onCustomerSelected(selectedCustomer);
+                selectionHandler.onItemSelected(selectedCustomer);
                 closeDialog();
             } else {
                 NotificationUtil.showErrorNotification("Lỗi", "Vui lòng chọn một khách hàng.");
@@ -124,17 +125,17 @@ public class CustomerSelectController {
         });
 
         // Configure Cancel button
-        btnCancel.setOnAction(event -> closeDialog());
+        btnCancel.setOnAction(event -> {
+            if (selectionHandler != null) {
+                selectionHandler.onSelectionCancelled();
+            }
+            closeDialog();
+        });
     }
 
     private void closeDialog() {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
-    }
-
-    // Interface for handling customer selection
-    public interface CustomerSelectionHandler {
-        void onCustomerSelected(CustomerDTO customer);
     }
 
 }

@@ -35,7 +35,7 @@ class AccountBUSImplTest {
     private static DataSource dataSource;
     private static DAOFactory daoFactory;
     private static BUSFactory busFactory;
-    private AccountBUS accountBUS;
+    private static AccountBUS accountBUS;
     private static AccountDTO testAccount;
     private static int testAccountId;
 
@@ -53,26 +53,28 @@ class AccountBUSImplTest {
         Validator validator = factory.getValidator();
 
         busFactory = new BUSFactoryImpl(dataSource, daoFactory , transactionManager, userSession,validator);
+        accountBUS = busFactory.getAccountBUS();
                 // Tạo một tài khoản test để sử dụng trong các test
                 testAccount = AccountDTO.builder()
-                        .username("testuser")
-                        .password("testpassword")
-                        .roleId(40)
+                        .username("admin")
+                        .password("admin")
+                        .employeeId(18)
+                        .roleId(1)
                         .build();
     }
 
-    @BeforeEach
-    void setUp() {
-        accountBUS = busFactory.getAccountBUS();
-        AuthBUS authBUS = busFactory.getAuthBUS();
-        if (authBUS.login("admin", "admin")){
-            System.out.println("Login successful");
-        } else {
-            System.out.println("Login failed");
-        }
-
-    }
+//    @BeforeEach
+//    void setUp() {
+//        accountBUS = busFactory.getAccountBUS();
+//        AuthBUS authBUS = busFactory.getAuthBUS();
+//        if (authBUS.login("admin", "admin")){
+//            System.out.println("Login successful");
+//        } else {
+//            System.out.println("Login failed");
+//        }
 //
+//    }
+
 //    @Test
 //    @Order(0)
 //    void createAccount() {
@@ -85,7 +87,7 @@ class AccountBUSImplTest {
 //
 //        // Kiểm tra xem tài khoản đã được tạo thành công chưa
 //        assertNotNull(registerAccount);
-//        authBUS.register("admin", "admin", 1);
+////        authBUS.register("admin", "admin", 1);
 //    }
 
     @Test

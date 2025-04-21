@@ -6,6 +6,7 @@ import com.example.medicinedistribution.DTO.*;
 import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import com.example.medicinedistribution.GUI.SubSelect.CustomerSelectController;
+import com.example.medicinedistribution.GUI.SubSelect.SelectionHandler;
 import com.example.medicinedistribution.Util.NotificationUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -443,10 +444,12 @@ public class InvoiceController {
             Parent root = loader.load();
 
             // Set up the callback that will be triggered when a customer is selected
-            controller.setSelectionHandler(customer -> {
-                // This code runs after selection and dialog closing
-                this.selectedCustomer = customer;
-                txtCustomer.setText(customer.getCustomerName());
+            controller.setSelectionHandler(new SelectionHandler<CustomerDTO>() {
+                @Override
+                public void onItemSelected(CustomerDTO customer) {
+                    selectedCustomer = customer;
+                    txtCustomer.setText(customer.getCustomerName());
+                }
             });
 
             Stage stage = new Stage();

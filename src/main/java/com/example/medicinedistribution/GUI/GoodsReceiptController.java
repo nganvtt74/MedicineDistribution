@@ -6,6 +6,7 @@ package com.example.medicinedistribution.GUI;
     import com.example.medicinedistribution.Exception.InsertFailedException;
     import com.example.medicinedistribution.Exception.PermissionDeniedException;
     import com.example.medicinedistribution.GUI.SubSelect.ManufacturerSelectController;
+    import com.example.medicinedistribution.GUI.SubSelect.SelectionHandler;
     import com.example.medicinedistribution.Util.NotificationUtil;
     import javafx.collections.FXCollections;
     import javafx.fxml.FXML;
@@ -480,9 +481,12 @@ package com.example.medicinedistribution.GUI;
 
                 Parent root = loader.load();
 
-                controller.setSelectionHandler(manufacturer -> {
-                    this.selectedManufacturer = manufacturer;
-                    txtManufacturer.setText(manufacturer.getManufacturerName());
+                controller.setSelectionHandler(new SelectionHandler<ManufacturerDTO>() {
+                    @Override
+                    public void onItemSelected(ManufacturerDTO selectedItem) {
+                        selectedManufacturer = selectedItem;
+                        txtManufacturer.setText(selectedItem.getManufacturerName());
+                    }
                 });
 
                 Stage stage = new Stage();

@@ -143,4 +143,19 @@ public class EmployeeBUSImpl implements EmployeeBUS {
             throw new PermissionDeniedException("Bạn không có quyền tìm tất cả nhân viên");
         }
     }
+
+    @Override
+    public List<EmployeeDTO> getEmployeeWithoutAccount() {
+        if (userSession.hasPermission("MANAGE_ACCOUNT")) {
+            try(Connection conn = dataSource.getConnection()) {
+                return employeeDAO.getEmployeeWithoutAccount(conn);
+            } catch (SQLException e) {
+                log.error("Error while getting connection", e);
+                throw new RuntimeException("Lỗi khi lấy kết nối", e);
+            }
+        } else {
+            log.error("User does not have permission to find employees without account");
+            throw new PermissionDeniedException("Bạn không có quyền tìm nhân viên không có tài khoản");
+        }
+    }
 }

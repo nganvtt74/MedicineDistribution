@@ -196,7 +196,6 @@ public class ProductBUSImpl implements ProductBUS {
             BigDecimal productValue = product.getPrice().multiply(BigDecimal.valueOf(product.getStockQuantity()));
             totalValue = totalValue.add(productValue);
         }
-        log.info("Total inventory value: {}", totalValue);
         return totalValue;
     }
 }

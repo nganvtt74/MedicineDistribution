@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="760" prefWidth="950" styleClass="settings-container" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <VBox spacing="20">
+            <!-- Header Title with better padding -->
+            <HBox alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+                <Label styleClass="module-title" text="THIẾT LẬP HỆ THỐNG" />
+            </HBox>
+
+            <!-- Main Content Container with proper spacing -->
+            <HBox spacing="20">
+                <!-- Left Column -->
+                <VBox prefWidth="450" spacing="20" HBox.hgrow="ALWAYS">
+                    <!-- Work Hours Section -->
+                    <VBox minHeight="150" styleClass="permission-section">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+                        <Label styleClass="section-title" text="Giờ làm việc" />
+                        <GridPane hgap="20" style="-fx-padding: 20 0 0 0;" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="120" />
+                                <ColumnConstraints minWidth="200" />
+                            </columnConstraints>
+                            <Label text="Giờ bắt đầu:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="startTimeField" promptText="08:30" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label text="Giờ kết thúc:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="endTimeField" promptText="15:30" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Salary Rules Section -->
+                    <VBox minHeight="300" styleClass="permission-section">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+                        <Label styleClass="section-title" text="Quy định lương" />
+                        <VBox spacing="20" style="-fx-padding: 20 0 0 0;">
+                            <VBox spacing="15">
+                                <Label styleClass="summary-label" text="Kỳ tính lương" />
+                                <GridPane hgap="20" vgap="15">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="200" />
+                                    </columnConstraints>
+                                    <Label text="Từ ngày:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                    <ComboBox fx:id="salaryStartDay" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                    <Label text="Đến ngày:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="salaryEndDay" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </VBox>
+
+                            <Separator />
+
+                            <VBox spacing="15">
+                                <Label styleClass="summary-label" text="Chính sách thai sản" />
+                                <GridPane hgap="20" vgap="15">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="170" />
+                                        <ColumnConstraints minWidth="150" />
+                                    </columnConstraints>
+                                    <Label text="Tỷ lệ trợ cấp (%):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                    <Spinner fx:id="maternityRateSpinner" editable="true" max="100" min="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                    <Label text="Số tháng tính trung bình:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <Spinner fx:id="averageMonthsSpinner" editable="true" max="12" min="1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Right Column -->
+                <VBox prefWidth="450" spacing="20" HBox.hgrow="ALWAYS">
+                    <!-- Leave Policy Section -->
+                    <VBox minHeight="150" styleClass="permission-section">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+                        <Label styleClass="section-title" text="Chính sách nghỉ phép" />
+                        <GridPane hgap="20" style="-fx-padding: 20 0 0 0;" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="170" />
+                                <ColumnConstraints minWidth="150" />
+                            </columnConstraints>
+                            <Label text="Số ngày nghỉ phép/năm:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Spinner fx:id="validLeaveDaysSpinner" editable="true" max="365" min="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Penalty Rules Section -->
+                    <VBox minHeight="150" styleClass="permission-section">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+                        <Label styleClass="section-title" text="Quy định phạt" />
+                        <GridPane hgap="20" style="-fx-padding: 20 0 0 0;" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="170" />
+                                <ColumnConstraints minWidth="150" />
+                            </columnConstraints>
+                            <Label text="Vắng không phép:" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="unauthorizedLeaveField" promptText="200000" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label text="Đi trễ:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="lateArrivalField" promptText="50000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Employee Status Section -->
+                    <VBox styleClass="permission-section">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+                        <Label styleClass="section-title" text="Trạng thái nhân viên" />
+                        <VBox spacing="15" style="-fx-padding: 20 0 0 0;">
+                            <CheckBox disable="true" selected="true" styleClass="module-checkbox" text="Đang làm việc" />
+                            <CheckBox disable="true" selected="true" styleClass="module-checkbox" text="Nghỉ việc" />
+                            <CheckBox disable="true" selected="true" styleClass="module-checkbox" text="Nghỉ thai sản" />
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- Action Buttons with better spacing -->
+            <HBox alignment="CENTER" spacing="15" style="-fx-padding: 10 0 0 0;">
+                <Button fx:id="btnSave" styleClass="custom-primary-button" text="Lưu thay đổi" />
+                <Button fx:id="btnReset" styleClass="custom-secondary-button" text="Khôi phục mặc định" />
+            </HBox>
+        </VBox>
+        <padding>
+            <Insets bottom="25" left="25" right="25" top="25" />
+        </padding>
+    </ScrollPane>
+</AnchorPane>

@@ -203,4 +203,13 @@ package com.example.medicinedistribution.BUS;
             System.out.println("Delete non-existent exception: " + exception.getMessage());
         }
 
+        @Test
+        void getRolesWithoutEditablePermissions() {
+            // Retrieve roles without editable permissions and verify the result.
+            List<RoleDTO> roles = roleBUS.getRolesWithoutEditablePermissions();
+            assertNotNull(roles);
+            assertFalse(roles.isEmpty());
+            System.out.println("Roles without editable permissions: " + roles);
+        }
+
     }
