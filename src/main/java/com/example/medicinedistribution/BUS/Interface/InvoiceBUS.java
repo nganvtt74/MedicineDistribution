@@ -12,4 +12,6 @@ public interface InvoiceBUS extends BaseBUS<InvoiceDTO, Integer> {
 // Add to InvoiceBUS interface
 List<StatisticDTO> getRevenueSummary(LocalDate fromDate, LocalDate toDate, String viewType);
 Map<String, BigDecimal> getRevenueByCategorySummary(LocalDate fromDate, LocalDate toDate);
+
+    BigDecimal getDailySales(LocalDate now);
 }

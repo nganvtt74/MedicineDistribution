@@ -13,4 +13,10 @@ public interface StatisticsBUS {
     public List<StatisticDTO> getExpenseStatistics(LocalDate fromDate, LocalDate toDate, String viewType) ;
     public Map<String, BigDecimal> getExpenseByManufacturerStatistics(LocalDate fromDate, LocalDate toDate) ;
     public List<StatisticDTO> getProfitStatistics(LocalDate fromDate, LocalDate toDate, String viewType) ;
-    }
+
+    BigDecimal getDailySales(LocalDate now);
+
+    BigDecimal getSalesBetweenDates(LocalDate firstDayOfMonth, LocalDate now);
+
+    Map<String, BigDecimal> getProductCategoryDistribution();
+}

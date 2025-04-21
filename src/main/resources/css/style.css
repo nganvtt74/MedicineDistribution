@@ -187,3 +187,127 @@
 .confirm-alert .button-bar .button:hover {
     -fx-background-color: #7f8c8d;
 }
+
+/* Dashboard styles - to be added to main-style.css or as a separate file */
+
+/* Main background */
+.dashboard-background {
+    -fx-background-color: linear-gradient(to bottom right, #f0f5ff, #e6edff);
+    -fx-background-radius: 0;
+}
+
+/* Welcome text styling */
+.welcome-text {
+    -fx-text-fill: #2d3748;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.welcome-subtext {
+    -fx-text-fill: #4a5568;
+    -fx-font-style: italic;
+}
+
+/* Module boxes styling */
+.module-box {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);
+    -fx-transition: all 0.3s ease;
+}
+
+.module-box:hover {
+    -fx-background-color: #f7faff;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 15);
+}
+
+/* Module title styling */
+.module-title {
+    -fx-text-fill: #2c5282;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* Module icon styling */
+.module-icon {
+    -fx-opacity: 0.9;
+}
+
+.module-icon:hover {
+    -fx-opacity: 1;
+}
+
+/* Employee name and date/time styling */
+.employee-name {
+    -fx-text-fill: #4a5568;
+    -fx-font-weight: bold;
+}
+
+.date-time {
+    -fx-text-fill: #718096;
+    -fx-font-weight: bold;  /* Use font-weight for bold */
+}
+
+/* Animation for module hover */
+.module-box .module-icon {
+    -fx-transition: all 0.3s ease;
+}
+
+.module-box:hover .module-icon {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+
+/* Add custom color scheme for each module */
+#imgSales {
+    -fx-effect: dropshadow(three-pass-box, rgba(49, 130, 206, 0.4), 10, 0, 0, 0);
+}
+
+#imgHumanResources {
+    -fx-effect: dropshadow(three-pass-box, rgba(156, 82, 139, 0.4), 10, 0, 0, 0);
+}
+
+#imgSystemManagement {
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 55, 72, 0.4), 10, 0, 0, 0);
+}
+/* Disabled module styling */
+.module-box-disabled {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-opacity: 0.6;
+    -fx-effect: none;
+    -fx-cursor: default;
+}
+
+.module-box-disabled:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
+
+.module-box-disabled .module-title {
+    -fx-text-fill: #a0aec0;
+}
+
+.module-box-disabled .module-icon {
+    -fx-opacity: 0.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+    -fx-saturation: 0;
+}
+
+.module-box-disabled:hover .module-icon {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}

@@ -186,6 +186,23 @@ public class InvoiceDAOImpl implements InvoiceDAO {
         return result;
     }
 
+    @Override
+    public BigDecimal getDailySales(LocalDate now, Connection connection) {
+        String sql = "SELECT SUM(total) FROM invoice WHERE DATE(date) = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(now));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBigDecimal(1);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getDailySales query", e);
+            throw new RuntimeException("Lỗi khi truy vấn doanh thu hàng ngày", e);
+        }
+        return BigDecimal.ZERO;
+    }
+
     // Helper method to format period for display
     private String formatPeriodForDisplay(String period, String viewType) {
         try {

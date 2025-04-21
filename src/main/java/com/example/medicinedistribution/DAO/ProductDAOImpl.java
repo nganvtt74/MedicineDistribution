@@ -149,4 +149,17 @@ public class ProductDAOImpl implements ProductDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean increaseQuantity(Integer productId, int quantity, Connection connection) {
+        String sql = "UPDATE product SET stock_quantity = stock_quantity + ? WHERE productId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, productId);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return false;
+    }
 }

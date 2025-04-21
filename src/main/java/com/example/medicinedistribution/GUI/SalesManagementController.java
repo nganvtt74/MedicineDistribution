@@ -8,13 +8,17 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,15 +26,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 @Slf4j
-public class SalesManagementController {
+public class SalesManagementController implements BackButtonHandler{
     //UI fields
     @FXML
     public Label headerUserName;
     @FXML
     public ImageView logoImage;
     @FXML
+    public StackPane logoContainer;
+    @FXML
     public VBox button_group_vbox;
+
+
     @FXML
     public Button btnInvoice ,
             btnCustomer,
@@ -39,43 +49,66 @@ public class SalesManagementController {
             btnManufacturer,
             btnLogout,
             btnStatistics,
-            btnSettings;
+            btnSettings,
+            btnBack;
 
     @FXML
     public StackPane contentArea;
+
+    @FXML
+    public VBox parentVBOX;
+
+    @FXML
+    public Label lblStatistic;
 
     private Button activeButton;
 
     //Functional fields
     private final BUSFactory busFactory;
-    private InvoiceBUS invoiceBUS;
-    private CustomerBUS customerBUS;
-    private ProductBUS productBUS;
-    private GoodsReceiptBUS goodsReceiptBUS;
-    private ManufacturerBUS manufacturerBUS;
     private UserSession userSession;
     private List<ComponentInfo> componentInfoList;
-    
-    public SalesManagementController(BUSFactory busFactory) {
+    private final int permissionCount;
+    private Runnable backFunction;
+
+    @Override
+    public void setBackFunction(Runnable backFunction) {
+        this.backFunction = backFunction;
+    }
+    public SalesManagementController(BUSFactory busFactory , int PermissionCount) {
         this.busFactory = busFactory;
+        this.permissionCount = PermissionCount;
     }
 
     public void initialize() {
-        invoiceBUS = busFactory.getInvoiceBUS();
-        customerBUS = busFactory.getCustomerBUS();
-        productBUS = busFactory.getProductBUS();
-        goodsReceiptBUS = busFactory.getGoodsReceiptBUS();
-        manufacturerBUS = busFactory.getManufacturerBUS();
         userSession = busFactory.getUserSession();
         setup();
         setupButtonMap();
+        loadDashboard();
+        if (permissionCount > 1) {
+            setupBtnBack();
+        }else {
+            btnBack.setVisible(false);
+            btnBack.setManaged(false);
+        }
+    }
+    public void handleBackButton() {
+        if (backFunction != null) {
+            backFunction.run();
+        }
+    }
+    private void setupBtnBack() {
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResource("../../../../icon/Undo.png")).toExternalForm());
+        btnBack.setText("Quay lại");
+        btnBack.setGraphic(new ImageView(backImage));
+
+
+        btnBack.setOnAction(event -> {
+            handleBackButton();
+        });
     }
 
     public void setup(){
         headerUserName.setText(userSession.getAccount().getUsername());
-
-
-
     }
 
     public void setupButtonMap() {
@@ -86,7 +119,7 @@ public class SalesManagementController {
         componentInfoList.add( new ComponentInfo(btnProduct,"MANAGE_PRODUCT","Product.fxml",new ProductController(busFactory)));
         componentInfoList.add( new ComponentInfo(btnGoodsReceipt,"MANAGE_GOODS_RECEIPT","GoodsReceipt.fxml",new GoodsReceiptController(busFactory)));
         componentInfoList.add( new ComponentInfo(btnManufacturer,"MANAGE_MANUFACTURER","Manufacturer.fxml",new ManufacturerController(busFactory)));
-        componentInfoList.add( new ComponentInfo(btnStatistics,"MANAGE_STATISTICS","SalesStatistic.fxml",new SalesStatisticController(busFactory)));
+        componentInfoList.add( new ComponentInfo(btnStatistics,"STATISTIC","SalesStatistic.fxml",new SalesStatisticController(busFactory)));
         for (ComponentInfo componentInfo : componentInfoList) {
             if(!userSession.hasPermission(componentInfo.getPermission())) {
                 button_group_vbox.getChildren().remove(componentInfo.getButton());
@@ -99,7 +132,59 @@ public class SalesManagementController {
                 });
             }
         }
+        if (!userSession.hasPermission("STATISTIC")) {
+            parentVBOX.getChildren().remove(lblStatistic);
+            btnStatistics.setVisible(false);
+            btnStatistics.setManaged(false);
+        }
 
+
+
+        logoContainer.setOnMouseClicked(event -> {
+            // Handle logo click event
+            loadDashboard();
+        });
+
+        btnLogout.setOnAction(event -> {
+            logout();
+        });
+
+    }
+
+    private void logout() {
+        // Perform logout logic here
+        // For example, clear user session, redirect to login screen, etc.
+        busFactory.getUserSession().clearSession();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            loader.setController(new LoginController(busFactory));
+            HBox loginScreen = loader.load();
+            Stage currentStage = (Stage) btnLogout.getScene().getWindow();
+            Stage newStage = new Stage();
+            newStage.setTitle("Medicine Distribution");
+            newStage.getIcons().add(logoImage.getImage());
+            newStage.setScene(new Scene(loginScreen));
+            newStage.setResizable(false);
+            newStage.show();
+            currentStage.close();
+
+
+        } catch (IOException e) {
+            log.error("Error loading Login screen: ", e);
+        }
+    }
+
+    public void loadDashboard() {
+        try {
+            logoContainer.setDisable(true);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
+            loader.setController(new DashboardController(busFactory));
+            AnchorPane dashboard = loader.load();
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(dashboard);
+        } catch (IOException e) {
+            log.error("Error loading Dashboard: ", e);
+        }
     }
 
     public void loadFxml(String fxmlFile,Object controller) {
@@ -155,6 +240,7 @@ public class SalesManagementController {
 
                     // Hide loading overlay with smooth transition
                     loadingOverlay.hide();
+                    logoContainer.setDisable(false);
 
                 });
             } catch (Exception e) {
@@ -174,5 +260,4 @@ public class SalesManagementController {
             log.error("ClassCastException: ", e);
         }
     }
-
 }

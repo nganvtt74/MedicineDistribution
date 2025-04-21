@@ -601,6 +601,366 @@
     -fx-border-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);
 }
+/*\!* Dashboard base styling *!*/
+/* Dashboard base styling */
+.dashboard-pane {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20px;
+}
 
+/* Dashboard title */
+.dashboard-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -action-secondary;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 1, 0, 0, 1);
+}
 
+.date-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: -text-muted;
+    -fx-font-weight: bold;
+    -fx-background-color: white;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #e2e8f0;
+    -fx-padding: 5px 10px;
+}
 
+/* Stats cards */
+.stats-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.stats-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-muted;
+    -fx-font-weight: normal;
+}
+
+.stats-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -action-secondary;
+}
+
+/* Section titles */
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+    -fx-padding: 5px 0;
+}
+
+/* Chart styling */
+.chart {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #edf2f7;
+    -fx-stroke-width: 1px;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #edf2f7;
+    -fx-stroke-width: 1px;
+}
+
+.chart-series-area-fill {
+    -fx-fill: rgba(52, 152, 219, 0.2);
+}
+
+.chart-series-area-line {
+    -fx-stroke: #3498db;
+    -fx-stroke-width: 2px;
+}
+
+.chart-area-symbol {
+    -fx-background-color: #3498db, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5px;
+}
+
+/* Pie chart styling */
+.chart-pie {
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+}
+
+.chart-pie-label {
+    -fx-fill: -text-dark;
+    -fx-font-size: 12px;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: #cbd5e0;
+    -fx-stroke-width: 1px;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+.chart-legend-item {
+    -fx-text-fill: -text-dark;
+}
+
+/* Default colors for pie chart */
+.default-color0 { -fx-pie-color: #3498db; }
+.default-color1 { -fx-pie-color: #2ecc71; }
+.default-color2 { -fx-pie-color: #9b59b6; }
+.default-color3 { -fx-pie-color: #f1c40f; }
+.default-color4 { -fx-pie-color: #e74c3c; }
+.default-color5 { -fx-pie-color: #1abc9c; }
+.default-color6 { -fx-pie-color: #e67e22; }
+.default-color7 { -fx-pie-color: #34495e; }
+
+/* Footer info cards */
+.info-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.info-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -action-secondary;
+    -fx-padding: 0 0 5px 0;
+}
+
+.info-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-wrap-text: true;
+}
+
+/* Hover effects */
+.stats-card:hover, .info-card:hover, .chart:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+    -fx-border-color: #cbd5e0;
+    -fx-background-color: #fafcff;
+}
+
+/* Animation for dashboard loading */
+.dashboard-pane {
+    -fx-opacity: 1; /* Changed from 0 to ensure visibility */
+    -fx-animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { -fx-opacity: 0; }
+    to { -fx-opacity: 1; }
+}
+
+/* Special color schemes for stats cards */
+#lblTodaySales .stats-value {
+    -fx-text-fill: #3498db;
+}
+
+#lblMonthSales .stats-value {
+    -fx-text-fill: #2ecc71;
+}
+
+#lblInventoryValue .stats-value {
+    -fx-text-fill: #9b59b6;
+}
+
+#lblPendingOrders .stats-value {
+    -fx-text-fill: #e74c3c;
+}
+
+/* Chart axis styling */
+.axis {
+    -fx-tick-label-fill: -text-muted;
+    -fx-font-size: 12px;
+}
+
+.axis-label {
+    -fx-text-fill: -text-dark;
+    -fx-font-size: 12px;
+}
+
+/* Enhanced chart styling for Sales Statistics */
+.chart {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+/* General chart improvements */
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -action-secondary;
+}
+
+.chart-content {
+    -fx-padding: 10px;
+}
+
+/* LineChart specific styling */
+.chart-series-line {
+    -fx-stroke-width: 2px;
+}
+
+.chart-line-symbol {
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.default-color0.chart-series-line { -fx-stroke: #3498db; }
+.default-color1.chart-series-line { -fx-stroke: #2ecc71; }
+.default-color2.chart-series-line { -fx-stroke: #9b59b6; }
+
+.default-color0.chart-line-symbol { -fx-background-color: #3498db, white; }
+.default-color1.chart-line-symbol { -fx-background-color: #2ecc71, white; }
+.default-color2.chart-line-symbol { -fx-background-color: #9b59b6, white; }
+
+/* BarChart specific styling */
+.chart-bar {
+    -fx-bar-fill: #3498db;
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-border-radius: 5px 5px 0 0;
+}
+
+.default-color0.chart-bar { -fx-bar-fill: #3498db; }
+.default-color1.chart-bar { -fx-bar-fill: #2ecc71; }
+.default-color2.chart-bar { -fx-bar-fill: #9b59b6; }
+.default-color3.chart-bar { -fx-bar-fill: #f1c40f; }
+.default-color4.chart-bar { -fx-bar-fill: #e74c3c; }
+
+/* Improved grid lines */
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #edf2f7;
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 2 2;
+}
+
+/* Fix legend styling */
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+
+.chart-legend-item {
+    -fx-text-fill: -text-dark;
+    -fx-font-size: 12px;
+}
+
+.chart-legend-item-symbol {
+    -fx-background-radius: 4px;
+    -fx-padding: 5px;
+}
+
+/* Axis styling */
+.axis {
+    -fx-tick-label-font-size: 11px;
+    -fx-tick-label-fill: -text-muted;
+}
+
+.axis-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+/* Animate chart data */
+.chart-series-line, .chart-bar {
+    -fx-animation: fadeIn 1.5s ease-out;
+}
+
+/* Statistics table styling */
+.statistics-table {
+    -fx-font-size: 12px;
+}
+
+.statistics-table .column-header {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: -sidebar-bg;
+    -fx-text-fill: -text-dark;
+}
+
+/* Filter panel styling */
+.filter-panel {
+    -fx-background-color: -sidebar-bg;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Summary section styling */
+.summary-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+.summary-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+.summary-value {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -action-secondary;
+}
+
+.summary-value.revenue {
+    -fx-text-fill: #2ecc71;
+}
+
+.summary-value.expense {
+    -fx-text-fill: #e74c3c;
+}
+
+.summary-value.profit {
+    -fx-text-fill: #3498db;
+}
+
+/* Add this to your main-style.css */
+.logo-container {
+    -fx-cursor: hand;
+    -fx-padding: 5px;
+    -fx-background-color: transparent;
+    -fx-background-radius: 5px;
+}
+.logo-image {
+    -fx-cursor: hand;
+    -fx-fit-width: 100%; /* Adjust as needed */
+    -fx-preserve-ratio: true;
+}

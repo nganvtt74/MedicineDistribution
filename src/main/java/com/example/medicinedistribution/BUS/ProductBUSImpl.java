@@ -10,8 +10,10 @@ import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import com.example.medicinedistribution.Exception.UpdateFailedException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.crypto.DecapsulateException;
 import javax.sql.DataSource;
@@ -180,5 +182,21 @@ public class ProductBUSImpl implements ProductBUS {
             log.error("Error while getting connection", e);
             throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
+    }
+
+    @Override
+    public BigDecimal getTotalInventoryValue() {
+        if (!userSession.hasPermission("VIEW_PRODUCT")) {
+            log.error("User does not have permission to find product");
+            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
+        }
+        ArrayList<ProductDTO> products = (ArrayList<ProductDTO>) findAll();
+        BigDecimal totalValue = BigDecimal.ZERO;
+        for (ProductDTO product : products) {
+            BigDecimal productValue = product.getPrice().multiply(BigDecimal.valueOf(product.getStockQuantity()));
+            totalValue = totalValue.add(productValue);
+        }
+        log.info("Total inventory value: {}", totalValue);
+        return totalValue;
     }
 }

@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.util.Arrays.stream;
+
 public class StatisticsBUSImpl implements StatisticsBUS {
     private final InvoiceBUS invoiceBUS;
     private final GoodsReceiptBUS goodsReceiptBUS;
@@ -90,4 +92,36 @@ public List<StatisticDTO> getProfitStatistics(LocalDate fromDate, LocalDate toDa
 
     return profitStats;
 }
+
+    @Override
+    public BigDecimal getDailySales(LocalDate now) {
+        return invoiceBUS.getDailySales(now);
+    }
+
+    @Override
+    public BigDecimal getSalesBetweenDates(LocalDate firstDayOfMonth, LocalDate now) {
+        // Get sales between two dates
+        List<StatisticDTO> statisticDTOList = invoiceBUS.getRevenueSummary(firstDayOfMonth, now, "DAILY");
+        BigDecimal totalSales = BigDecimal.ZERO;
+        for (StatisticDTO stat : statisticDTOList) {
+            totalSales = totalSales.add(stat.getAmount());
+        }
+        return totalSales;
+    }
+
+    @Override
+    public Map<String, BigDecimal> getProductCategoryDistribution() {
+        // Get product category distribution
+        Map<String, BigDecimal> categoryStats = invoiceBUS.getRevenueByCategorySummary(LocalDate.now().minusMonths(1), LocalDate.now());
+        Map<String, BigDecimal> result = new HashMap<>();
+
+        for (Map.Entry<String, BigDecimal> entry : categoryStats.entrySet()) {
+            String category = entry.getKey();
+            BigDecimal amount = entry.getValue();
+            result.put(category, amount);
+        }
+
+        return result;
+    }
+
 }

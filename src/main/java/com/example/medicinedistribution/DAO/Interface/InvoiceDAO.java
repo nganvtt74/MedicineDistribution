@@ -14,4 +14,6 @@ public interface InvoiceDAO extends BaseDAO<InvoiceDTO, Integer> {
     Map<String, BigDecimal> getRevenueByCategoryStatistics(LocalDate fromDate, LocalDate toDate, Connection connection);
 
     List<StatisticDTO> getRevenueStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection connection);
+
+    BigDecimal getDailySales(LocalDate now, Connection connection);
 }

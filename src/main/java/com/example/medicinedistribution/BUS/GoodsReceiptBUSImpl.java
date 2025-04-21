@@ -3,6 +3,7 @@ package com.example.medicinedistribution.BUS;
 import com.example.medicinedistribution.BUS.Interface.GoodsReceiptBUS;
 import com.example.medicinedistribution.DAO.Interface.GoodsReceiptDAO;
 import com.example.medicinedistribution.DAO.Interface.GoodsReceiptDetailDAO;
+import com.example.medicinedistribution.DAO.Interface.ProductDAO;
 import com.example.medicinedistribution.DTO.GoodsReceiptDTO;
 import com.example.medicinedistribution.DTO.GoodsReceiptDetailDTO;
 import com.example.medicinedistribution.DTO.StatisticDTO;
@@ -32,15 +33,18 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
     private final UserSession userSession;
     private final TransactionManager transactionManager;
     private final Validator validator;
+    private final ProductDAO productDAO;
 
     public GoodsReceiptBUSImpl(GoodsReceiptDAO goodsReceiptDAO, GoodsReceiptDetailDAO goodsReceiptDetailDAO,
-                               DataSource dataSource, UserSession userSession, TransactionManager transactionManager, Validator validator) {
+                               DataSource dataSource, UserSession userSession, TransactionManager transactionManager,
+                               Validator validator , ProductDAO productDAO) {
         this.goodsReceiptDAO = goodsReceiptDAO;
         this.goodsReceiptDetailDAO = goodsReceiptDetailDAO;
         this.dataSource = dataSource;
         this.userSession = userSession;
         this.transactionManager = transactionManager;
         this.validator = validator;
+        this.productDAO = productDAO;
     }
 
     private void valid(GoodsReceiptDTO goodsReceiptDTO) {
@@ -70,6 +74,13 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
                         log.error("Insert GoodsReceiptDetail failed");
                         throw new InsertFailedException("Thêm chi tiết phiếu nhập thất bại");
                     }
+                    // Update product quantity
+                    if (!productDAO.increaseQuantity(detail.getProductId(), detail.getQuantity(), connection)) {
+                        transactionManager.rollbackTransaction(connection);
+                        log.error("Update product quantity failed");
+                        throw new InsertFailedException("Cập nhật số lượng sản phẩm thất bại");
+                    }
+
                 }
                 transactionManager.commitTransaction(connection);
                 log.info("Thêm phiếu nhập thành công");

@@ -23,5 +23,11 @@ public class UserSession {
     public boolean hasPermission(String permissionCode) {
         return permissions.containsKey(permissionCode);
     }
+    public void clearSession() {
+        account = null;
+        employee = null;
+        role = null;
+        permissions = new HashMap<>();
+    }
 }
 

@@ -13,4 +13,9 @@ public class ComponentInfo {
     private String permission;
     private String fxmlPath; // Đổi "fxml" thành "fxmlPath" để rõ ràng hơn
     private Object controller;
+
+    public ComponentInfo( String permission, String fxmlPath) {
+        this.permission = permission;
+        this.fxmlPath = fxmlPath;
+    }
 }

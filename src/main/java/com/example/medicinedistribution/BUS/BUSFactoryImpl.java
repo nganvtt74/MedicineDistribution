@@ -82,7 +82,7 @@ public class BUSFactoryImpl extends BUSFactory{
     @Override
     public GoodsReceiptBUS getGoodsReceiptBUS() {
         return new GoodsReceiptBUSImpl(mySQLDAOFactory.getGoodsReceiptDAO(), mySQLDAOFactory.getGoodsReceiptDetailDAO(),
-                dataSource, userSession, transactionManager , validator);
+                dataSource, userSession, transactionManager , validator , mySQLDAOFactory.getProductDAO());
     }
 
     @Override

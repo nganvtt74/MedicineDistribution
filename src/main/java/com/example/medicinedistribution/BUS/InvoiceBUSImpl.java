@@ -206,4 +206,14 @@ public class InvoiceBUSImpl implements InvoiceBUS {
             throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
     }
+
+    @Override
+    public BigDecimal getDailySales(LocalDate now) {
+        try(Connection connection = dataSource.getConnection()) {
+            return invoiceDAO.getDailySales(now, connection);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
 }
