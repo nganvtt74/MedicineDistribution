@@ -1,0 +1,11 @@
+{
+  "startTime": "08:30",
+  "endTime": "15:30",
+  "salaryStartDay": 1,
+  "salaryEndDay": 1,
+  "maternityRate": 100,
+  "averageMonths": 6,
+  "validLeaveDays": 15,
+  "unauthorizedLeavePenalty": 200000,
+  "lateArrivalPenalty": 50000
+}
