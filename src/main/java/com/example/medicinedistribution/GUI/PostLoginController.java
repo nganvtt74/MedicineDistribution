@@ -79,7 +79,6 @@ public class PostLoginController {
      humanResourcesVBox.setOnMouseClicked(event -> {
          if (!isProcessingClick && !imgHumanResources.isDisabled()) {
              isProcessingClick = true;
-             log.info("Human resources clicked");
              openModule("Human-Resources.fxml", "HUMAN_RESOURCES", new HumanResourcesController(busFactory,componentInfoList.size()));
          }
      });

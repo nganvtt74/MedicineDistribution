@@ -24,8 +24,8 @@ public class EmployeeDTO {
     
     @NotBlank(message = "Giới tính không được để trống")
     private String gender;
-    
-    @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
+
+    @Pattern(regexp = "^((0|\\+84)[0-9]{9}|\\d{3}-\\d{3}-\\d+)$", message = "Số điện thoại không hợp lệ")
     private String phone;
     
     @Email(message = "Email không hợp lệ")
@@ -52,4 +52,6 @@ public class EmployeeDTO {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+
+    private String positionName;
 }

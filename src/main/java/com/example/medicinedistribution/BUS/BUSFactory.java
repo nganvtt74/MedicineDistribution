@@ -17,4 +17,5 @@ public abstract class BUSFactory {
     public abstract InvoiceBUS getInvoiceBUS();
     public abstract UserSession getUserSession();
     public abstract StatisticsBUS getStatisticsBUS();
+    public abstract DependentsBUS getDependentsBUS();
 }

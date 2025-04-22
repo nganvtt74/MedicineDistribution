@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" prefHeight="400.0" prefWidth="700.0" stylesheets="@../../../../css/main-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox spacing="10.0">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <HBox fx:id="headerModule" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label fx:id="lblEmployeeName" styleClass="heading-label" text="Lịch sử chức vụ nhân viên" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <TableView fx:id="tblHistory" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colDate" prefWidth="120.0" text="Ngày thay đổi" />
+                  <TableColumn fx:id="colPosition" prefWidth="200.0" text="Chức vụ" />
+                  <TableColumn fx:id="colSalaryBefore" prefWidth="150.0" text="Lương trước" />
+                  <TableColumn fx:id="colSalaryAfter" prefWidth="150.0" text="Lương sau" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

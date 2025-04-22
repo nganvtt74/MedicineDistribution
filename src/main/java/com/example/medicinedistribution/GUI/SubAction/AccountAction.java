@@ -44,12 +44,6 @@ public class AccountAction extends SubAction<AccountController, AccountDTO> {
     @FXML
     private Label lblHeader;
 
-    @FXML
-    private VBox formContent;
-
-    @FXML
-    private Button btnCancel;
-
     public AccountAction(BUSFactory busFactory, AccountController parentController, ActionType actionType, AccountDTO selectedData) {
         super(busFactory, parentController, selectedData);
         this.actionType = actionType;

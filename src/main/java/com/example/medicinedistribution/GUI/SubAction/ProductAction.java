@@ -36,11 +36,6 @@ public class ProductAction extends SubAction<ProductController, ProductDTO> {
 
     @FXML
     private VBox formContent;
-
-    @FXML
-    private Button btnSubmit;
-    @FXML
-    private Button btnCancel;
     private ComboBox<CategoryDTO> categoryComboBox;
     private ComboBox<Boolean> statusComboBox;
 

@@ -20,6 +20,6 @@ public abstract class DAOFactory {
     public abstract GoodsReceiptDAO getGoodsReceiptDAO();
     public abstract GoodsReceiptDetailDAO getGoodsReceiptDetailDAO();
     public abstract CustomerDAO getCustomerDAO();
-
-
+    public abstract PositionHistoryDAO getPositionHistoryDAO();
+    public abstract DependentsDAO getDependentsDAO();
 }

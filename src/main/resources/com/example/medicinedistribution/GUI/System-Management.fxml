@@ -88,13 +88,13 @@
                       <Button fx:id="btnRoleManagement" maxWidth="Infinity" styleClass="nav-button" text="Quản lý vai trò" />
                   </VBox>
 
-                  <Label styleClass="menu-category" text="CẤU HÌNH">
+                  <Label fx:id="lblSetting" styleClass="menu-category" text="CẤU HÌNH">
                       <VBox.margin>
                           <Insets bottom="5.0" left="15.0" top="15.0" />
                       </VBox.margin>
                   </Label>
 
-                  <VBox spacing="3.0" VBox.vgrow="NEVER">
+                  <VBox fx:id="vBoxSystemSetting" spacing="3.0" VBox.vgrow="NEVER">
                       <Button fx:id="btnSystemSettings" maxWidth="Infinity" styleClass="nav-button" text="Thiết lập hệ thống" />
                   </VBox>
 

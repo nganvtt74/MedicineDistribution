@@ -26,14 +26,6 @@ package com.example.medicinedistribution.GUI.SubAction;
         @FXML
         private Label lblHeader;
 
-        @FXML
-        private VBox formContent;
-
-
-
-        @FXML
-        private Button btnCancel;
-
         public CustomerAction(BUSFactory busFactory, CustomerController parentController, ActionType actionType, CustomerDTO selectedData) {
             super(busFactory, parentController, selectedData);
             this.actionType = actionType;

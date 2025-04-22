@@ -310,4 +310,123 @@
     -fx-scale-x: 1;
     -fx-scale-y: 1;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}/* Error alert with header styling */
+.error-alert-with-header .button-bar .button {
+    -fx-background-color: #e74c3c;
+}
+
+.error-alert-with-header .button-bar .button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.error-alert-with-header > *.header-panel {
+    -fx-background-color: #ffeeee;
+}
+
+.error-alert-with-header > *.header-panel *.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c0392b;
+}
+
+.error-alert-with-header > *.content.label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+}
+/* Success alert with header styling */
+.success-alert-with-header .button-bar .button {
+    -fx-background-color: #2ecc71;
+}
+
+.success-alert-with-header .button-bar .button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.success-alert-with-header > *.header-panel {
+    -fx-background-color: #eeffee;
+}
+
+.success-alert-with-header > *.header-panel *.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27ae60;
+}
+
+.success-alert-with-header > *.content.label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 400px;
+    -fx-alignment: center-left;
+    -fx-text-alignment: left;
+    -fx-min-height: -1; /* Bỏ giới hạn chiều cao tối thiểu */
+    -fx-pref-height: -1; /* Cho phép chiều cao tự điều chỉnh */
+    -fx-max-height: 400px;
+    -fx-padding: 15px;
+}
+
+/* Warning alert with header styling */
+.warning-alert-with-header .button-bar .button {
+    -fx-background-color: #f39c12;
+}
+
+.warning-alert-with-header .button-bar .button:hover {
+    -fx-background-color: #d35400;
+}
+
+.warning-alert-with-header > *.header-panel {
+    -fx-background-color: #fff8ee;
+}
+
+.warning-alert-with-header > *.header-panel *.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #d35400;
+}
+
+.warning-alert-with-header > *.content.label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 600px;
+}
+
+/* Confirm alert with header styling */
+.confirm-alert-with-header .button-bar .button:default {
+    -fx-background-color: #3498db;
+}
+
+.confirm-alert-with-header .button-bar .button:default:hover {
+    -fx-background-color: #2980b9;
+}
+
+.confirm-alert-with-header .button-bar .button {
+    -fx-background-color: #95a5a6;
+}
+
+.confirm-alert-with-header .button-bar .button:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+.confirm-alert-with-header > *.header-panel {
+    -fx-background-color: #f0f7ff;
+}
+
+.confirm-alert-with-header > *.header-panel *.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2980b9;
+}
+
+.confirm-alert-with-header > *.content.label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 600px;
 }

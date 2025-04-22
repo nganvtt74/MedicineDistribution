@@ -2,6 +2,7 @@ package com.example.medicinedistribution.GUI;
 
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.DTO.ComponentInfo;
+import com.example.medicinedistribution.Util.NotificationUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,23 +81,25 @@ public abstract class ManagementController {
     protected void logout() {
         // Perform logout logic here
         // For example, clear user session, redirect to login screen, etc.
-        busFactory.getUserSession().clearSession();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-            loader.setController(new LoginController(busFactory));
-            HBox loginScreen = loader.load();
-            Stage currentStage = (Stage) btnLogout.getScene().getWindow();
-            Stage newStage = new Stage();
-            newStage.setTitle("Medicine Distribution");
-            newStage.getIcons().add(logoImage.getImage());
-            newStage.setScene(new Scene(loginScreen));
-            newStage.setResizable(false);
-            newStage.show();
-            currentStage.close();
+        if (NotificationUtil.showConfirmation("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất không?")) {
+            busFactory.getUserSession().clearSession();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+                loader.setController(new LoginController(busFactory));
+                HBox loginScreen = loader.load();
+                Stage currentStage = (Stage) btnLogout.getScene().getWindow();
+                Stage newStage = new Stage();
+                newStage.setTitle("Medicine Distribution");
+                newStage.getIcons().add(logoImage.getImage());
+                newStage.setScene(new Scene(loginScreen));
+                newStage.setResizable(false);
+                newStage.show();
+                currentStage.close();
 
 
-        } catch (IOException e) {
-            log.error("Error loading Login screen: ", e);
+            } catch (IOException e) {
+                log.error("Error loading Login screen: ", e);
+            }
         }
     }
 

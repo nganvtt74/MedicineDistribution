@@ -66,5 +66,14 @@ public class MySQLDAOFactory extends DAOFactory {
     public CustomerDAO getCustomerDAO() {
         return new CustomerDAOImpl();
     }
+    @Override
+    public PositionHistoryDAO getPositionHistoryDAO() {
+        return new PositionHistoryDAOImpl();
+    }
+
+    @Override
+    public DependentsDAO getDependentsDAO() {
+        return new DependentsDAOImpl();
+    }
 
 }

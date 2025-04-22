@@ -57,7 +57,7 @@ public class RoleBUSImpl implements RoleBUS{
     public boolean insert(RoleDTO roleDTO) {
         roleDTO.setStatus(1);
         valid(roleDTO);
-        if (userSession.hasPermission("INSERT_ROLE")) {
+        if (userSession.hasPermission("MANAGE_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
                 // Check if the role name already exists
                 if (roleDao.findByName(roleDTO.getRoleName(), connection) != null) {
@@ -109,7 +109,7 @@ public class RoleBUSImpl implements RoleBUS{
     @Override
     public boolean update(RoleDTO roleDTO) {
         valid(roleDTO);
-        if (userSession.hasPermission("UPDATE_ROLE")) {
+        if (userSession.hasPermission("MANAGE_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
                 // Check if the role name already exists
                 if (roleDao.findById(roleDTO.getRoleId(), connection) == null) {
@@ -159,7 +159,7 @@ public class RoleBUSImpl implements RoleBUS{
 
     @Override
     public boolean delete(Integer integer) {
-        if (userSession.hasPermission("DELETE_ROLE")) {
+        if (userSession.hasPermission("MANAGE_ROLE")) {
             try(Connection connection = transactionManager.beginTransaction()) {
 
                 // Kiểm tra vai trò có tồn tại không

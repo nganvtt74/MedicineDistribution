@@ -46,6 +46,43 @@ package com.example.medicinedistribution.Util;
                 alert.showAndWait();
             }
 
+            public static void showWarningNotification(String title, String message) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+
+                applyCustomStyles(alert, "/images/warning_icon.png");
+                alert.getDialogPane().getStyleClass().add("warning-alert");
+
+                alert.showAndWait();
+            }
+
+            public static void showWarningNotification(String title, String header, String message) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle(title);
+                alert.setHeaderText(header);
+                alert.setContentText(message);
+
+                applyCustomStyles(alert, "/images/warning_icon.png");
+                alert.getDialogPane().getStyleClass().add("warning-alert-with-header");
+
+                alert.showAndWait();
+            }
+
+            public static void showErrorNotification(String title, String header, String message) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(title);
+                alert.setHeaderText(header);
+                alert.setContentText(message);
+                applyCustomStyles(alert, "/images/error_icon.png");
+                alert.getDialogPane().getStyleClass().add("error-alert-with-header");
+
+                alert.showAndWait();
+            }
+
+
+
             public static void showErrorNotification(String title, String message) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(title);
@@ -71,6 +108,18 @@ package com.example.medicinedistribution.Util;
                 alert.showAndWait();
             }
 
+            public static void showSuccessNotification(String title, String header, String message) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(title);
+                alert.setHeaderText(header);
+                alert.setContentText(message);
+
+                applyCustomStyles(alert, "/images/success_icon.png");
+                alert.getDialogPane().getStyleClass().add("success-alert-with-header");
+
+                alert.showAndWait();
+            }
+
             public static boolean showConfirmation(String title, String message) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.NO);
                 alert.setTitle(title);
@@ -78,6 +127,17 @@ package com.example.medicinedistribution.Util;
 
                 applyCustomStyles(alert, "/images/question_icon.png");
                 alert.getDialogPane().getStyleClass().add("confirm-alert");
+
+                return alert.showAndWait().filter(t -> t == ButtonType.YES).isPresent();
+            }
+
+            public static boolean showConfirmation(String title, String header, String message) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.NO);
+                alert.setTitle(title);
+                alert.setHeaderText(header);
+
+                applyCustomStyles(alert, "/images/question_icon.png");
+                alert.getDialogPane().getStyleClass().add("confirm-alert-with-header");
 
                 return alert.showAndWait().filter(t -> t == ButtonType.YES).isPresent();
             }

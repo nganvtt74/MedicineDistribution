@@ -48,6 +48,10 @@ public class SystemManagementController extends ManagementController {
 
     @FXML
     private VBox parentVBOX;
+    @FXML
+    private Label lblSetting;
+    @FXML
+    private VBox vBoxSystemSetting;
 
     private final int permissionCount;
     private UserSession userSession;
@@ -69,6 +73,9 @@ public class SystemManagementController extends ManagementController {
         }
         setupHelpButton();
 
+        btnLogout.setOnAction(event -> {
+            logout();
+        });
     }
 
     @Override
@@ -78,21 +85,33 @@ public class SystemManagementController extends ManagementController {
 
     @Override
     public void setupButtonMap() {
-        componentInfoList = new ArrayList<>();
-        componentInfoList.add(new ComponentInfo(btnUserAccounts, "MANAGE_ACCOUNTS", "Account.fxml", new AccountController(busFactory)));
-        componentInfoList.add(new ComponentInfo(btnRoleManagement, "MANAGE_ROLES", "Role.fxml", new RoleController(busFactory)));
-        componentInfoList.add(new ComponentInfo(btnSystemSettings, "MANAGE_SYSTEM_SETTINGS", "SystemConfig.fxml", new SystemConfigController()));
+            componentInfoList = new ArrayList<>();
+            componentInfoList.add(new ComponentInfo(btnUserAccounts, "MANAGE_ACCOUNT", "Account.fxml", new AccountController(busFactory)));
+            componentInfoList.add(new ComponentInfo(btnRoleManagement, "MANAGE_ROLE", "Role.fxml", new RoleController(busFactory)));
+            componentInfoList.add(new ComponentInfo(btnSystemSettings, "MANAGE_SYSTEM_SETTINGS", "SystemConfig.fxml", new SystemConfigController()));
 
-        log.info("Component info list size: {}", componentInfoList.size());
-        btnUserAccounts.setOnAction(event -> {
-            loadFxml( "Account.fxml", new AccountController(busFactory));
-        });
-        btnRoleManagement.setOnAction(event -> {
-            loadFxml( "Role.fxml", new RoleController(busFactory));
-        });
-        btnSystemSettings.setOnAction(event -> {
-            loadFxml( "SystemConfig.fxml", new SystemConfigController());
-        });
+            log.info("Component info list size: {}", componentInfoList.size());
+
+            boolean defaultLoad = false;
+            // Set up action handlers for each component in the list
+            for (ComponentInfo info : componentInfoList) {
+                if (userSession.hasPermission(info.getPermission())) {
+                    Button button = (Button) info.getButton();
+                    button.setOnAction(event -> loadFxml(info.getFxmlPath(), info.getController()));
+                    if (!defaultLoad){
+                        loadFxml(info.getFxmlPath(), info.getController());
+                        defaultLoad = true;
+                    }
+                }else {
+                    button_group_vbox.getChildren().remove(info.getButton());
+                }
+            }
+
+
+
+            if (!userSession.hasPermission("MANAGE_SYSTEM_SETTINGS")) {
+                parentVBOX.getChildren().removeAll(vBoxSystemSetting, lblSetting);
+            }
 
     }
 

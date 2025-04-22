@@ -8,10 +8,8 @@ import com.example.medicinedistribution.GUI.ManufacturerController;
 import com.example.medicinedistribution.Util.NotificationUtil;
 import com.example.medicinedistribution.Util.ValidateUtil;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.HashMap;
@@ -24,12 +22,6 @@ public class ManufacturerAction extends SubAction<ManufacturerController, Manufa
 
     @FXML
     private Label lblHeader;
-
-    @FXML
-    private VBox formContent;
-
-    @FXML
-    private Button btnCancel;
 
     @FXML
     private TextArea descriptionArea;

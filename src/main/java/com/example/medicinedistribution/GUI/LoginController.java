@@ -67,7 +67,7 @@ public class LoginController {
         // For example, you can call a method to authenticate the user
         try {
             if (authBUS.login(username, password)) {
-                NotificationUtil.showNotification("Đăng nhập thành công", "Chào mừng bạn đến với hệ thống phân phối thuốc!");
+                NotificationUtil.showSuccessNotification("Đăng nhập thành công", "Chào mừng bạn đến với hệ thống quản lý phân phối thuốc");
                 // Load the main application UI or perform any other actions after successful login
                 checkPermission();
 

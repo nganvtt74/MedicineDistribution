@@ -1117,3 +1117,161 @@
     -fx-padding: 10 25;
     -fx-font-size: 14px;
 }
+
+/* Employee Details Dialog Styles */
+.details-dialog {
+    -fx-background-color: white;
+}
+
+.details-header-box {
+    -fx-background-color: linear-gradient(to right, #3498db, #2980b9);
+    -fx-padding: 15 10 15 10;
+}
+
+.details-header {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.details-content {
+    -fx-padding: 10;
+}
+
+.details-section {
+    -fx-padding: 10;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 5 0;
+}
+
+.detail-key {
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+    -fx-min-width: 120;
+}
+
+.detail-value {
+    -fx-text-fill: #212529;
+}
+
+.button-bar {
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-color: #f8f9fa;
+}
+
+.status-active {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #28a745;
+    -fx-background-radius: 15;
+    -fx-padding: 5 15;
+}
+
+.status-inactive {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #dc3545;
+    -fx-background-radius: 15;
+    -fx-padding: 5 15;
+}
+
+.details-scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.details-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Employee Action Form Styles */
+.form-section {
+    -fx-padding: 5px 0;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 5 0 5 0;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-min-width: 120;
+}
+
+/*.text-field, .text-area, .combo-box, .date-picker {*/
+/*    -fx-pref-width: 300px;*/
+/*}*/
+
+.text-area {
+    -fx-pref-height: 80px;
+}
+
+/*!* Fix for SearchableComboBox double border *!*/
+.searchable-combo-box {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #DDDDDD;
+    -fx-border-radius: 5px;
+}
+.searchable-combo-box .combo-box-base {
+    /*-fx-background-color: transparent;*/
+    -fx-border-color: transparent;
+}
+
+.searchable-combo-box .text-field {
+    /*-fx-background-color: transparent;*/
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.searchable-combo-box:focused {
+    -fx-border-color: -action-primary;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.2), 5, 0, 0, 0);
+}
+/* Animation for ComboBox popup/dropdown */
+/* Fix animation for ComboBox popup/dropdown */
+.combo-box-popup > .list-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+/* Make sure SearchableComboBox popup appears correctly */
+.searchable-combo-box .combo-box-popup > .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+}
+
+/* Improve list cells in dropdown */
+.combo-box-popup .list-cell {
+    -fx-padding: 8px 10px;
+    -fx-background-insets: 0;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -sidebar-hover;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -sidebar-active;
+}
+
+/* Animation class to be applied via code */
+.animated-dropdown {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+}

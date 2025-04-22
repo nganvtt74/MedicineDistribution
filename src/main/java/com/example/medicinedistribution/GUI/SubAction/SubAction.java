@@ -6,6 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -22,6 +25,14 @@ public abstract class SubAction<T, U> {
     protected U selectedData;
     @FXML
     protected Button btnSubmit;
+    @FXML
+    protected Button btnCancel;
+    @FXML
+    protected VBox formContent;
+    @FXML
+    protected ScrollPane scrollPane;
+    @FXML
+    protected HBox buttonBar;
 
     @Getter
     public enum ActionType {
@@ -70,7 +81,7 @@ public abstract class SubAction<T, U> {
     protected abstract boolean validateForm();
     protected abstract void handleSubmit();
     protected void closeDialog(){
-        Stage stage = (Stage) btnSubmit.getScene().getWindow();
+        Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
     }
 

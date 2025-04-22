@@ -14,11 +14,9 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public Integer insert(EmployeeDTO employeeDTO, Connection conn) {
-        String sql = "INSERT INTO employee (firstName, lastName, birthday, gender, phone, email, hireDate, address" +
-                ", basic_salary, status, positionId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO employee (firstName, lastName, birthday, gender, phone, email, hireDate, address, basic_salary, status, positionId) VALUES (?, ?, ?, ?, ?, ?, ?,null,null,null,null)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             Statement(employeeDTO, stmt);
-            stmt.setInt(11, employeeDTO.getPositionId());
             if (stmt.executeUpdate() > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -35,11 +33,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 @Override
 public boolean update(EmployeeDTO employeeDTO, Connection conn) {
     String sql = "UPDATE employee SET firstName = ?, lastName = ?, birthday = ?, gender = ?, phone = ?, email = ?, " +
-                 "hireDate = ?, address = ?, basic_salary = ?, status = ? WHERE employeeId = ?";
+                 " address = ? WHERE employeeId = ?";
 
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
         Statement(employeeDTO, stmt);
-        stmt.setInt(12, employeeDTO.getEmployeeId());
+        stmt.setInt(8, employeeDTO.getEmployeeId());
         return stmt.executeUpdate() > 0;
     } catch (SQLException e) {
         log.error(e.getMessage());
@@ -54,10 +52,7 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
         stmt.setString(4, employeeDTO.getGender());
         stmt.setString(5, employeeDTO.getPhone());
         stmt.setString(6, employeeDTO.getEmail());
-        stmt.setDate(7, Date.valueOf(employeeDTO.getHireDate()));
-        stmt.setString(8, employeeDTO.getAddress());
-        stmt.setBigDecimal(9, employeeDTO.getBasicSalary());
-        stmt.setInt(10, employeeDTO.getStatus());
+        stmt.setString(7, employeeDTO.getAddress());
     }
 
     @Override
@@ -86,8 +81,8 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .lastName(rs.getString("lastName"))
                         .basicSalary(rs.getBigDecimal("basic_salary"))
                         .phone(rs.getString("phone"))
-                        .birthday(rs.getDate("birthday").toLocalDate())
-                        .hireDate(rs.getDate("hireDate").toLocalDate())
+                        .birthday(rs.getDate("birthday")==null? null : rs.getDate("birthday").toLocalDate())
+                        .hireDate(rs.getDate("hireDate")==null? null : rs.getDate("hireDate").toLocalDate())
                         .status(rs.getInt("status"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
@@ -117,8 +112,8 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
                         .lastName(rs.getString("lastName"))
                         .basicSalary(rs.getBigDecimal("basic_salary"))
                         .phone(rs.getString("phone"))
-                        .birthday(rs.getDate("birthday").toLocalDate())
-                        .hireDate(rs.getDate("hireDate").toLocalDate())
+                        .birthday(rs.getDate("birthday")==null? null : rs.getDate("birthday").toLocalDate())
+                        .hireDate(rs.getDate("hireDate")==null? null : rs.getDate("hireDate").toLocalDate())
                         .status(rs.getInt("status"))
                         .positionId(rs.getInt("positionId"))
                         .address(rs.getString("address"))
@@ -161,5 +156,21 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
             log.error("Error getting employees without accounts: {}", e.getMessage());
         }
         return new ArrayList<>(); // Return empty list instead of null when an exception occurs
+    }
+
+    @Override
+    public boolean updateEmploymentInfo(EmployeeDTO employee, Connection conn) {
+        String sql = "UPDATE employee SET positionId = ?, basic_salary = ? , hireDate = ? , status = ? WHERE employeeId = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, employee.getPositionId());
+            stmt.setBigDecimal(2, employee.getBasicSalary());
+            stmt.setDate(3, Date.valueOf(employee.getHireDate()));
+            stmt.setInt(4, employee.getStatus());
+            stmt.setInt(5, employee.getEmployeeId());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            log.error("Error updating employment info: {}", e.getMessage());
+        }
+        return false;
     }
 }

@@ -56,7 +56,8 @@ public class BUSFactoryImpl extends BUSFactory{
 
     @Override
     public EmployeeBUS getEmployeeBUS() {
-        return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource , validator);
+        return new EmployeeBUSImpl( mySQLDAOFactory.getEmployeeDAO(), userSession, dataSource , validator ,
+                mySQLDAOFactory.getPositionHistoryDAO(),transactionManager, mySQLDAOFactory.getDependentsDAO());
     }
 
     @Override
@@ -94,6 +95,11 @@ public class BUSFactoryImpl extends BUSFactory{
     @Override
     public StatisticsBUS getStatisticsBUS() {
         return new StatisticsBUSImpl(getInvoiceBUS(), getGoodsReceiptBUS(), userSession);
+    }
+
+    @Override
+    public DependentsBUS getDependentsBUS() {
+        return new DependentsBUSImpl(mySQLDAOFactory.getDependentsDAO(), userSession, dataSource , validator);
     }
 
 }

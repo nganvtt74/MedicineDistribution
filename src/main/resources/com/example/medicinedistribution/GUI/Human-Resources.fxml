@@ -84,9 +84,8 @@
                   </Label>
 
                   <VBox fx:id="button_group_vbox" spacing="3.0" VBox.vgrow="NEVER">
-                      <Button fx:id="btnEmployees" maxWidth="Infinity" styleClass="nav-button" text="Nhân viên" />
-                      <Button fx:id="btnDepartments" maxWidth="Infinity" styleClass="nav-button" text="Phòng ban" />
-                      <Button fx:id="btnPositions" maxWidth="Infinity" styleClass="nav-button" text="Chức vụ" />
+                      <Button fx:id="btnEmployee" maxWidth="Infinity" styleClass="nav-button" text="Nhân viên" />
+                      <Button fx:id="btnDepartment" maxWidth="Infinity" styleClass="nav-button" text="Phòng ban" />
                       <Button fx:id="btnAttendance" maxWidth="Infinity" styleClass="nav-button" text="Chấm công" />
                   </VBox>
 
