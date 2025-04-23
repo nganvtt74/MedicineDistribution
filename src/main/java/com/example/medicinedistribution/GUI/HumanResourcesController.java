@@ -35,7 +35,7 @@ public class HumanResourcesController extends ManagementController {
             btnPosition,
             btnAttendance,
             btnBenefits,
-            btnSalary,
+            btnPayroll,
             btnStatistics,
             btnSettings,
             btnBack;
@@ -84,7 +84,7 @@ public class HumanResourcesController extends ManagementController {
         componentInfoList = new ArrayList<>();
         componentInfoList.add(new ComponentInfo(btnEmployee, "MANAGE_EMPLOYEE", "Employee.fxml", new EmployeeController(busFactory)));
         componentInfoList.add(new ComponentInfo(btnDepartment, "MANAGE_DEPARTMENT", "Department.fxml", new DepartmentController(busFactory)));
-//        componentInfoList.add(new ComponentInfo(btnAttendance, "MANAGE_ATTENDANCE", "Attendance.fxml", new AttendanceController(busFactory)));
+        componentInfoList.add(new ComponentInfo(btnAttendance, "MANAGE_ATTENDANCE", "AttendanceManagement.fxml", new AttendanceManagementController(busFactory)));
 //        componentInfoList.add(new ComponentInfo(btnSalary, "MANAGE_SALARY", "Salary.fxml", new SalaryController(busFactory)));
 //        componentInfoList.add(new ComponentInfo(btnStatistics, "HR_STATISTIC", "HRStatistic.fxml", new HRStatisticController(busFactory)));
         componentInfoList.add(new ComponentInfo(btnBenefits, "MANAGE_BENEFITS", "Benefits.fxml", new BenefitsController(busFactory)));
@@ -111,11 +111,10 @@ public class HumanResourcesController extends ManagementController {
             loadFxml("settingHR.fxml", new SettingsHRController(busFactory));
         });
 
-//        if (!userSession.hasPermission("HR_STATISTIC")) {
-//            parentVBOX.getChildren().remove(lblStatistic);
-//            btnStatistics.setVisible(false);
-//            btnStatistics.setManaged(false);
-//        }
+        btnPayroll.setOnAction(event -> {
+            // Handle salary button click
+            loadFxml("Payroll.fxml", new PayRollController(busFactory));
+        });
 
         logoContainer.setOnMouseClicked(event -> {
             // Handle logo click event

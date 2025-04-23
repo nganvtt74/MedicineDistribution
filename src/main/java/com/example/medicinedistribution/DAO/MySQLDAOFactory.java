@@ -2,8 +2,6 @@ package com.example.medicinedistribution.DAO;
 
 import com.example.medicinedistribution.DAO.Interface.*;
 
-import java.sql.SQLException;
-
 public class MySQLDAOFactory extends DAOFactory {
 
     @Override
@@ -86,6 +84,24 @@ public class MySQLDAOFactory extends DAOFactory {
     @Override
     public BonusDAO getBonusDAO() {
         return new BonusDAOImpl();
+    }
+
+    @Override
+    public AttendanceDAO getAttendanceDAO() {
+        return new AttendanceDAOImpl();
+    }
+
+    @Override
+    public LeaveYearsDAO getLeaveYearsDAO() {
+        return new LeaveYearsDAOImpl();
+    }
+    @Override
+    public PayrollDAO getPayrollDAO() {
+        return new PayrollDAOImpl();
+    }
+    @Override
+    public Payroll_AllowanceDAO getPayroll_AllowanceDAO() {
+        return new Payroll_AllowanceDAOImpl();
     }
 
 }

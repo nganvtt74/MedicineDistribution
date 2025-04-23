@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 public class BUSFactoryImpl extends BUSFactory{
     private final DataSource dataSource;
+    @Getter
     private final DAOFactory mySQLDAOFactory;
     private final TransactionManager transactionManager;
     @Getter
@@ -112,6 +113,16 @@ public class BUSFactoryImpl extends BUSFactory{
     @Override
     public BonusTypeBUS getBonusTypeBUS() {
         return new BonusTypeBUSImpl(mySQLDAOFactory.getBonusTypeDAO(), dataSource, userSession , validator);
+    }
+    @Override
+    public AttendanceBUS getAttendanceBUS() {
+        return new AttendanceBUSImpl(mySQLDAOFactory.getAttendanceDAO(), dataSource, userSession , transactionManager, validator,
+                mySQLDAOFactory.getLeaveYearsDAO());
+    }
+    @Override
+    public PayrollBUS getPayrollBUS() {
+        return new PayrollBUSImpl(mySQLDAOFactory.getPayrollDAO(), userSession, dataSource,
+                mySQLDAOFactory.getPayroll_AllowanceDAO());
     }
 
 }

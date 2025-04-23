@@ -139,6 +139,26 @@ public class BonusDAOImpl implements BonusDAO {
         return bonusList;
     }
 
+    @Override
+    public List<BonusDTO> getByMothYear(int monthValue, int year, Connection conn) {
+        String sql = "SELECT * FROM bonus WHERE MONTH(date) = ? AND YEAR(date) = ?";
+        List<BonusDTO> bonusList = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, monthValue);
+            stmt.setInt(2, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                bonusList.add(mapResultSetToBonus(rs));
+            }
+        } catch (SQLException e) {
+            log.error("Error finding bonuses by month and year: {}", e.getMessage());
+        }
+
+        return bonusList;
+    }
+
     private BonusDTO mapResultSetToBonus(ResultSet rs) throws SQLException {
         BonusDTO bonus = new BonusDTO();
         bonus.setId(rs.getInt("id"));

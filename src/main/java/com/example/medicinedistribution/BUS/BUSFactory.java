@@ -1,6 +1,8 @@
 package com.example.medicinedistribution.BUS;
 import com.example.medicinedistribution.BUS.Interface.*;
+import com.example.medicinedistribution.DAO.DAOFactory;
 import com.example.medicinedistribution.DTO.UserSession;
+import com.example.medicinedistribution.GUI.PayRollController;
 
 public abstract class BUSFactory {
     public abstract AccountBUS getAccountBUS();
@@ -21,4 +23,7 @@ public abstract class BUSFactory {
     public abstract AllowanceBUS getAllowanceBUS();
     public abstract BonusBUS getBonusBUS();
     public abstract BonusTypeBUS getBonusTypeBUS();
+    public abstract AttendanceBUS getAttendanceBUS();
+    public abstract PayrollBUS getPayrollBUS();
 }
+

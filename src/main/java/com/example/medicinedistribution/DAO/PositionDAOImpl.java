@@ -12,10 +12,11 @@ import java.util.List;
 public class PositionDAOImpl implements PositionDAO {
     @Override
     public Integer insert(PositionDTO positionDTO, Connection conn) {
-        String sql = "INSERT INTO `position` (positionName, departmentId) VALUES (?, ?)";
+        String sql = "INSERT INTO `position` (positionName, departmentId,Allowance) VALUES (?, ?, ?)";
         try(PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, positionDTO.getPositionName());
             stmt.setInt(2, positionDTO.getDepartmentId());
+            stmt.setBigDecimal(3, positionDTO.getAllowance());
             if (stmt.executeUpdate() > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -31,11 +32,12 @@ public class PositionDAOImpl implements PositionDAO {
 
     @Override
     public boolean update(PositionDTO positionDTO, Connection conn) {
-        String sql = "UPDATE `position` SET positionName = ?, departmentId = ? WHERE positionId = ?";
+        String sql = "UPDATE `position` SET positionName = ?, departmentId = ? ,Allowance = ? WHERE positionId = ?";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, positionDTO.getPositionName());
             stmt.setInt(2, positionDTO.getDepartmentId());
-            stmt.setInt(3, positionDTO.getPositionId());
+            stmt.setBigDecimal(3, positionDTO.getAllowance());
+            stmt.setInt(4, positionDTO.getPositionId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             log.error(e.getMessage());
@@ -66,6 +68,7 @@ public class PositionDAOImpl implements PositionDAO {
                         .positionId(rs.getInt("positionId"))
                         .positionName(rs.getString("positionName"))
                         .departmentId(rs.getInt("departmentId"))
+                        .Allowance(rs.getBigDecimal("Allowance"))
                         .build();
             }
         } catch (SQLException e) {
@@ -105,6 +108,7 @@ public class PositionDAOImpl implements PositionDAO {
                     .positionId(rs.getInt("positionId"))
                     .positionName(rs.getString("positionName"))
                     .departmentId(rs.getInt("departmentId"))
+                    .Allowance(rs.getBigDecimal("Allowance"))
                     .build());
         }
         return positions;

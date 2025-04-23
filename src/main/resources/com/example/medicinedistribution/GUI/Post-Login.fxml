@@ -15,7 +15,7 @@
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="562.0" prefWidth="800.0" spacing="20.0" styleClass="dashboard-background">
          <children>
-            <Label styleClass="welcome-text" text="Hệ Thống Quản Lý Phân Phối Thuốc">
+            <Label fx:id="lblTitle" styleClass="welcome-text" text="Hệ Thống Quản Lý Phân Phối Thuốc">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>

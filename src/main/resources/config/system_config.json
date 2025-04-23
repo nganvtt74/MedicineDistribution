@@ -1,7 +1,7 @@
 {
   "startTime": "08:30",
   "endTime": "15:30",
-  "salaryStartDay": 1,
+  "salaryStartDay": 2,
   "salaryEndDay": 1,
   "maternityRate": 100,
   "averageMonths": 6,

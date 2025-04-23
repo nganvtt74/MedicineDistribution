@@ -15,16 +15,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <BorderPane>
+      <BorderPane prefHeight="767.0" prefWidth="995.0">
           <top>
-              <VBox prefHeight="700.0" prefWidth="960.0" spacing="10">
+              <VBox prefHeight="767.0" spacing="10">
                   <padding>
                       <Insets bottom="10" left="10" right="10" top="10" />
                   </padding>
-               <HBox alignment="CENTER" prefHeight="49.0" prefWidth="940.0" VBox.vgrow="NEVER">
+               <HBox alignment="CENTER" prefHeight="49.0" prefWidth="940.0">
                   <children>
                         <Label alignment="CENTER" styleClass="heading-label" text="Quản lý phúc lợi nhân viên" HBox.hgrow="ALWAYS">
                             <font>
@@ -33,7 +32,7 @@
                         </Label>
                   </children>
                </HBox>
-                  <TabPane styleClass="goods-receipt-tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                  <TabPane prefWidth="975.0" styleClass="goods-receipt-tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                       <tabs>
                           <Tab text="Phụ cấp">
                               <content>
@@ -118,7 +117,7 @@
                                       <center>
                                           <ScrollPane fitToHeight="true" fitToWidth="true">
                                               <content>
-                                                  <TableView fx:id="tblBonus" prefHeight="400.0">
+                                                  <TableView fx:id="tblBonus">
                                                       <columnResizePolicy>
                                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                       </columnResizePolicy>
@@ -130,6 +129,9 @@
                               </content>
                           </Tab>
                       </tabs>
+                  <padding>
+                     <Insets bottom="10.0" />
+                  </padding>
                   </TabPane>
               </VBox>
           </top>

@@ -8,4 +8,6 @@ import java.util.List;
 public interface BonusBUS extends BaseBUS<BonusDTO, Integer> {
     List<BonusDTO> findByEmployeeId(Integer employeeId);
     List<BonusDTO> findByDateRange(LocalDate startDate, LocalDate endDate);
+
+    List<BonusDTO> getByMothYear(int monthValue, int year);
 }

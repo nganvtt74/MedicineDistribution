@@ -12,4 +12,6 @@ public interface DependentsBUS {
     List<DependentsDTO> findByEmployeeId(Integer employeeId);
     DependentsDTO findById(Integer employeeId, Integer dependentNo);
     boolean deleteByEmployeeId(Integer employeeId);
+
+    int countDependentByEmployeeId(Integer employeeId);
 }

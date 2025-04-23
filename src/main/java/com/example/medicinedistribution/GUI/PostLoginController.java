@@ -2,6 +2,7 @@ package com.example.medicinedistribution.GUI;
 
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.DTO.ComponentInfo;
+import com.example.medicinedistribution.Util.PdfExportUtils;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -51,6 +52,9 @@ public class PostLoginController {
     @FXML
     private Label lblEmployeeName;
 
+    @FXML
+    private Label lblTitle;
+
     private final BUSFactory busFactory;
     private final ArrayList<ComponentInfo> componentInfoList;
     HashMap<String,Object> controllerMap = new HashMap<>();
@@ -94,6 +98,20 @@ public class PostLoginController {
              openModule("System-Management.fxml", "SYSTEM_MANAGEMENT",new SystemManagementController(busFactory,componentInfoList.size()));
          }
      });
+
+     lblTitle.setOnMouseClicked(event -> {
+            if (!isProcessingClick) {
+                isProcessingClick = true;
+                openModule("EmployeeAttendance.fxml", "ADMIN", new EmployeeAttendanceController(busFactory));
+            }
+     });
+
+     lblEmployeeName.setOnMouseClicked(event -> {
+         PdfExportUtils.exportEmployeePayrollToPdf(
+                 busFactory.getUserSession().getEmployee().getEmployeeId(),3,
+                    LocalDateTime.now().getYear(), busFactory);
+     });
+
  }
 
  private void openModule(String fxmlPath, String permissionName,Object controller) {

@@ -54,4 +54,5 @@ public class EmployeeDTO {
     }
 
     private String positionName;
+    private Integer dependentCount;
 }

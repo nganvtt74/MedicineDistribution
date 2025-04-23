@@ -164,6 +164,21 @@ public class BonusBUSImpl implements BonusBUS {
         }
     }
 
+    @Override
+    public List<BonusDTO> getByMothYear(int monthValue, int year) {
+        if (!userSession.hasPermission("VIEW_PAYROLL")) {
+            log.error("User does not have permission to view bonuses by month and year");
+            throw new PermissionDeniedException("Bạn không có quyền xem khoản thưởng theo tháng và năm");
+        }
+
+        try (Connection conn = dataSource.getConnection()) {
+            return bonusDAO.getByMothYear(monthValue, year, conn);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+
     private void valid(BonusDTO bonus) {
         Set<ConstraintViolation<BonusDTO>> violations = validator.validate(bonus);
         if (!violations.isEmpty()) {

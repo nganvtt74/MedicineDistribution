@@ -2,8 +2,6 @@ package com.example.medicinedistribution.DAO;
 
 import com.example.medicinedistribution.DAO.Interface.*;
 
-import java.sql.SQLException;
-
 public abstract class DAOFactory {
     public abstract AccountDAO getAccountDAO();
     public abstract RoleDAO getRoleDAO();
@@ -25,5 +23,8 @@ public abstract class DAOFactory {
     public abstract AllowanceDAO getAllowanceDAO();
     public abstract BonusTypeDAO getBonusTypeDAO();
     public abstract BonusDAO getBonusDAO();
-
+    public abstract AttendanceDAO getAttendanceDAO();
+    public abstract LeaveYearsDAO getLeaveYearsDAO();
+    public abstract PayrollDAO getPayrollDAO();
+    public abstract Payroll_AllowanceDAO getPayroll_AllowanceDAO();
 }

@@ -157,4 +157,20 @@ public class DependentsBUSImpl implements DependentsBUS {
             return false;
         }
     }
+
+    @Override
+    public int countDependentByEmployeeId(Integer employeeId) {
+        if (!userSession.hasPermission("VIEW_EMPLOYEE")) {
+            log.warn("User does not have permission to count dependents");
+            throw new PermissionDeniedException("Bạn không có quyền xem thân nhân");
+        }
+        try (var connection = dataSource.getConnection()) {
+            int count = dependentsDAO.countDependentByEmployeeId(employeeId, connection);
+//            log.info("Counted {} dependents for EmployeeID: {}", count, employeeId);
+            return count;
+        } catch (SQLException e) {
+            log.error("Error counting dependents by EmployeeID: {}", e.getMessage(), e);
+            return 0;
+        }
+    }
 }

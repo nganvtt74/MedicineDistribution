@@ -169,4 +169,24 @@ public class DependentsDAOImpl implements DependentsDAO {
             return false;
         }
     }
+
+    @Override
+    public int countDependentByEmployeeId(Integer employeeId, Connection connection) {
+        String sql = "SELECT COUNT(*) AS count FROM Dependents WHERE EmployeeID = ?";
+        int count = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, employeeId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt("count");
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error counting dependents by employee ID: {}", e.getMessage(), e);
+        }
+
+        return count;
+    }
 }

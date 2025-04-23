@@ -128,7 +128,7 @@
 
           <!-- Main Content Area -->
           <center>
-              <StackPane fx:id="contentArea" prefHeight="757.0" prefWidth="965.0" styleClass="content-area" />
+              <StackPane fx:id="contentArea" maxHeight="757.0" maxWidth="1000.0" prefHeight="757.0" prefWidth="965.0" styleClass="content-area" />
           </center>
 
       </BorderPane>

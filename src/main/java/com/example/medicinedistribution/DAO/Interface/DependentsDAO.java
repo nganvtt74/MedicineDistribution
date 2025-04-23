@@ -13,4 +13,5 @@ public interface DependentsDAO{
     DependentsDTO findById(Integer employeeId, Integer dependentNo, Connection connection);
     boolean deleteByEmployeeId(Integer employeeId, Connection connection);
 
+    int countDependentByEmployeeId(Integer employeeId, Connection connection);
 }

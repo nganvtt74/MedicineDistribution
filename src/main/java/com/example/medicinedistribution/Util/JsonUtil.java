@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class JsonUtil {
      * @throws IOException if there's an error reading or parsing the file
      */
     public static JsonNode readJsonFromFile(String filePath) throws IOException {
+        log.info("Reading JSON from file: {}", new File(filePath).getAbsolutePath());
         return mapper.readTree(new File(filePath));
     }
 
@@ -134,5 +136,14 @@ public class JsonUtil {
      */
     public static ObjectMapper getObjectMapper() {
         return mapper;
+    }
+
+    public static JsonObject parseJson(String jsonString, Class<JsonObject> jsonObjectClass) {
+        try {
+            return mapper.readValue(jsonString, jsonObjectClass);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing JSON string: {}", e.getMessage());
+            return null;
+        }
     }
 }

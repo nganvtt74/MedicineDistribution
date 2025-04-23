@@ -9,4 +9,6 @@ import java.util.List;
 public interface BonusDAO extends BaseDAO<BonusDTO, Integer> {
     List<BonusDTO> findByEmployeeId(Integer employeeId, Connection conn);
     List<BonusDTO> findByDateRange(LocalDate startDate, LocalDate endDate, Connection conn);
+
+    List<BonusDTO> getByMothYear(int monthValue, int year, Connection conn);
 }
