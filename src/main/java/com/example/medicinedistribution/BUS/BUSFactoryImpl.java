@@ -101,5 +101,17 @@ public class BUSFactoryImpl extends BUSFactory{
     public DependentsBUS getDependentsBUS() {
         return new DependentsBUSImpl(mySQLDAOFactory.getDependentsDAO(), userSession, dataSource , validator);
     }
+    @Override
+    public AllowanceBUS getAllowanceBUS() {
+        return new AllowanceBUSImpl(mySQLDAOFactory.getAllowanceDAO(), dataSource, userSession , validator);
+    }
+    @Override
+    public BonusBUS getBonusBUS() {
+        return new BonusBUSImpl(mySQLDAOFactory.getBonusDAO(), dataSource, userSession , validator);
+    }
+    @Override
+    public BonusTypeBUS getBonusTypeBUS() {
+        return new BonusTypeBUSImpl(mySQLDAOFactory.getBonusTypeDAO(), dataSource, userSession , validator);
+    }
 
 }

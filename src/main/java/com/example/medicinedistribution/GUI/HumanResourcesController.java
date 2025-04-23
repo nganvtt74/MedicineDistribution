@@ -34,6 +34,7 @@ public class HumanResourcesController extends ManagementController {
             btnDepartment,
             btnPosition,
             btnAttendance,
+            btnBenefits,
             btnSalary,
             btnStatistics,
             btnSettings,
@@ -86,6 +87,7 @@ public class HumanResourcesController extends ManagementController {
 //        componentInfoList.add(new ComponentInfo(btnAttendance, "MANAGE_ATTENDANCE", "Attendance.fxml", new AttendanceController(busFactory)));
 //        componentInfoList.add(new ComponentInfo(btnSalary, "MANAGE_SALARY", "Salary.fxml", new SalaryController(busFactory)));
 //        componentInfoList.add(new ComponentInfo(btnStatistics, "HR_STATISTIC", "HRStatistic.fxml", new HRStatisticController(busFactory)));
+        componentInfoList.add(new ComponentInfo(btnBenefits, "MANAGE_BENEFITS", "Benefits.fxml", new BenefitsController(busFactory)));
         boolean defaultLoad = false;
 
         for (ComponentInfo componentInfo : componentInfoList) {
@@ -104,6 +106,10 @@ public class HumanResourcesController extends ManagementController {
                 }
             }
         }
+        btnSettings.setOnAction(event -> {
+            // Handle settings button click
+            loadFxml("settingHR.fxml", new SettingsHRController(busFactory));
+        });
 
 //        if (!userSession.hasPermission("HR_STATISTIC")) {
 //            parentVBOX.getChildren().remove(lblStatistic);

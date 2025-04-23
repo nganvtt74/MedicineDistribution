@@ -7,6 +7,7 @@ import com.example.medicinedistribution.BUS.Interface.PositionBUS;
 import com.example.medicinedistribution.DTO.DepartmentDTO;
 import com.example.medicinedistribution.DTO.EmployeeDTO;
 import com.example.medicinedistribution.DTO.PositionDTO;
+import com.example.medicinedistribution.GUI.Component.CurrencyTextField;
 import com.example.medicinedistribution.GUI.EmployeeController;
 import com.example.medicinedistribution.GUI.EmployeeHistoryController;
 import com.example.medicinedistribution.Util.NotificationUtil;
@@ -292,99 +293,7 @@ public class EmployeeAction extends SubAction<EmployeeController, EmployeeDTO> {
         addFormField(grid, "Ngày thuê:", dtpHireDate, row++);
 
         // Basic Salary
-        txtBasicSalary = new TextField() {
-            // Keep existing implementation
-            @Override
-            public void replaceText(int start, int end, String text) {
-                // Only allow digits
-                if (text.matches("[0-9]*")) {
-                    super.replaceText(start, end, text);
-                    formatCurrency();
-                }
-            }
-
-            @Override
-            public void replaceSelection(String text) {
-                // Only allow digits
-                if (text.matches("[0-9]*")) {
-                    super.replaceSelection(text);
-                    formatCurrency();
-                }
-            }
-
-            private void formatCurrency() {
-                // Same existing implementation
-                // Store the current text and caret position
-                String currentText = getText();
-                int currentCaretPosition = getCaretPosition();
-
-                // Count commas before the caret position
-                int originalCommaCount = 0;
-                for (int i = 0; i < currentCaretPosition; i++) {
-                    if (i < currentText.length() && currentText.charAt(i) == ',') {
-                        originalCommaCount++;
-                    }
-                }
-
-                // Extract the raw number without commas
-                String rawNumber = currentText.replaceAll("[^0-9]", "");
-
-                if (!rawNumber.isEmpty()) {
-                    try {
-                        // Check for maximum value
-                        BigDecimal value = new BigDecimal(rawNumber);
-                        BigDecimal maxValue = new BigDecimal("1000000000");
-
-                        if (value.compareTo(maxValue) > 0) {
-                            value = maxValue;
-                            NotificationUtil.showErrorNotification("Giới hạn", "Lương tối đa là 1 tỷ VND");
-                        }
-
-                        // Format the number with commas
-                        String formatted = String.format("%,d", value.longValue());
-
-                        // Count how many digits were before the cursor
-                        int digitsBeforeCaret = 0;
-                        for (int i = 0; i < currentCaretPosition; i++) {
-                            if (i < currentText.length() && Character.isDigit(currentText.charAt(i))) {
-                                digitsBeforeCaret++;
-                            }
-                        }
-
-                        // Set the formatted text
-                        setText(formatted);
-
-                        // Calculate new comma count before the same number of digits
-                        int newCommaCount = 0;
-                        int digitCount = 0;
-                        int newCaretPos = 0;
-
-                        for (int i = 0; i < formatted.length(); i++) {
-                            if (Character.isDigit(formatted.charAt(i))) {
-                                digitCount++;
-                                if (digitCount > digitsBeforeCaret) {
-                                    newCaretPos = i;
-                                    break;
-                                }
-                            }
-                            if (formatted.charAt(i) == ',') {
-                                newCommaCount++;
-                            }
-                            newCaretPos = i + 1;
-                        }
-
-                        // If we've processed all digits but still need to position at the end
-                        if (digitCount == digitsBeforeCaret) {
-                            newCaretPos = formatted.length();
-                        }
-
-                        // Set the caret position
-                        positionCaret(newCaretPos);
-
-                    } catch (NumberFormatException ignored) {}
-                }
-            }
-        };
+        txtBasicSalary = new CurrencyTextField();
         txtBasicSalary.setPromptText("Lương cơ bản (VND)");
         addFormField(grid, "Lương cơ bản:", txtBasicSalary, row++);
 

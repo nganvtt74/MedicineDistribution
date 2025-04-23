@@ -22,4 +22,8 @@ public abstract class DAOFactory {
     public abstract CustomerDAO getCustomerDAO();
     public abstract PositionHistoryDAO getPositionHistoryDAO();
     public abstract DependentsDAO getDependentsDAO();
+    public abstract AllowanceDAO getAllowanceDAO();
+    public abstract BonusTypeDAO getBonusTypeDAO();
+    public abstract BonusDAO getBonusDAO();
+
 }

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane>
+          <top>
+              <VBox prefHeight="700.0" prefWidth="960.0" spacing="10">
+                  <padding>
+                      <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+               <HBox alignment="CENTER" prefHeight="49.0" prefWidth="940.0" VBox.vgrow="NEVER">
+                  <children>
+                        <Label alignment="CENTER" styleClass="heading-label" text="Quản lý phúc lợi nhân viên" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+               </HBox>
+                  <TabPane styleClass="goods-receipt-tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                      <tabs>
+                          <Tab text="Phụ cấp">
+                              <content>
+                                  <BorderPane>
+                                      <top>
+                                          <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-hBox">
+                                              <padding>
+                                                  <Insets bottom="10" left="10" right="10" top="10" />
+                                              </padding>
+                                              <TextField fx:id="txtSearchAllowance" promptText="Tìm kiếm phụ cấp..." HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="btnRefreshAllowance" layoutX="894.0" layoutY="20.0" styleClass="secondary-button" text="Làm mới">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Button>
+                                              <Button fx:id="btnAddAllowance" styleClass="primary-button" text="Thêm">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Button>
+                                              <Button fx:id="btnEditAllowance" styleClass="secondary-button" text="Sửa">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Button>
+                                              <Button fx:id="btnDeleteAllowance" styleClass="danger-button" text="Xóa">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Button>
+                                          </HBox>
+                                      </top>
+                                      <center>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true">
+                                              <content>
+                                                  <TableView fx:id="tblAllowance">
+                                                      <columnResizePolicy>
+                                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                      </columnResizePolicy>
+                                                  </TableView>
+                                              </content>
+                                          </ScrollPane>
+                                      </center>
+                                  </BorderPane>
+                              </content>
+                          </Tab>
+                          <Tab text="Thưởng">
+                              <content>
+                                  <BorderPane>
+                                      <top>
+                                          <VBox spacing="10">
+                                              <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-hBox">
+                                                  <padding>
+                                                      <Insets bottom="10" left="10" right="10" top="10" />
+                                                  </padding>
+                                                  <TextField fx:id="txtSearchBonus" prefHeight="25.0" prefWidth="98.0" promptText="Tìm kiếm khoản thưởng..." HBox.hgrow="ALWAYS" />
+                                       <Button fx:id="btnRefreshBonus" layoutX="576.0" layoutY="20.0" styleClass="secondary-button" text="Làm mới">
+                                          <font>
+                                             <Font size="15.0" />
+                                          </font>
+                                       </Button>
+                                                  <Button fx:id="btnAddBonus" styleClass="primary-button" text="Thêm">
+                                          <font>
+                                             <Font size="15.0" />
+                                          </font>
+                                       </Button>
+                                                  <Button fx:id="btnEditBonus" styleClass="secondary-button" text="Sửa">
+                                          <font>
+                                             <Font size="15.0" />
+                                          </font>
+                                       </Button>
+                                                  <Button fx:id="btnDeleteBonus" styleClass="danger-button" text="Xóa ">
+                                          <font>
+                                             <Font size="15.0" />
+                                          </font>
+                                       </Button>
+                                       <ComboBox fx:id="cboMonthFilter" prefHeight="25.0" prefWidth="89.0" promptText="Tháng" />
+                                       <ComboBox fx:id="cboYearFilter" prefHeight="25.0" prefWidth="82.0" promptText="Năm" />
+                                              </HBox>
+                                          </VBox>
+                                      </top>
+                                      <center>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true">
+                                              <content>
+                                                  <TableView fx:id="tblBonus" prefHeight="400.0">
+                                                      <columnResizePolicy>
+                                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                      </columnResizePolicy>
+                                                  </TableView>
+                                              </content>
+                                          </ScrollPane>
+                                      </center>
+                                  </BorderPane>
+                              </content>
+                          </Tab>
+                      </tabs>
+                  </TabPane>
+              </VBox>
+          </top>
+      
+      </BorderPane>
+   </children>
+</AnchorPane>

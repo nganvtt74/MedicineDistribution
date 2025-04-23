@@ -75,5 +75,17 @@ public class MySQLDAOFactory extends DAOFactory {
     public DependentsDAO getDependentsDAO() {
         return new DependentsDAOImpl();
     }
+    @Override
+    public AllowanceDAO getAllowanceDAO() {
+        return new AllowanceDAOImpl();
+    }
+    @Override
+    public BonusTypeDAO getBonusTypeDAO() {
+        return new BonusTypeDAOImpl();
+    }
+    @Override
+    public BonusDAO getBonusDAO() {
+        return new BonusDAOImpl();
+    }
 
 }

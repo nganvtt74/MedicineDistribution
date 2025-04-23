@@ -1,0 +1,44 @@
+[
+  {
+    "min": 0,
+    "max": 5000000,
+    "tax_rate": 5,
+    "fixed_deduction": 0
+  },
+  {
+    "min": 5000001,
+    "max": 10000000,
+    "tax_rate": 10,
+    "fixed_deduction": 250000
+  },
+  {
+    "min": 10000001,
+    "max": 18000000,
+    "tax_rate": 15,
+    "fixed_deduction": 750000
+  },
+  {
+    "min": 18000001,
+    "max": 32000000,
+    "tax_rate": 20,
+    "fixed_deduction": 1650000
+  },
+  {
+    "min": 32000001,
+    "max": 52000000,
+    "tax_rate": 25,
+    "fixed_deduction": 3250000
+  },
+  {
+    "min": 52000001,
+    "max": 80000000,
+    "tax_rate": 30,
+    "fixed_deduction": 5850000
+  },
+  {
+    "min": 80000001,
+    "max": null,
+    "tax_rate": 35,
+    "fixed_deduction": 9850000
+  }
+]
