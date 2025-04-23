@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane maxHeight="750.0" maxWidth="990.0" prefHeight="750.0">
+          <padding>
+              <Insets bottom="10" left="10" right="10" top="10" />
+          </padding>
+      
+          <top>
+              <VBox spacing="10">
+                  <HBox alignment="CENTER" spacing="10">
+                      <Label styleClass="heading-label" text="BẢNG LƯƠNG NHÂN VIÊN" />
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" spacing="10">
+                      <Label text="Tháng:" />
+                      <ComboBox fx:id="cbMonth" prefWidth="100" />
+                      <Label text="Năm:" />
+                      <ComboBox fx:id="cbYear" prefWidth="100" />
+                      <Button fx:id="btnFilter" styleClass="primary-button" text="Lọc" />
+                      <Button fx:id="btnExport" styleClass="secondary-button" text="Xuất Excel" />
+                  </HBox>
+                  <BorderPane.margin>
+                      <Insets bottom="10.0" />
+                  </BorderPane.margin>
+              </VBox>
+          </top>
+      
+          <center>
+              <ScrollPane fitToHeight="true" pannable="true">
+                  <content>
+                      <TableView fx:id="tblSalary" minHeight="558.0" minWidth="2500.0">
+                          <columns>
+                              <!-- Basic Information -->
+                              <TableColumn fx:id="colNo" minWidth="50" prefWidth="50">
+                                  <graphic>
+                                      <Label text="STT" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colFullName" minWidth="120" prefWidth="150">
+                                  <graphic>
+                                      <Label text="Họ và tên" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colDepartment" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Phòng ban" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colPosition" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Chức vụ" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+      
+                              <!-- Attendance and Base Salary -->
+                              <TableColumn fx:id="colActualWorkDays" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Ngày Công thực tế" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colUnauthorizedLeave" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Ngày nghỉ không phép" textAlignment="CENTER" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colLateArrival" minWidth="80" prefWidth="100">
+                                  <graphic>
+                                      <Label text="Ngày đi trễ" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colBaseSalary" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Lương Cơ bản" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+      
+                              <!-- Non-Insurance Allowances -->
+                              <TableColumn minWidth="300" prefWidth="380">
+                                  <graphic>
+                                      <Label text="Phụ Cấp không đóng BH" wrapText="true" />
+                                  </graphic>
+                                  <columns>
+                                      <TableColumn fx:id="colMealAllowance" minWidth="80" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Ăn Trưa" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colPhoneAllowance" minWidth="80" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Điện Thoại" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colGasAllowance" minWidth="80" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Xăng Xe" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colOtherAllowance" minWidth="80" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Phụ cấp khác(thai sản)" textAlignment="CENTER" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                  </columns>
+                              </TableColumn>
+      
+                              <!-- Rest of columns... -->
+                              <TableColumn minWidth="150" prefWidth="190">
+                                  <graphic>
+                                      <Label text="Phụ cấp phải đóng BH" wrapText="true" />
+                                  </graphic>
+                                  <columns>
+                                      <TableColumn fx:id="colPositionAllowance" minWidth="70" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Chức vụ" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colResponsibilityAllowance" minWidth="70" prefWidth="95">
+                                          <graphic>
+                                              <Label text="Trách nhiệm" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                  </columns>
+                              </TableColumn>
+      
+                              <TableColumn fx:id="colTotalAllowance" minWidth="80" prefWidth="100">
+                                  <graphic>
+                                      <Label text="Tổng Phụ cấp" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colAdditionalIncome" minWidth="120" prefWidth="140">
+                                  <graphic>
+                                      <Label text="Thu nhập bổ sung khác" wrapText="true" />
+                                  </graphic>
+                                  <columns>
+                                      <TableColumn fx:id="colBonus" minWidth="120" prefWidth="140">
+                                          <graphic>
+                                              <Label text="Thưởng(bao gồm tăng ca)" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                  </columns>
+                              </TableColumn>
+      
+                              <TableColumn fx:id="colTotalIncome" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Tổng thu nhập" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="colInsuranceSalary" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Lương đóng BH" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+      
+                              <TableColumn minWidth="600.0" prefWidth="550">
+                                  <graphic>
+                                      <Label text="Các khoản trừ vào lương" wrapText="true" />
+                                  </graphic>
+                                  <columns>
+                                      <TableColumn minWidth="400.0" prefWidth="350">
+                                          <graphic>
+                                              <Label text="Bảo hiểm bắt buộc" wrapText="true" />
+                                          </graphic>
+                                          <columns>
+                                              <TableColumn fx:id="colSocialInsurance" minWidth="70" prefWidth="85">
+                                                  <graphic>
+                                                      <Label text="BHXH (8%)" wrapText="true" />
+                                                  </graphic>
+                                              </TableColumn>
+                                              <TableColumn fx:id="colHealthInsurance" minWidth="70" prefWidth="85">
+                                                  <graphic>
+                                                      <Label text="BHYT (1,5%)" wrapText="true" />
+                                                  </graphic>
+                                              </TableColumn>
+                                              <TableColumn fx:id="colUnemploymentInsurance" minWidth="70" prefWidth="85">
+                                                  <graphic>
+                                                      <Label text="BHTN (1%)" wrapText="true" />
+                                                  </graphic>
+                                              </TableColumn>
+                                              <TableColumn fx:id="colTotalInsurance" minWidth="150.0" prefWidth="95">
+                                                  <graphic>
+                                                      <Label text="Cộng BH bắt buộc" wrapText="true" />
+                                                  </graphic>
+                                              </TableColumn>
+                                          </columns>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colIncomeTax" minWidth="70" prefWidth="90">
+                                          <graphic>
+                                              <Label text="Thuế TNCN" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colPenalty" minWidth="70" prefWidth="90">
+                                          <graphic>
+                                              <Label text="Tiền phạt" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                      <TableColumn fx:id="colTotalDeduction" minWidth="70" prefWidth="90">
+                                          <graphic>
+                                              <Label text="Tổng Cộng" wrapText="true" />
+                                          </graphic>
+                                      </TableColumn>
+                                  </columns>
+                              </TableColumn>
+      
+                              <TableColumn fx:id="colNetSalary" minWidth="100" prefWidth="120">
+                                  <graphic>
+                                      <Label text="Thực lĩnh" wrapText="true" />
+                                  </graphic>
+                              </TableColumn>
+                          </columns>
+                          <columnResizePolicy>
+                              <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                          </columnResizePolicy>
+                      </TableView>
+                  </content>
+              </ScrollPane>
+          </center>
+      
+          <bottom>
+              <HBox alignment="CENTER_RIGHT" spacing="10">
+                  <padding>
+                      <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+                  <Button fx:id="btnSave" styleClass="primary-button" text="Lưu bảng lương" />
+                  <Button fx:id="btnClose" styleClass="secondary-button" text="Đóng" />
+              </HBox>
+          </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>
