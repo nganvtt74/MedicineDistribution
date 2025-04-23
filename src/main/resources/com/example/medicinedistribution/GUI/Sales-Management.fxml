@@ -88,7 +88,7 @@
                       <Button fx:id="btnCustomer" maxWidth="Infinity" styleClass="nav-button" text="Khách hàng" />
                       <Button fx:id="btnProduct" maxWidth="Infinity" styleClass="nav-button" text="Sản phẩm" />
                       <Button fx:id="btnGoodsReceipt" maxWidth="Infinity" styleClass="nav-button" text="Nhập hàng" />
-                  <Button fx:id="btnManufacturer" layoutX="10.0" layoutY="166.0" maxWidth="Infinity" styleClass="nav-button" text="Nhà cung cấp" />
+                  <Button fx:id="btnManufacturer" layoutX="10.0" layoutY="166.0" maxWidth="Infinity" styleClass="nav-button" text="Nhà sản xuất" />
                   </VBox>
       
                   <Label fx:id="lblStatistic" styleClass="menu-category" text="BÁO CÁO">
