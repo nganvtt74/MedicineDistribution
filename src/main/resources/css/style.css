@@ -77,6 +77,17 @@
         -fx-background-color: #1f6aa5;
     }
 
+    .btn-danger {
+        -fx-background-color: #e74c3c;
+    }
+    .btn-danger:hover {
+        -fx-background-color: #c0392b;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    }
+    .btn-danger:pressed {
+        -fx-background-color: #c0392b;
+    }
+
     /* Error message styling */
     .error-label {
         -fx-text-fill: #e74c3c;

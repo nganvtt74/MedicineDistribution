@@ -124,5 +124,13 @@ public class BUSFactoryImpl extends BUSFactory{
         return new PayrollBUSImpl(mySQLDAOFactory.getPayrollDAO(), userSession, dataSource,
                 mySQLDAOFactory.getPayroll_AllowanceDAO());
     }
+    @Override
+    public RequestBUS getRequestBUS() {
+        return new RequestBUSImpl(mySQLDAOFactory.getRequestDAO(), dataSource, userSession , validator);
+    }
+    @Override
+    public RequestTypeBUS getRequestTypeBUS() {
+        return new RequestTypeBUSImpl(mySQLDAOFactory.getRequestTypeDAO(), dataSource, userSession , validator);
+    }
 
 }

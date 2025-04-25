@@ -103,5 +103,13 @@ public class MySQLDAOFactory extends DAOFactory {
     public Payroll_AllowanceDAO getPayroll_AllowanceDAO() {
         return new Payroll_AllowanceDAOImpl();
     }
+    @Override
+    public RequestDAO getRequestDAO() {
+        return new RequestDAOImpl();
+    }
+    @Override
+    public RequestTypeDAO getRequestTypeDAO() {
+        return new RequestTypeDAOImpl();
+    }
 
 }

@@ -25,5 +25,7 @@ public abstract class BUSFactory {
     public abstract BonusTypeBUS getBonusTypeBUS();
     public abstract AttendanceBUS getAttendanceBUS();
     public abstract PayrollBUS getPayrollBUS();
+    public abstract RequestBUS getRequestBUS();
+    public abstract RequestTypeBUS getRequestTypeBUS();
 }
 

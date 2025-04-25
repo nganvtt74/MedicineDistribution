@@ -27,4 +27,6 @@ public abstract class DAOFactory {
     public abstract LeaveYearsDAO getLeaveYearsDAO();
     public abstract PayrollDAO getPayrollDAO();
     public abstract Payroll_AllowanceDAO getPayroll_AllowanceDAO();
+    public abstract RequestDAO getRequestDAO();
+    public abstract RequestTypeDAO getRequestTypeDAO();
 }

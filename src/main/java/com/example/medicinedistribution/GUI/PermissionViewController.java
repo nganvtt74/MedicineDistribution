@@ -32,6 +32,7 @@ public class PermissionViewController {
 
     public PermissionViewController(List<PermissionDTO> permissions) {
         this.allPermissions = permissions;
+        GenericTablePrinter.printTable(permissions);
         // Default constructor
     }
 
@@ -142,7 +143,7 @@ public class PermissionViewController {
             int col = 0;
             int maxColumns = 1;
             if (Objects.equals(moduleCode, "VIEW")) {
-                maxColumns = 3; // Adjust based on available width
+                maxColumns = 2; // Adjust based on available width
             }
 
             for (PermissionDTO submodule : submodules) {
