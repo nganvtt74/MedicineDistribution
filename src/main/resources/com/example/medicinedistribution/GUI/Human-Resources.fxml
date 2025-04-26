@@ -95,9 +95,10 @@
                       </VBox.margin>
                   </Label>
 
-                  <VBox spacing="3.0" VBox.vgrow="NEVER">
+                  <VBox fx:id="button_group_vbox_2" spacing="3.0" VBox.vgrow="NEVER">
                       <Button fx:id="btnPayroll" maxWidth="Infinity" styleClass="nav-button" text="Tính lương" />
                       <Button fx:id="btnBenefits" maxWidth="Infinity" styleClass="nav-button" text="Phúc lợi" />
+                  <Button fx:id="btnRequest" layoutX="10.0" layoutY="62.0" maxWidth="Infinity" styleClass="nav-button" text="Đơn" />
                   </VBox>
 
                   <VBox spacing="3.0" VBox.vgrow="ALWAYS">

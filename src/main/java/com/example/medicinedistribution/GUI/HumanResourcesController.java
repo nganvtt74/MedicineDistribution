@@ -27,16 +27,15 @@ public class HumanResourcesController extends ManagementController {
     public StackPane logoContainer;
 
     @FXML
-    public VBox button_group_vbox;
+    public VBox button_group_vbox,button_group_vbox_2;
 
     @FXML
     public Button btnEmployee,
             btnDepartment,
-            btnPosition,
             btnAttendance,
             btnBenefits,
             btnPayroll,
-            btnStatistics,
+            btnRequest,
             btnSettings,
             btnBack;
 
@@ -85,9 +84,7 @@ public class HumanResourcesController extends ManagementController {
         componentInfoList.add(new ComponentInfo(btnEmployee, "MANAGE_EMPLOYEE", "Employee.fxml", new EmployeeController(busFactory)));
         componentInfoList.add(new ComponentInfo(btnDepartment, "MANAGE_DEPARTMENT", "Department.fxml", new DepartmentController(busFactory)));
         componentInfoList.add(new ComponentInfo(btnAttendance, "MANAGE_ATTENDANCE", "AttendanceManagement.fxml", new AttendanceManagementController(busFactory)));
-//        componentInfoList.add(new ComponentInfo(btnSalary, "MANAGE_SALARY", "Salary.fxml", new SalaryController(busFactory)));
 //        componentInfoList.add(new ComponentInfo(btnStatistics, "HR_STATISTIC", "HRStatistic.fxml", new HRStatisticController(busFactory)));
-        componentInfoList.add(new ComponentInfo(btnBenefits, "MANAGE_BENEFITS", "Benefits.fxml", new BenefitsController(busFactory)));
         boolean defaultLoad = false;
 
         for (ComponentInfo componentInfo : componentInfoList) {
@@ -111,10 +108,31 @@ public class HumanResourcesController extends ManagementController {
             loadFxml("settingHR.fxml", new SettingsHRController(busFactory));
         });
 
-        btnPayroll.setOnAction(event -> {
-            // Handle salary button click
-            loadFxml("Payroll.fxml", new PayRollController(busFactory));
-        });
+        if (userSession.hasPermission("MANAGE_BENEFITS")) {
+            btnBenefits.setOnAction(event -> {
+                // Handle benefits button click
+                loadFxml("Benefits.fxml", new BenefitsController(busFactory));
+            });
+        }else {
+            button_group_vbox_2.getChildren().remove(btnBenefits);
+        }
+
+        if (userSession.hasPermission("MANAGE_PAYROLL")) {
+            btnPayroll.setOnAction(event -> {
+                // Handle salary button click
+                loadFxml("Payroll.fxml", new PayRollController(busFactory));
+            });
+        }else {
+            button_group_vbox_2.getChildren().remove(btnPayroll);
+        }
+        if (userSession.hasPermission("MANAGE_REQUEST")) {
+            btnRequest.setOnAction(event -> {
+                // Handle request button click
+                loadFxml("Request.fxml", new RequestController(busFactory));
+            });
+        }else {
+            button_group_vbox_2.getChildren().remove(btnRequest);
+        }
 
         logoContainer.setOnMouseClicked(event -> {
             // Handle logo click event

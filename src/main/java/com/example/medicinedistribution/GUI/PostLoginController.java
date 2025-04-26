@@ -70,6 +70,8 @@ public class PostLoginController {
     @FXML
     private Label lblTitle;
 
+
+    @FXML private HBox btnGroup;
     @FXML private Button btnSalary;
     @FXML private Button btnCreateRequest;
     @FXML private Button btnLogout;
@@ -308,6 +310,15 @@ public class PostLoginController {
                 }
             }
         }
+
+        if (!busFactory.getUserSession().hasPermission("INSERT_REQUEST")) {
+            btnGroup.getChildren().remove(btnCreateRequest);
+        }
+        if (!busFactory.getUserSession().hasPermission("EXPORT_SALARY")) {
+            btnGroup.getChildren().remove(btnSalary);
+        }
+
+
     }
     private void setupDateTimeUpdater() {
         // Create a timeline that triggers every second

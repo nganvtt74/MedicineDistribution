@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0" prefWidth="960.0" styleClass="content-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+            <children>
+                <!-- Header Section -->
+                <Label styleClass="section-header" text="Quản lý yêu cầu nhân viên" />
+                <Separator styleClass="divider" />
+
+                <!-- Filters Section -->
+                <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="filter-panel">
+                    <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                    </padding>
+                    <children>
+                        <Label styleClass="form-label" text="Từ ngày:" />
+                        <DatePicker fx:id="dpFromDate" promptText="Chọn ngày" />
+
+                        <Label styleClass="form-label" text="Đến ngày:" />
+                        <DatePicker fx:id="dpToDate" promptText="Chọn ngày" />
+                    </children>
+                </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="75.0" spacing="15.0" styleClass="filter-panel">
+               <padding>
+                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+               </padding>
+               <children>
+                  <Label styleClass="form-label" text="Trạng thái:" />
+                  <ComboBox fx:id="cbStatus1" prefWidth="120.0" promptText="Tất cả" />
+                  <Label styleClass="form-label" text="Loại yêu cầu:" />
+                  <ComboBox fx:id="cbRequestType1" prefWidth="150.0" promptText="Tất cả" />
+                  <Button fx:id="btnFilter1" style="-fx-font-size: 15;" styleClass="primary-button" text="Lọc" />
+                  <Button fx:id="btnReset1" style="-fx-font-size: 15;" styleClass="secondary-button" text="Đặt lại" />
+               </children>
+            </HBox>
+
+                <!-- Main Table -->
+                <TableView fx:id="tblRequests" prefHeight="151.0" prefWidth="920.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="80.0" text="Mã YC" />
+                        <TableColumn fx:id="colEmployee" prefWidth="150.0" text="Nhân viên" />
+                        <TableColumn fx:id="colType" prefWidth="120.0" text="Loại yêu cầu" />
+                        <TableColumn fx:id="colStartDate" prefWidth="100.0" text="Ngày bắt đầu" />
+                        <TableColumn fx:id="colEndDate" prefWidth="100.0" text="Ngày kết thúc" />
+                        <TableColumn fx:id="colDuration" prefWidth="80.0" text="Thời gian" />
+                        <TableColumn fx:id="colStatus" prefWidth="100.0" text="Trạng thái" />
+                        <TableColumn fx:id="colCreatedDate" prefWidth="100.0" text="Ngày tạo" />
+                        <TableColumn fx:id="colActions" prefWidth="120.0" text="Thao tác" />
+                    </columns>
+                </TableView>
+
+                <!-- Status Summary -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <Label styleClass="label-info" text="Tổng số yêu cầu:" />
+                        <Label fx:id="lblTotalRequests" styleClass="label-value" text="0" />
+
+                        <Label styleClass="label-info" text="Đang chờ:" />
+                        <Label fx:id="lblPendingRequests" styleClass="label-value" text="0" />
+
+                        <Label styleClass="label-info" text="Đã duyệt:" />
+                        <Label fx:id="lblApprovedRequests" styleClass="label-value" text="0" />
+
+                        <Label styleClass="label-info" text="Đã từ chối:" />
+                        <Label fx:id="lblRejectedRequests" styleClass="label-value" text="0" />
+
+                        <Button fx:id="btnCreateRequest" styleClass="primary-button" text="Tạo yêu cầu mới" />
+                    </children>
+                    <padding>
+                        <Insets top="5.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
