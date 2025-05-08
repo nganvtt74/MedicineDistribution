@@ -2,6 +2,7 @@ package com.example.medicinedistribution.GUI;
 
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.DTO.*;
+import com.example.medicinedistribution.Util.ExportUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -108,6 +109,7 @@ public class GoodsReceiptDetailController {
         btnPrint.setOnAction(event -> {
             // Print the receipt
             // Implement print functionality here
+            ExportUtils.exportGoodsReceipt(receipt, busFactory);
         });
     }
 

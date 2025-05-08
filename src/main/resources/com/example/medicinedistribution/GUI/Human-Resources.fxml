@@ -37,7 +37,10 @@
                      </font>
                   </Button>
                       <Circle radius="15" styleClass="user-avatar" />
-                      <Label fx:id="headerUserName" styleClass="header-username" text="Người dùng" />
+                      <Label fx:id="headerUserName" styleClass="header-username" text="Người dùng">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Label>
                   </HBox>
               </HBox>
           </top>

@@ -60,10 +60,7 @@ public class CategoryBUSImpl implements CategoryBUS {
     @Override
     public boolean update(CategoryDTO categoryDTO) {
         if (userSession.hasPermission("UPDATE_CATEGORY")) {
-//            if(categoryDTO == null ){
-//                log.error("CategoryDTO is null");
-//                throw new IllegalArgumentException("Danh mục không được null");
-//            }
+
             valid(categoryDTO);
             try(Connection connection = dataSource.getConnection()) {
                 boolean result = categoryDAO.update(categoryDTO, connection);
@@ -124,7 +121,6 @@ public class CategoryBUSImpl implements CategoryBUS {
 
     @Override
     public CategoryDTO findById(Integer integer) {
-        if (userSession.hasPermission("VIEW_CATEGORY")) {
             if(integer == null || integer <= 0){
                 log.error("Category ID is null or invalid");
                 throw new IllegalArgumentException("ID danh mục không được null hoặc không hợp lệ");
@@ -135,24 +131,15 @@ public class CategoryBUSImpl implements CategoryBUS {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("User does not have permission to view category");
-            throw new PermissionDeniedException("Bạn không có quyền xem danh mục");
-        }
     }
 
     @Override
     public List<CategoryDTO> findAll() {
-        if (userSession.hasPermission("VIEW_CATEGORY")) {
-            try(Connection connection = dataSource.getConnection()) {
-                return categoryDAO.findAll(connection);
-            } catch (SQLException e) {
-                log.error("Error while getting connection", e);
-                throw new RuntimeException("Lỗi khi lấy kết nối", e);
-            }
-        }else {
-            log.error("User does not have permission to view all categories");
-            throw new PermissionDeniedException("Bạn không có quyền xem tất cả danh mục");
+        try(Connection connection = dataSource.getConnection()) {
+            return categoryDAO.findAll(connection);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
         }
     }
 }

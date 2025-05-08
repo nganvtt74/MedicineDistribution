@@ -88,7 +88,6 @@ public class PositionBUSImpl implements PositionBUS {
 
     @Override
     public boolean delete(Integer integer) {
-        if (userSession.hasPermission("VIEW_POSITION")) {
             try(Connection conn = dataSource.getConnection()) {
                 if (positionDAO.delete(integer,conn)) {
                     log.info("Delete position successful: {}", integer);
@@ -101,39 +100,25 @@ public class PositionBUSImpl implements PositionBUS {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("Permission denied for deleting position");
-            throw new PermissionDeniedException("Bạn không có quyền xóa chức vụ");
-        }
     }
 
     @Override
     public PositionDTO findById(Integer integer) {
-        if (userSession.hasPermission("VIEW_POSITION")) {
             try(Connection conn = dataSource.getConnection()) {
                 return positionDAO.findById(integer,conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("Permission denied for finding position");
-            throw new PermissionDeniedException("Bạn không có quyền xem chức vụ");
-        }
     }
 
     @Override
     public List<PositionDTO> findAll() {
-        if (userSession.hasPermission("VIEW_POSITION")) {
             try(Connection conn = dataSource.getConnection()) {
                 return positionDAO.findAll(conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("Permission denied for finding all positions");
-            throw new PermissionDeniedException("Bạn không có quyền xem tất cả chức vụ");
-        }
     }
 }

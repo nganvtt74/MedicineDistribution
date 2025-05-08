@@ -112,32 +112,22 @@ public class DepartmentBUSImpl implements DepartmentBUS {
 
     @Override
     public DepartmentDTO findById(Integer integer) {
-        if (userSession.hasPermission("VIEW_DEPARTMENT")) {
             try(Connection conn = dataSource.getConnection()) {
                 return departmentDAO.findById(integer, conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to get department");
-            throw new PermissionDeniedException("Bạn không có quyền lấy thông tin bộ phận");
-        }
     }
 
     @Override
     public List<DepartmentDTO> findAll() {
-        if (userSession.hasPermission("VIEW_DEPARTMENT")) {
             try(Connection conn = dataSource.getConnection()) {
                 return departmentDAO.findAll(conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to get all departments");
-            throw new PermissionDeniedException("Bạn không có quyền lấy danh sách bộ phận");
-        }
     }
 
 }

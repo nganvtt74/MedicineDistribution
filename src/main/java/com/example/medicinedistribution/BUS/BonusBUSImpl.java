@@ -106,11 +106,6 @@ public class BonusBUSImpl implements BonusBUS {
 
     @Override
     public BonusDTO findById(Integer id) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonus");
-            throw new PermissionDeniedException("Bạn không có quyền xem khoản thưởng");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusDAO.findById(id, conn);
         } catch (SQLException e) {
@@ -121,11 +116,6 @@ public class BonusBUSImpl implements BonusBUS {
 
     @Override
     public List<BonusDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonuses");
-            throw new PermissionDeniedException("Bạn không có quyền xem danh sách khoản thưởng");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusDAO.findAll(conn);
         } catch (SQLException e) {
@@ -136,11 +126,6 @@ public class BonusBUSImpl implements BonusBUS {
 
     @Override
     public List<BonusDTO> findByEmployeeId(Integer employeeId) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view employee bonuses");
-            throw new PermissionDeniedException("Bạn không có quyền xem khoản thưởng của nhân viên");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusDAO.findByEmployeeId(employeeId, conn);
         } catch (SQLException e) {
@@ -151,11 +136,6 @@ public class BonusBUSImpl implements BonusBUS {
 
     @Override
     public List<BonusDTO> findByDateRange(LocalDate startDate, LocalDate endDate) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonuses by date range");
-            throw new PermissionDeniedException("Bạn không có quyền xem khoản thưởng theo khoảng thời gian");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusDAO.findByDateRange(startDate, endDate, conn);
         } catch (SQLException e) {
@@ -166,11 +146,6 @@ public class BonusBUSImpl implements BonusBUS {
 
     @Override
     public List<BonusDTO> getByMothYear(int monthValue, int year) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonuses by month and year");
-            throw new PermissionDeniedException("Bạn không có quyền xem khoản thưởng theo tháng và năm");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusDAO.getByMothYear(monthValue, year, conn);
         } catch (SQLException e) {

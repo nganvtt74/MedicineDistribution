@@ -119,7 +119,7 @@ package com.example.medicinedistribution.GUI.SubAction;
 
             ComboBox<String> comboBox = new ComboBox<>();
             comboBox.setItems(FXCollections.observableArrayList(
-                    "Cha", "Mẹ", "Vợ", "Chồng", "Con", "Anh", "Chị", "Em", "Khác"
+                    "Cha", "Mẹ", "Con"
             ));
 
             // Set default value if exists
@@ -127,7 +127,7 @@ package com.example.medicinedistribution.GUI.SubAction;
                 comboBox.setValue(defaultValue);
             }
 
-            comboBox.setEditable(true);
+//            comboBox.setEditable(true);
             comboBox.setPromptText("Chọn mối quan hệ");
             comboBox.setMaxWidth(Double.MAX_VALUE);
             HBox.setHgrow(comboBox, javafx.scene.layout.Priority.ALWAYS);

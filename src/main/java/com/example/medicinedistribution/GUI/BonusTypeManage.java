@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -22,8 +23,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -195,6 +198,10 @@ public class BonusTypeManage {
         // Create dialog
         Dialog<BonusTypeDTO> dialog = new Dialog<>();
         dialog.setTitle(bonusType == null ? "Thêm loại thưởng mới" : "Chỉnh sửa loại thưởng");
+        System.out.println("Icon path: " + getClass().getResource("../../../../img/logo.png"));
+        Image icon = new Image(getClass().getResource("../../../../img/logo.png").toExternalForm());
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(icon);
 
         // Set the button types
         ButtonType saveButtonType = new ButtonType("Lưu", ButtonBar.ButtonData.OK_DONE);
@@ -216,7 +223,6 @@ public class BonusTypeManage {
         // Add fields to grid
         grid.add(new Label("Tên loại thưởng:"), 0, 0);
         grid.add(txtName, 1, 0);
-        grid.add(new Label("Mô tả:"), 0, 1);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -243,12 +249,14 @@ public class BonusTypeManage {
                     success = bonusTypeBUS.insert(newBonusType);
                     if (success) {
                         NotificationUtil.showSuccessNotification("Thành công", "Thêm loại thưởng thành công");
+                        loadData();
                     }
                 } else {
                     // This is an existing bonus type being edited
                     success = bonusTypeBUS.update(newBonusType);
                     if (success) {
                         NotificationUtil.showSuccessNotification("Thành công", "Cập nhật loại thưởng thành công");
+                        loadData();
                     }
                 }
 

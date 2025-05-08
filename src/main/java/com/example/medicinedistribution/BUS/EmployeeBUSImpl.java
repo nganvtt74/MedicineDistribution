@@ -162,17 +162,13 @@ public class EmployeeBUSImpl implements EmployeeBUS {
 
     @Override
     public List<EmployeeDTO> findAll() {
-        if (userSession.hasPermission("VIEW_EMPLOYEE")) {
             try(Connection conn = dataSource.getConnection()) {
                 return employeeDAO.findAll(conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to find all employees");
-            throw new PermissionDeniedException("Bạn không có quyền tìm tất cả nhân viên");
-        }
+
     }
 
     @Override
@@ -313,16 +309,11 @@ public class EmployeeBUSImpl implements EmployeeBUS {
 
     @Override
     public List<PositionHistoryDTO> findHistoryByEmployeeId(Integer employeeId) {
-        if (userSession.hasPermission("VIEW_EMPLOYEE")) {
             try(Connection conn = dataSource.getConnection()) {
                 return positionHistoryDAO.findByEmployeeId(employeeId, conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to find employee history");
-            throw new PermissionDeniedException("Bạn không có quyền tìm lịch sử nhân viên");
-        }
     }
 }

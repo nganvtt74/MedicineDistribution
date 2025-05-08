@@ -57,19 +57,23 @@ public class InvoiceDetailDAOImpl implements InvoiceDetailDAO {
 
     @Override
     public List<InvoiceDetailDTO> findByInvoiceId(Integer invoiceId, Connection conn){
-        String sql = "SELECT * FROM invoicedetail WHERE invoiceId = ?";
+        String sql = "SELECT i.*, p.productName, p.unit FROM invoicedetail i " +
+                "JOIN product p ON i.productId = p.productId " +
+                "WHERE i.invoiceId = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, invoiceId);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<InvoiceDetailDTO> invoiceDetails = new ArrayList<>();
                 while (rs.next()) {
-                    InvoiceDetailDTO invoiceDetailDTO = new InvoiceDetailDTO(
-                            rs.getInt("invoiceId"),
-                            rs.getInt("productId"),
-                            rs.getInt("quantity"),
-                            rs.getBigDecimal("price"),
-                            rs.getBigDecimal("total")
-                    );
+                    InvoiceDetailDTO invoiceDetailDTO = InvoiceDetailDTO.builder()
+                            .invoiceId(rs.getInt("invoiceId"))
+                            .productId(rs.getInt("productId"))
+                            .productName(rs.getString("productName"))
+                            .quantity(rs.getInt("quantity"))
+                            .price(rs.getBigDecimal("price"))
+                            .unit(rs.getString("unit"))
+                            .total(rs.getBigDecimal("total"))
+                            .build();
                     invoiceDetails.add(invoiceDetailDTO);
                 }
                 return invoiceDetails;

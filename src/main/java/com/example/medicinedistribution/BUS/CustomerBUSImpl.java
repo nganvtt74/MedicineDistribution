@@ -104,10 +104,6 @@ public class CustomerBUSImpl implements CustomerBUS {
 
     @Override
     public CustomerDTO findById(Integer integer) {
-        if (!userSession.hasPermission("VIEW_CUSTOMER")) {
-            log.error("User does not have permission to view customer");
-            throw new PermissionDeniedException("Bạn không có quyền xem khách hàng");
-        }
         try(Connection conn = dataSource.getConnection()) {
             return customerDAO.findById(integer, conn);
         } catch (SQLException e) {
@@ -118,10 +114,6 @@ public class CustomerBUSImpl implements CustomerBUS {
 
     @Override
     public List<CustomerDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_CUSTOMER")) {
-            log.error("User does not have permission to view customers");
-            throw new PermissionDeniedException("Bạn không có quyền xem danh sách khách hàng");
-        }
         try(Connection conn = dataSource.getConnection()) {
             return customerDAO.findAll(conn);
         } catch (SQLException e) {

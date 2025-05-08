@@ -326,6 +326,7 @@ public class ProductAction extends SubAction<ProductController, ProductDTO> {
         product.setPrice(java.math.BigDecimal.valueOf(Double.parseDouble(formFields.get("price").getText())));
         product.setUnit(formFields.get("unit").getText());
         product.setStockQuantity(Integer.parseInt(formFields.get("stockQuantity").getText()));
+        product.setStatus(statusComboBox != null && statusComboBox.getValue() != null ? statusComboBox.getValue() : true);
 
         // Set category (would need to retrieve the actual CategoryDTO in real implementation)
         CategoryDTO selectedCategory = categoryComboBox.getValue();

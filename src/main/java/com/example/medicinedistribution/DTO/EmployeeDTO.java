@@ -10,6 +10,25 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDTO {
+public EmployeeDTO(EmployeeDTO employeeDTO) {
+    this.employeeId = employeeDTO.getEmployeeId();
+    this.firstName = employeeDTO.getFirstName();
+    this.lastName = employeeDTO.getLastName();
+    this.birthday = employeeDTO.getBirthday();
+    this.gender = employeeDTO.getGender();
+    this.phone = employeeDTO.getPhone();
+    this.email = employeeDTO.getEmail();
+    this.hireDate = employeeDTO.getHireDate();
+    this.address = employeeDTO.getAddress();
+    this.basicSalary = employeeDTO.getBasicSalary();
+    this.status = employeeDTO.getStatus();
+    this.positionId = employeeDTO.getPositionId();
+    this.accountId = employeeDTO.getAccountId();
+    this.positionName = employeeDTO.getPositionName();
+    this.dependentCount = employeeDTO.getDependentCount();
+}
+
+
     private Integer employeeId;
     
     @NotBlank(message = "Họ không được để trống")
@@ -55,4 +74,5 @@ public class EmployeeDTO {
 
     private String positionName;
     private Integer dependentCount;
+
 }

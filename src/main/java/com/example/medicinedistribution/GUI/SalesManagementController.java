@@ -3,6 +3,7 @@ package com.example.medicinedistribution.GUI;
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.DTO.ComponentInfo;
 import com.example.medicinedistribution.DTO.UserSession;
+import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -76,6 +77,11 @@ public class SalesManagementController extends ManagementController {
 
     public void setup(){
         headerUserName.setText(userSession.getAccount().getUsername());
+        headerUserName.setOnMouseClicked(event -> {
+            UserProfileStage profileStage = new UserProfileStage(busFactory);
+            profileStage.showAndWait();
+        });
+
     }
 
     public void setupButtonMap() {
@@ -189,7 +195,17 @@ public class SalesManagementController extends ManagementController {
                     logoContainer.setDisable(false);
 
                 });
-            } catch (Exception e) {
+            }catch (PermissionDeniedException e) {
+                log.error("PermissionDeniedException: ", e);
+                Platform.runLater(() -> {
+                    // Show error message in UI
+                    Label errorLabel = new Label(e.getMessage());
+                    errorLabel.getStyleClass().add("error-label");
+                    contentArea.getChildren().clear();
+                    contentArea.getChildren().add(errorLabel);
+                });
+            }
+            catch (Exception e) {
                 log.error("Error loading FXML: ", e);
                 javafx.application.Platform.runLater(() -> {
                     // Show error message in UI

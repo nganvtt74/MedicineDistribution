@@ -114,11 +114,6 @@ public class ProductBUSImpl implements ProductBUS {
 
     @Override
     public ProductDTO findById(Integer integer) {
-        if (!userSession.hasPermission("VIEW_PRODUCT")) {
-            log.error("User does not have permission to find product");
-            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
-        }
-
         try(Connection conn = dataSource.getConnection()){
             return productDAO.findById(integer, conn);
         }catch (SQLException e){
@@ -129,10 +124,6 @@ public class ProductBUSImpl implements ProductBUS {
 
     @Override
     public List<ProductDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_PRODUCT")) {
-            log.error("User does not have permission to find product");
-            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
-        }
         try(Connection conn = dataSource.getConnection()){
             return productDAO.findAll(conn);
         }catch (SQLException e){
@@ -172,10 +163,6 @@ public class ProductBUSImpl implements ProductBUS {
 
     @Override
     public List<ProductDTO> getAllActiveProducts() {
-        if (!userSession.hasPermission("VIEW_PRODUCT")) {
-            log.error("User does not have permission to find product");
-            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
-        }
         try(Connection conn = dataSource.getConnection()){
             return productDAO.getAllActiveProducts(conn);
         }catch (SQLException e){
@@ -186,10 +173,6 @@ public class ProductBUSImpl implements ProductBUS {
 
     @Override
     public BigDecimal getTotalInventoryValue() {
-        if (!userSession.hasPermission("VIEW_PRODUCT")) {
-            log.error("User does not have permission to find product");
-            throw new PermissionDeniedException("Bạn không có quyền tìm sản phẩm");
-        }
         ArrayList<ProductDTO> products = (ArrayList<ProductDTO>) findAll();
         BigDecimal totalValue = BigDecimal.ZERO;
         for (ProductDTO product : products) {

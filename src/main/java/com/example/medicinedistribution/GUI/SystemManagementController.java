@@ -117,6 +117,10 @@ public class SystemManagementController extends ManagementController {
 
     private void setupHelpButton() {
         btnHelp.setOnAction(event -> showContactInformation());
+        headerUserName.setOnMouseClicked(event -> {
+           UserProfileStage profileStage = new UserProfileStage(busFactory);
+           profileStage.showAndWait();
+        });
     }
 
     private void showContactInformation() {

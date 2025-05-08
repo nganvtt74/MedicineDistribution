@@ -104,11 +104,6 @@ public class AllowanceBUSImpl implements AllowanceBUS {
 
     @Override
     public AllowanceDTO findById(Integer id) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view allowance");
-            throw new PermissionDeniedException("Bạn không có quyền xem thông tin phụ cấp");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             AllowanceDTO allowance = allowanceDAO.findById(id, conn);
             if (allowance == null) {
@@ -123,11 +118,6 @@ public class AllowanceBUSImpl implements AllowanceBUS {
 
     @Override
     public List<AllowanceDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view allowances");
-            throw new PermissionDeniedException("Bạn không có quyền xem danh sách phụ cấp");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return allowanceDAO.findAll(conn);
         } catch (SQLException e) {

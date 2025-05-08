@@ -11,12 +11,14 @@ package com.example.medicinedistribution.GUI;
     import javafx.collections.FXCollections;
     import javafx.fxml.FXML;
     import javafx.fxml.FXMLLoader;
+    import javafx.geometry.Insets;
     import javafx.geometry.Pos;
     import javafx.scene.Parent;
     import javafx.scene.Scene;
     import javafx.scene.control.*;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
+    import javafx.scene.layout.*;
     import javafx.stage.Modality;
     import javafx.stage.Stage;
     import lombok.extern.slf4j.Slf4j;
@@ -197,6 +199,7 @@ package com.example.medicinedistribution.GUI;
             txtSearchProduct.textProperty().addListener((observable, oldValue, newValue) -> filterProducts());
 
             btnAddManufacturer1.setOnAction(event -> openManufacturerSelector());
+            btnAddManufacturer.setOnAction(event -> showAddManufacturerDialog());
 
             btnClear.setOnAction(event -> {
                 selectedManufacturer = null;
@@ -498,6 +501,189 @@ package com.example.medicinedistribution.GUI;
             } catch (IOException e) {
                 log.error("Error loading manufacturer selector: ", e);
             }
+        }
+        private void showAddManufacturerDialog() {
+            // Create dialog
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Thêm nhà sản xuất mới");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
+
+            // Create layout
+            BorderPane layout = new BorderPane();
+            layout.getStyleClass().add("main-container");
+            layout.setPrefWidth(500);
+
+            // Header
+            HBox header = new HBox();
+            header.getStyleClass().add("header-section");
+            header.setAlignment(Pos.CENTER);
+            Label headerLabel = new Label("Thêm nhà sản xuất mới");
+            headerLabel.getStyleClass().add("heading-label");
+            header.getChildren().add(headerLabel);
+            layout.setTop(header);
+
+            // Form content
+            VBox formContent = new VBox(15);
+            formContent.setPadding(new Insets(20));
+            formContent.getStyleClass().add("settings-section");
+
+            // Form fields
+            GridPane formGrid = new GridPane();
+            formGrid.setHgap(15);
+            formGrid.setVgap(15);
+            formGrid.setPrefWidth(460);
+
+            // Configure grid columns to make text fields take full width
+            ColumnConstraints labelColumn = new ColumnConstraints();
+            labelColumn.setPrefWidth(120);
+
+            ColumnConstraints fieldColumn = new ColumnConstraints();
+            fieldColumn.setHgrow(Priority.ALWAYS);
+            fieldColumn.setFillWidth(true);
+
+            formGrid.getColumnConstraints().addAll(labelColumn, fieldColumn);
+
+            // Manufacturer name
+            formGrid.add(new Label("Tên nhà sản xuất:"), 0, 0);
+            TextField nameField = new TextField();
+            nameField.setPromptText("Nhập tên nhà sản xuất");
+            nameField.setPrefWidth(300);
+            formGrid.add(nameField, 1, 0);
+
+            // Country
+            formGrid.add(new Label("Quốc gia:"), 0, 1);
+            TextField countryField = new TextField();
+            countryField.setPromptText("Nhập quốc gia");
+            countryField.setPrefWidth(300);
+            formGrid.add(countryField, 1, 1);
+
+            // Phone
+            formGrid.add(new Label("Số điện thoại:"), 0, 2);
+            TextField phoneField = new TextField();
+            phoneField.setPromptText("Nhập số điện thoại");
+            phoneField.setPrefWidth(300);
+            formGrid.add(phoneField, 1, 2);
+
+            // Email
+            formGrid.add(new Label("Email:"), 0, 3);
+            TextField emailField = new TextField();
+            emailField.setPromptText("Nhập email");
+            emailField.setPrefWidth(300);
+            formGrid.add(emailField, 1, 3);
+
+            // Address
+            formGrid.add(new Label("Địa chỉ:"), 0, 4);
+            TextField addressField = new TextField();
+            addressField.setPromptText("Nhập địa chỉ");
+            addressField.setPrefWidth(300);
+            formGrid.add(addressField, 1, 4);
+
+            // Description
+            formGrid.add(new Label("Mô tả:"), 0, 5);
+            TextArea descriptionField = new TextArea();
+            descriptionField.setPromptText("Nhập mô tả");
+            descriptionField.setPrefHeight(60);
+            descriptionField.setPrefWidth(300);
+            formGrid.add(descriptionField, 1, 5);
+
+            // Error message
+            Label errorLabel = new Label();
+            errorLabel.getStyleClass().add("error-label");
+            errorLabel.setVisible(false);
+
+            // Buttons
+            HBox buttonBox = new HBox(10);
+            buttonBox.setAlignment(Pos.CENTER_RIGHT);
+            buttonBox.setPadding(new Insets(15, 0, 0, 0));
+
+            Button cancelButton = new Button("Hủy");
+            cancelButton.getStyleClass().add("secondary-button");
+            cancelButton.setOnAction(e -> dialogStage.close());
+
+            Button saveButton = new Button("Lưu");
+            saveButton.getStyleClass().add("success-button");
+            saveButton.setOnAction(e -> {
+                try {
+                    // Validate input
+                    if (nameField.getText().trim().isEmpty()) {
+                        errorLabel.setText("Tên nhà sản xuất không được để trống");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
+                    if (countryField.getText().trim().isEmpty()) {
+                        errorLabel.setText("Quốc gia không được để trống");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
+                    if (addressField.getText().trim().isEmpty()) {
+                        errorLabel.setText("Địa chỉ không được để trống");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
+                    // Validate email format if provided
+                    String email = emailField.getText().trim();
+                    if (!email.isEmpty() && !email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                        errorLabel.setText("Email không hợp lệ");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
+                    // Validate phone number if provided
+                    String phone = phoneField.getText().trim();
+                    if (!phone.isEmpty() && !phone.matches("^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$")) {
+                        errorLabel.setText("Số điện thoại không hợp lệ");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
+                    // Create manufacturer object
+                    ManufacturerDTO newManufacturer = ManufacturerDTO.builder()
+                            .manufacturerName(nameField.getText().trim())
+                            .country(countryField.getText().trim())
+                            .phone(phoneField.getText().trim())
+                            .email(emailField.getText().trim())
+                            .address(addressField.getText().trim())
+                            .description(descriptionField.getText().trim())
+                            .build();
+
+                    // Save manufacturer
+                    if (!manufacturerBUS.insert(newManufacturer)) {
+                        NotificationUtil.showErrorNotification("Lỗi", "Không thể thêm nhà sản xuất");
+                    }
+
+                    // Update the selected manufacturer and UI
+                    selectedManufacturer = newManufacturer;
+                    txtManufacturer.setText(selectedManufacturer.getManufacturerName());
+
+                    // Update manufacturer list
+
+                    NotificationUtil.showSuccessNotification("Thành công",
+                            "Đã thêm nhà sản xuất " + newManufacturer.getManufacturerName());
+
+                    dialogStage.close();
+
+                } catch (Exception ex) {
+                    errorLabel.setText("Lỗi: " + ex.getMessage());
+                    errorLabel.setVisible(true);
+                    log.error("Error adding manufacturer: {}", ex.getMessage(), ex);
+                }
+            });
+
+            buttonBox.getChildren().addAll(cancelButton, saveButton);
+
+            formContent.getChildren().addAll(formGrid, errorLabel, buttonBox);
+            layout.setCenter(formContent);
+
+            // Create scene and show dialog
+            Scene scene = new Scene(layout);
+            scene.getStylesheets().add(getClass().getResource("/css/main-style.css").toExternalForm());
+
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
         }
 
         private void createGoodsReceipt() {

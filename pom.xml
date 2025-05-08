@@ -141,6 +141,27 @@
           <artifactId>layout</artifactId>
           <version>7.2.5</version>
       </dependency>
+      <!-- simple log4j-core -->
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+      <dependency>
+          <groupId>org.xhtmlrenderer</groupId>
+          <artifactId>flying-saucer-pdf</artifactId>
+          <version>9.1.22</version>
+      </dependency>
+      <dependency>
+          <groupId>com.itextpdf</groupId>
+          <artifactId>html2pdf</artifactId>
+          <version>4.0.5</version>
+      </dependency>
+
+
   </dependencies>
 
   <build>

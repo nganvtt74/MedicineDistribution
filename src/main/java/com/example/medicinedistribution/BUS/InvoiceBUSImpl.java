@@ -140,10 +140,6 @@ public class InvoiceBUSImpl implements InvoiceBUS {
 
     @Override
     public InvoiceDTO findById(Integer integer) {
-        if(!userSession.hasPermission("VIEW_INVOICE")){
-            log.error("User does not have permission to view invoice");
-            throw new PermissionDeniedException("Bạn không có quyền xem hóa đơn");
-        }
         try (Connection connection = dataSource.getConnection()) {
             InvoiceDTO invoiceDTO = invoiceDAO.findById(integer, connection);
             if (invoiceDTO != null) {
@@ -159,10 +155,6 @@ public class InvoiceBUSImpl implements InvoiceBUS {
 
     @Override
     public List<InvoiceDTO> findAll() {
-        if(!userSession.hasPermission("VIEW_INVOICE")){
-            log.error("User does not have permission to view invoice");
-            throw new PermissionDeniedException("Bạn không có quyền xem hóa đơn");
-        }
         try (Connection connection = dataSource.getConnection()) {
             List<InvoiceDTO> invoiceDTOList = invoiceDAO.findAll(connection);
             for (InvoiceDTO invoiceDTO : invoiceDTOList) {
@@ -237,6 +229,16 @@ public class InvoiceBUSImpl implements InvoiceBUS {
     public Map<String, Integer> getProductSalesByCategorySummary(LocalDate fromDate, LocalDate toDate) {
         try(Connection connection = dataSource.getConnection()) {
             return invoiceDAO.getProductSalesByCategoryStatistics(fromDate, toDate, connection);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
+    }
+
+    @Override
+    public Integer getNextInvoiceId() {
+        try (Connection connection = dataSource.getConnection()) {
+            return invoiceDAO.getNextInvoiceId(connection);
         } catch (SQLException e) {
             log.error("Error while getting connection", e);
             throw new RuntimeException("Lỗi khi lấy kết nối", e);

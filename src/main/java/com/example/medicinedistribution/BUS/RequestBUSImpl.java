@@ -102,10 +102,6 @@ public class RequestBUSImpl implements RequestBUS {
 
     @Override
     public RequestsDTO findById(Integer requestId) {
-        if (!userSession.hasPermission("VIEW_REQUEST")) {
-            log.error("User does not have permission to view request");
-            throw new PermissionDeniedException("You don't have permission to view requests");
-        }
         try(Connection conn = dataSource.getConnection()) {
             return requestDAO.findById(requestId, conn);
         } catch (SQLException e) {
@@ -116,10 +112,6 @@ public class RequestBUSImpl implements RequestBUS {
 
     @Override
     public List<RequestsDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_REQUEST")) {
-            log.error("User does not have permission to view requests");
-            throw new PermissionDeniedException("You don't have permission to view request list");
-        }
         try(Connection conn = dataSource.getConnection()) {
             return requestDAO.findAll(conn);
         } catch (SQLException e) {

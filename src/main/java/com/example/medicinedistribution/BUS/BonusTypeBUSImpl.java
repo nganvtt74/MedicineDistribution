@@ -105,11 +105,6 @@ public class BonusTypeBUSImpl implements BonusTypeBUS {
 
     @Override
     public BonusTypeDTO findById(Integer id) {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonus type");
-            throw new PermissionDeniedException("Bạn không có quyền xem loại thưởng");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusTypeDAO.findById(id, conn);
         } catch (SQLException e) {
@@ -120,11 +115,6 @@ public class BonusTypeBUSImpl implements BonusTypeBUS {
 
     @Override
     public List<BonusTypeDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_PAYROLL")) {
-            log.error("User does not have permission to view bonus types");
-            throw new PermissionDeniedException("Bạn không có quyền xem danh sách loại thưởng");
-        }
-
         try (Connection conn = dataSource.getConnection()) {
             return bonusTypeDAO.findAll(conn);
         } catch (SQLException e) {

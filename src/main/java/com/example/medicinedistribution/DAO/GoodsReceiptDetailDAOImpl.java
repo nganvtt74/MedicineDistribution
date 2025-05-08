@@ -54,26 +54,31 @@ public class GoodsReceiptDetailDAOImpl implements GoodsReceiptDetailDAO {
     public List<GoodsReceiptDetailDTO> findAll(Connection conn) {
         throw new UnsupportedOperationException("Không hỗ trợ tìm tất cả hóa đơn nhập");
     }
-    public List<GoodsReceiptDetailDTO> findByGoodsReceiptId(Integer goodsReceiptId, Connection conn) {
-        String sql = "SELECT * FROM goodsreceiptdetail WHERE goodsReceiptId = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, goodsReceiptId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<GoodsReceiptDetailDTO> goodsReceiptDetailDTOList = new ArrayList<>();
-                while (rs.next()) {
-                    goodsReceiptDetailDTOList.add(new GoodsReceiptDetailDTO(
-                            rs.getInt("goodsReceiptId"),
-                            rs.getInt("productId"),
-                            rs.getBigDecimal("price"),
-                            rs.getInt("quantity"),
-                            rs.getBigDecimal("total")
-                    ));
-                }
-                return goodsReceiptDetailDTOList;
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-        return null;
-    }
+ public List<GoodsReceiptDetailDTO> findByGoodsReceiptId(Integer goodsReceiptId, Connection conn) {
+     String sql = "SELECT d.*, p.productName, p.unit FROM goodsreceiptdetail d " +
+                  "JOIN product p ON d.productId = p.productId " +
+                  "WHERE d.goodsReceiptId = ?";
+
+     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+         stmt.setInt(1, goodsReceiptId);
+         try (ResultSet rs = stmt.executeQuery()) {
+             List<GoodsReceiptDetailDTO> goodsReceiptDetailDTOList = new ArrayList<>();
+             while (rs.next()) {
+                 goodsReceiptDetailDTOList.add(GoodsReceiptDetailDTO.builder()
+                         .goodsReceiptId(rs.getInt("goodsReceiptId"))
+                         .productId(rs.getInt("productId"))
+                         .productName(rs.getString("productName"))
+                         .unit(rs.getString("unit"))
+                         .price(rs.getBigDecimal("price"))
+                         .quantity(rs.getInt("quantity"))
+                         .total(rs.getBigDecimal("total"))
+                         .build());
+             }
+             return goodsReceiptDetailDTOList;
+         }
+     } catch (SQLException e) {
+         log.error("Lỗi khi tìm chi tiết phiếu nhập: {}", e.getMessage());
+     }
+     return null;
+ }
 }

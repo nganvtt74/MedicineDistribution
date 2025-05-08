@@ -21,4 +21,6 @@ public interface InvoiceDAO extends BaseDAO<InvoiceDTO, Integer> {
     List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String groupBy, String viewType, Connection connection);
 
     Map<String, Integer> getProductSalesByCategoryStatistics(LocalDate fromDate, LocalDate toDate, Connection connection);
+
+    Integer getNextInvoiceId(Connection connection);
 }

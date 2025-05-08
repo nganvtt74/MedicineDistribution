@@ -102,10 +102,6 @@ public class RequestTypeBUSImpl implements RequestTypeBUS {
 
     @Override
     public RequestTypeDTO findById(Integer typeId) {
-        if (!userSession.hasPermission("VIEW_REQUEST_TYPE")) {
-            log.error("User does not have permission to view request type");
-            throw new PermissionDeniedException("You don't have permission to view request types");
-        }
         try(Connection conn = dataSource.getConnection()) {
             return requestTypeDAO.findById(typeId, conn);
         } catch (SQLException e) {
@@ -116,10 +112,7 @@ public class RequestTypeBUSImpl implements RequestTypeBUS {
 
     @Override
     public List<RequestTypeDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_REQUEST_TYPE")) {
-            log.error("User does not have permission to view request types");
-            throw new PermissionDeniedException("You don't have permission to view request type list");
-        }
+
         try(Connection conn = dataSource.getConnection()) {
             return requestTypeDAO.findAll(conn);
         } catch (SQLException e) {

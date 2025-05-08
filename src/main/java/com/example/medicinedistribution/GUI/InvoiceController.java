@@ -7,17 +7,25 @@ import com.example.medicinedistribution.Exception.InsertFailedException;
 import com.example.medicinedistribution.Exception.PermissionDeniedException;
 import com.example.medicinedistribution.GUI.SubSelect.CustomerSelectController;
 import com.example.medicinedistribution.GUI.SubSelect.SelectionHandler;
+import com.example.medicinedistribution.Util.ExportUtils;
 import com.example.medicinedistribution.Util.NotificationUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.text.Text;
+
 import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -173,14 +181,23 @@ public class InvoiceController {
 
     private void setupUIData() {
 
-        if (productList!= null){
-            productList.clear();
+        try {
+            if (productList!= null){
+                productList.clear();
+            }
+            if (categoryList != null){
+                categoryList.clear();
+            }
+            productList = new ArrayList<>(productBUS.getAllActiveProducts());
+            categoryList = new ArrayList<>(categoryBUS.findAll());
+        } catch (PermissionDeniedException e) {
+//            throw new PermissionDeniedException(e.getMessage());
+            NotificationUtil.showErrorNotification("Lỗi", e.getMessage());
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            NotificationUtil.showErrorNotification("Lỗi", "Có lỗi không xác định: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-        if (categoryList != null){
-            categoryList.clear();
-        }
-        productList = new ArrayList<>(productBUS.getAllActiveProducts());
-        categoryList = new ArrayList<>(categoryBUS.findAll());
     }
 
     private void setupUI() {
@@ -210,8 +227,166 @@ public class InvoiceController {
             initInvoiceTab();
         });
 
-    }
+        btnPrint.setOnAction(event -> {
+            // Handle print action
+            InvoiceDTO invoice = createInvoiceFromForm();
+            if (invoice == null) {
+                return;
+            }
+            invoice.setInvoiceId(invoiceBUS.getNextInvoiceId());
+            ExportUtils.exportInvoice(invoice,busFactory);
+        });
 
+        btnAddCustomer.setOnAction(event -> {
+            showAddCustomerDialog();
+        });
+
+    }
+    private void showAddCustomerDialog() {
+        // Create dialog
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Thêm khách hàng mới");
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setResizable(false);
+        Image icon = new Image(getClass().getResource("../../../../img/logo.png").toExternalForm());
+        dialogStage.getIcons().add(icon);
+        // Create layout
+        BorderPane layout = new BorderPane();
+        layout.getStyleClass().add("main-container");
+        layout.setPrefWidth(500);
+
+        // Header
+        HBox header = new HBox();
+        header.getStyleClass().add("header-section");
+        header.setAlignment(Pos.CENTER);
+        Label headerLabel = new Label("Thêm khách hàng mới");
+        headerLabel.getStyleClass().add("heading-label");
+        header.getChildren().add(headerLabel);
+        layout.setTop(header);
+
+        // Form content
+        VBox formContent = new VBox(15);
+        formContent.setPadding(new Insets(20));
+        formContent.getStyleClass().add("settings-section");
+
+        // Form fields
+        GridPane formGrid = new GridPane();
+        formGrid.setHgap(15);
+        formGrid.setVgap(15);
+        formGrid.setPrefWidth(460);
+
+        // Configure grid columns to make text fields take full width
+        ColumnConstraints labelColumn = new ColumnConstraints();
+        labelColumn.setPrefWidth(120);
+
+        ColumnConstraints fieldColumn = new ColumnConstraints();
+        fieldColumn.setHgrow(Priority.ALWAYS);
+        fieldColumn.setFillWidth(true);
+
+        formGrid.getColumnConstraints().addAll(labelColumn, fieldColumn);
+
+        // Customer name
+        Label nameLabel = new Label("Tên khách hàng:");
+        formGrid.add(nameLabel, 0, 0);
+        TextField nameField = new TextField();
+        nameField.setPromptText("Nhập tên khách hàng");
+        nameField.setPrefWidth(300);
+        formGrid.add(nameField, 1, 0);
+
+        // Phone
+        Label phoneLabel = new Label("Số điện thoại:");
+        formGrid.add(phoneLabel, 0, 1);
+        TextField phoneField = new TextField();
+        phoneField.setPromptText("Nhập số điện thoại");
+        phoneField.setPrefWidth(300);
+        formGrid.add(phoneField, 1, 1);
+
+        // Email
+        Label emailLabel = new Label("Email:");
+        formGrid.add(emailLabel, 0, 2);
+        TextField emailField = new TextField();
+        emailField.setPromptText("Nhập email");
+        emailField.setPrefWidth(300);
+        formGrid.add(emailField, 1, 2);
+
+        // Address
+        Label addressLabel = new Label("Địa chỉ:");
+        formGrid.add(addressLabel, 0, 3);
+        TextField addressField = new TextField();
+        addressField.setPromptText("Nhập địa chỉ");
+        addressField.setPrefWidth(300);
+        formGrid.add(addressField, 1, 3);
+
+        // Error message
+        Label errorLabel = new Label();
+        errorLabel.getStyleClass().add("error-label");
+        errorLabel.setVisible(false);
+
+        // Buttons
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        buttonBox.setPadding(new Insets(15, 0, 0, 0));
+
+        Button cancelButton = new Button("Hủy");
+        cancelButton.setFont(new Font(16));
+        cancelButton.getStyleClass().add("secondary-button");
+        cancelButton.setOnAction(e -> dialogStage.close());
+
+        Button saveButton = new Button("Lưu");
+        saveButton.setFont(new Font(16));
+        saveButton.getStyleClass().add("primary-button");
+        saveButton.setOnAction(e -> {
+            try {
+                // Validate input
+                if (nameField.getText().trim().isEmpty()) {
+                    errorLabel.setText("Tên khách hàng không được để trống");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+
+                // Create customer object
+                CustomerDTO newCustomer = CustomerDTO.builder()
+                        .customerName(nameField.getText().trim())
+                        .phone(phoneField.getText().trim())
+                        .email(emailField.getText().trim())
+                        .address(addressField.getText().trim())
+                        .build();
+
+                // Save customer
+                if (!customerBUS.insert(newCustomer)) {
+                    errorLabel.setText("Lỗi: Không thể thêm khách hàng");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+
+                // Update the selected customer and UI
+                selectedCustomer = newCustomer;
+                txtCustomer.setText(selectedCustomer.getCustomerName());
+
+                NotificationUtil.showSuccessNotification("Thành công",
+                        "Đã thêm khách hàng " + newCustomer.getCustomerName());
+
+                dialogStage.close();
+
+            } catch (Exception ex) {
+                errorLabel.setText("Lỗi: " + ex.getMessage());
+                errorLabel.setVisible(true);
+                log.error("Error adding customer: {}", ex.getMessage(), ex);
+            }
+        });
+
+        buttonBox.getChildren().addAll(cancelButton, saveButton);
+
+        formContent.getChildren().addAll(formGrid, errorLabel, buttonBox);
+        layout.setCenter(formContent);
+
+        // Create scene and show dialog
+        Scene scene = new Scene(layout);
+        scene.getStylesheets().add(getClass().getResource("/css/main-style.css").toExternalForm());
+
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
 
     private void createInvoice() {
         if (valid()) {
@@ -428,6 +603,8 @@ public class InvoiceController {
         newDetail.setPrice(product.getPrice());
         newDetail.setQuantity(1);
         newDetail.setTotal(product.getPrice());
+        newDetail.setProductName(product.getProductName());
+        newDetail.setUnit(product.getUnit());
         tblInvoiceDetails.getItems().add(newDetail);
     }
 
@@ -465,6 +642,9 @@ public class InvoiceController {
     }
 
     public InvoiceDTO createInvoiceFromForm(){
+        if (!valid()) {
+            return null;
+        }
         InvoiceDTO invoice = new InvoiceDTO();
         invoice.setCustomerId(selectedCustomer.getCustomerId());
         invoice.setEmployeeId(userSession.getEmployee().getEmployeeId());

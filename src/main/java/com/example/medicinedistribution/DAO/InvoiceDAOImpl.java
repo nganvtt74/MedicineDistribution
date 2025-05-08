@@ -292,6 +292,22 @@ public class InvoiceDAOImpl implements InvoiceDAO {
         return result;
     }
 
+    @Override
+    public Integer getNextInvoiceId(Connection connection) {
+        String sql = "SELECT MAX(invoiceId) + 1 FROM invoice";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing getNextInvoiceId query", e);
+            throw new RuntimeException("Lỗi khi truy vấn ID hóa đơn tiếp theo", e);
+        }
+        return null;
+    }
+
     // Helper method to format period for display
     private String formatPeriodForDisplay(String period, String viewType) {
         try {

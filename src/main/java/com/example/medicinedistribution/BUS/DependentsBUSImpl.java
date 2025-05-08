@@ -97,10 +97,6 @@ public class DependentsBUSImpl implements DependentsBUS {
 
     @Override
     public List<DependentsDTO> findByEmployeeId(Integer employeeId) {
-        if (!userSession.hasPermission("VIEW_EMPLOYEE")) {
-            log.warn("User does not have permission to view dependents");
-            throw new PermissionDeniedException("Bạn không có quyền xem thân nhân");
-        }
         try (var connection = dataSource.getConnection()) {
             List<DependentsDTO> dependents = dependentsDAO.findByEmployeeId(employeeId, connection);
             if (dependents != null && !dependents.isEmpty()) {
@@ -118,10 +114,6 @@ public class DependentsBUSImpl implements DependentsBUS {
 
     @Override
     public DependentsDTO findById(Integer employeeId, Integer dependentNo) {
-        if (!userSession.hasPermission("VIEW_EMPLOYEE")) {
-            log.warn("User does not have permission to view dependents");
-            throw new PermissionDeniedException("Bạn không có quyền xem thân nhân");
-        }
         try (var connection = dataSource.getConnection()){
             DependentsDTO dependent = dependentsDAO.findById(employeeId, dependentNo, connection);
             if (dependent != null) {
@@ -160,10 +152,6 @@ public class DependentsBUSImpl implements DependentsBUS {
 
     @Override
     public int countDependentByEmployeeId(Integer employeeId) {
-        if (!userSession.hasPermission("VIEW_EMPLOYEE")) {
-            log.warn("User does not have permission to count dependents");
-            throw new PermissionDeniedException("Bạn không có quyền xem thân nhân");
-        }
         try (var connection = dataSource.getConnection()) {
             int count = dependentsDAO.countDependentByEmployeeId(employeeId, connection);
 //            log.info("Counted {} dependents for EmployeeID: {}", count, employeeId);

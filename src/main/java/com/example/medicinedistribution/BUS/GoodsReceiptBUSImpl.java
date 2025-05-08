@@ -129,10 +129,6 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
 
     @Override
     public GoodsReceiptDTO findById(Integer integer) {
-        if (!userSession.hasPermission("VIEW_GOODS_RECEIPT")) {
-            log.error("User does not have permission to view goods receipt");
-            throw new PermissionDeniedException("Bạn không có quyền xem phiếu nhập");
-        }
         try (Connection connection = dataSource.getConnection()) {
             GoodsReceiptDTO goodsReceiptDTO = goodsReceiptDAO.findById(integer, connection);
             if (goodsReceiptDTO != null) {
@@ -157,10 +153,6 @@ public class GoodsReceiptBUSImpl implements GoodsReceiptBUS {
 
     @Override
     public List<GoodsReceiptDTO> findAll() {
-        if (!userSession.hasPermission("VIEW_GOODS_RECEIPT")) {
-            log.error("User does not have permission to view goods receipt");
-            throw new PermissionDeniedException("Bạn không có quyền xem phiếu nhập");
-        }
         try (Connection connection = dataSource.getConnection()) {
             List<GoodsReceiptDTO> goodsReceiptDTOs = goodsReceiptDAO.findAll(connection);
             for (GoodsReceiptDTO goodsReceiptDTO : goodsReceiptDTOs) {

@@ -19,4 +19,6 @@ Map<String, BigDecimal> getRevenueByCategorySummary(LocalDate fromDate, LocalDat
     List<ProductStatisticDTO> getProductSalesSummary(LocalDate fromDate, LocalDate toDate, String viewType);
 
     Map<String, Integer> getProductSalesByCategorySummary(LocalDate fromDate, LocalDate toDate);
+
+    Integer getNextInvoiceId();
 }

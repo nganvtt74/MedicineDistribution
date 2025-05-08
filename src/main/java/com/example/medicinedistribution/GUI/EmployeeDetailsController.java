@@ -100,7 +100,7 @@ public class EmployeeDetailsController {
             // Add employment information
             row = 0;
             addDetailRow(employmentInfoGrid, "Chức vụ:", position != null ? position.getPositionName() : "N/A", row++);
-            addDetailRow(employmentInfoGrid, "Phòng ban:", position != null ? "Phòng " + position.getDepartmentId() : "N/A", row++);
+            addDetailRow(employmentInfoGrid, "Phòng ban:", position != null ? "Phòng " + busFactory.getDepartmentBUS().findById(position.getDepartmentId()).getDepartmentName() : "N/A", row++);
             addDetailRow(employmentInfoGrid, "Ngày thuê:", employee.getHireDate().format(dateFormatter), row++);
             addDetailRow(employmentInfoGrid, "Lương cơ bản:", String.format("%,.0f VND", employee.getBasicSalary()), row++);
             addDetailRow(employmentInfoGrid, "Số ngày nghỉ phép còn lại:", "30 ngày", row++);

@@ -105,10 +105,6 @@ public class ManufacturerBUSImpl implements ManufacturerBUS {
 
     @Override
     public ManufacturerDTO findById(Integer integer) {
-        if(!userSession.hasPermission("VIEW_MANUFACTURER")) {
-            log.error("User does not have permission to find manufacturer");
-            throw new PermissionDeniedException("Bạn không có quyền tìm kiếm nhà sản xuất");
-        }
         try(Connection connection = dataSource.getConnection()) {
             return manufacturerDAO.findById(integer , connection);
         } catch (SQLException e) {
@@ -119,10 +115,6 @@ public class ManufacturerBUSImpl implements ManufacturerBUS {
 
     @Override
     public List<ManufacturerDTO> findAll() {
-        if(!userSession.hasPermission("VIEW_MANUFACTURER")) {
-            log.error("User does not have permission to find manufacturer");
-            throw new PermissionDeniedException("Bạn không có quyền tìm kiếm nhà sản xuất");
-        }
         try(Connection connection = dataSource.getConnection()) {
             return manufacturerDAO.findAll(connection);
         } catch (SQLException e) {

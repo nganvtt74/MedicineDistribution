@@ -23,9 +23,13 @@ import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.font.constants.StandardFonts;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,7 +37,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
+@Slf4j
 public class PdfExportUtils {
 
     private static final Color HEADER_COLOR = new DeviceRgb(66, 133, 244);
@@ -47,66 +51,77 @@ public class PdfExportUtils {
      * @param month Month of payroll
      * @param year Year of payroll
      */
-    public static void exportEmployeePayrollToPdf(int employeeId, int month, int year, BUSFactory busFactory) {
-        Stage stage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Export Payroll to PDF");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-        fileChooser.setInitialFileName("Payroll_" + employeeId + "_" + month + "_" + year + ".pdf");
-
-        File file = fileChooser.showSaveDialog(stage);
-
-        if (file != null) {
-            try {
-                // Get employee and payroll data
-                PdfExportUtils.busFactory = busFactory;
-                EmployeeBUS employeeBUS = busFactory.getEmployeeBUS();
-                EmployeeDTO employee = employeeBUS.findById(employeeId);
-
-                PayrollBUS payrollBUS = busFactory.getPayrollBUS();
-                PayrollDTO payroll = payrollBUS.getPayrollByEmployeeId(employeeId, month, year);
-
-                if (employee == null || payroll == null) {
-                    NotificationUtil.showErrorNotification("Export Error",
-                            "Payroll data not found for employee ID " + employeeId + " in " + month + "/" + year);
-                    return;
-                }
-
-                // Create PDF document
-                PdfDocument pdfDoc = new PdfDocument(new PdfWriter(file));
-                Document document = new Document(pdfDoc, PageSize.A4);
-                document.setMargins(36, 36, 36, 36);
-
-                // Load font that supports Vietnamese
-                PdfFont font = PdfFontFactory.createFont();
-                document.setFont(font);
-
-                // Add document header
-                addDocumentHeader(document, month, year);
-
-                // Add employee information
-                addEmployeeInfo(document, employee);
-
-                // Add payroll details
-                addPayrollDetails(document, payroll);
-
-                // Add signature section
-                addSignatureSection(document);
-
-                // Close document
-                document.close();
-
-                NotificationUtil.showSuccessNotification("Export Successful",
-                        "Payroll PDF exported successfully to: " + file.getAbsolutePath());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                NotificationUtil.showErrorNotification("Export Failed",
-                        "Failed to export payroll data: " + e.getMessage());
-            }
+public static void exportEmployeePayrollToPdf(int employeeId, int month, int year, BUSFactory busFactory) {
+    try {
+        // Create directory structure if it doesn't exist
+        String directoryPath = "./payroll/" + month + "_" + year;
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
+
+        // Define the file path directly
+        File file = new File(directory, "Payroll_" + employeeId + "_" + month + "_" + year + ".pdf");
+
+        // Get employee and payroll data
+        PdfExportUtils.busFactory = busFactory;
+        EmployeeBUS employeeBUS = busFactory.getEmployeeBUS();
+        EmployeeDTO employee = employeeBUS.findById(employeeId);
+
+        PayrollBUS payrollBUS = busFactory.getPayrollBUS();
+        PayrollDTO payroll = payrollBUS.getPayrollByEmployeeId(employeeId, month, year);
+
+        if (employee == null || payroll == null) {
+            NotificationUtil.showErrorNotification("Export Error",
+                    "Payroll data not found for employee ID " + employeeId + " in " + month + "/" + year);
+            return;
+        }
+
+        // Create PDF document
+        PdfDocument pdfDoc = new PdfDocument(new PdfWriter(file));
+        Document document = new Document(pdfDoc, PageSize.A4);
+        document.setMargins(36, 36, 36, 36);
+
+        try {
+            // Load font that supports Vietnamese
+            String fontPath = "./fonts/arial-unicode-ms.ttf";
+            PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H,
+                                                  PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
+            document.setFont(font);
+        } catch (IOException e) {
+            log.error("Error loading font: {}", e.getMessage());
+            // Fall back to default font if custom font fails to load
+            document.setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA,
+                             PdfEncodings.IDENTITY_H));
+        }
+
+        // Add document content
+        addDocumentHeader(document, month, year);
+        addEmployeeInfo(document, employee);
+        addPayrollDetails(document, payroll);
+        addSignatureSection(document);
+
+        // Close document
+        document.close();
+
+        NotificationUtil.showSuccessNotification("Export Successful",
+                "Payroll PDF exported successfully to: " + file.getAbsolutePath());
+        // Automatically open the PDF file
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(file);
+            } else {
+                log.warn("Desktop not supported, cannot open PDF automatically");
+            }
+        } catch (IOException e) {
+            log.error("Error opening PDF file: {}", e.getMessage());
+        }
+    } catch (Exception e) {
+        log.error("Error exporting payroll to PDF: {}", e.getMessage());
+        NotificationUtil.showErrorNotification("Export Failed",
+                "Failed to export payroll data: " + e.getMessage());
     }
+}
 
     private static void addDocumentHeader(Document document, int month, int year) {
         // Company information
@@ -214,6 +229,7 @@ public class PdfExportUtils {
 
         Cell netSalaryValueCell = createCell(formatCurrency(payroll.getNet_income()), false, true);
         netSalaryValueCell.setBackgroundColor(LIGHT_BLUE);
+        netSalaryValueCell.setFontColor(ColorConstants.RED);
         netSalaryValueCell.setBold();
         netSalaryValueCell.setFontSize(12);
         salaryTable.addCell(netSalaryValueCell);

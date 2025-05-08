@@ -117,11 +117,6 @@ package com.example.medicinedistribution.BUS;
 
         @Override
         public AttendanceDTO getAttendance(int employeeId, String date) {
-            if (!userSession.hasPermission("VIEW_ATTENDANCE")) {
-                log.error("User does not have permission to view attendance");
-                throw new PermissionDeniedException("Bạn không có quyền xem dữ liệu chấm công");
-            }
-
             try (Connection conn = dataSource.getConnection()) {
                 AttendanceDTO attendance = attendanceDAO.getAttendance(employeeId, date, conn);
                 if (attendance == null) {
@@ -136,11 +131,6 @@ package com.example.medicinedistribution.BUS;
 
         @Override
         public List<AttendanceDTO> getAttendanceByEmployeeId(int employeeId) {
-            if (!userSession.hasPermission("VIEW_ATTENDANCE")) {
-                log.error("User does not have permission to view attendance");
-                throw new PermissionDeniedException("Bạn không có quyền xem dữ liệu chấm công");
-            }
-
             try (Connection conn = dataSource.getConnection()) {
                 List<AttendanceDTO> attendances = attendanceDAO.getAttendanceByEmployeeId(employeeId, conn);
                 log.info("Found {} attendance records for employee ID: {}", attendances.size(), employeeId);
@@ -153,11 +143,6 @@ package com.example.medicinedistribution.BUS;
 
         @Override
         public List<AttendanceDTO> getAttendanceByDate(String date) {
-            if (!userSession.hasPermission("VIEW_ATTENDANCE")) {
-                log.error("User does not have permission to view attendance");
-                throw new PermissionDeniedException("Bạn không có quyền xem dữ liệu chấm công");
-            }
-
             try (Connection conn = dataSource.getConnection()) {
                 List<AttendanceDTO> attendances = attendanceDAO.getAttendanceByDate(date, conn);
                 log.info("Found {} attendance records for date: {}", attendances.size(), date);
@@ -416,11 +401,6 @@ package com.example.medicinedistribution.BUS;
 
         @Override
         public List<AttendanceDTO> getAllAttendanceInMonth(int i, int i1) {
-            if (!userSession.hasPermission("VIEW_ATTENDANCE")) {
-                log.error("User does not have permission to view all attendance in month");
-                throw new PermissionDeniedException("Bạn không có quyền xem dữ liệu chấm công");
-            }
-
             try (Connection conn = dataSource.getConnection()) {
                 List<AttendanceDTO> attendances = attendanceDAO.getAllAttendanceInMonth(i, i1, conn);
                 log.info("Found {} attendance records for month: {} year: {}", attendances.size(), i, i1);
@@ -433,11 +413,6 @@ package com.example.medicinedistribution.BUS;
 
         @Override
         public List<AttendanceDTO> getAllAttendanceBetweenDates(LocalDate globalStartDate, LocalDate globalEndDate) {
-            if (!userSession.hasPermission("VIEW_ATTENDANCE")) {
-                log.error("User does not have permission to view all attendance between dates");
-                throw new PermissionDeniedException("Bạn không có quyền xem dữ liệu chấm công");
-            }
-
             try (Connection conn = dataSource.getConnection()) {
                 List<AttendanceDTO> attendances = attendanceDAO.getAllAttendanceBetweenDates(globalStartDate, globalEndDate, conn);
                 log.info("Found {} attendance records between dates: {} and {}", attendances.size(), globalStartDate, globalEndDate);

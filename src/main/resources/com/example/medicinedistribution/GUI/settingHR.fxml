@@ -37,7 +37,7 @@
                   <!-- Tax Rates Section -->
                   <VBox spacing="10.0">
                      <children>
-                        <Label styleClass="sub-section-header" text="Mức thuế thu nhập cá nhân">
+                        <Label styleClass="sub-section-header" text="Bảng thuế suất TNCN">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>

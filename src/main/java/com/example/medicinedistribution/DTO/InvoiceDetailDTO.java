@@ -15,6 +15,8 @@ public class InvoiceDetailDTO {
     
     @NotNull(message = "Mã sản phẩm không được để trống")
     private Integer productId;
+    private String productName;
+    private String unit;
     
     @Positive(message = "Số lượng phải lớn hơn 0")
     private int quantity;

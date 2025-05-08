@@ -38,17 +38,12 @@ public class AccountBUSImpl implements AccountBUS {
     }
     @Override
     public AccountDTO findByUsername(String username) {
-        if (userSession.hasPermission("VIEW_ACCOUNT")) {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.findByUsername(username, connection);
             } catch (Exception e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("Không có quyền tìm tài khoản");
-            throw new RuntimeException("Bạn không có quyền tìm tài khoản");
-        }
     }
 
     @Override
@@ -81,32 +76,22 @@ public class AccountBUSImpl implements AccountBUS {
 
     @Override
     public ArrayList<AccountDTO> getAccountByRoleId(List<RoleDTO> roleList) {
-        if (userSession.hasPermission("VIEW_ACCOUNT")) {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.getAccountByRoleId(roleList, connection);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("Không có quyền tìm tài khoản");
-            throw new RuntimeException("Bạn không có quyền tìm tài khoản");
-        }
     }
 
     @Override
     public ArrayList<AccountDTO> getAccountByNullRoleId() {
-        if (userSession.hasPermission("VIEW_ACCOUNT")) {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.getAccountByNullRoleId(connection);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("Không có quyền tìm tài khoản");
-            throw new RuntimeException("Bạn không có quyền tìm tài khoản");
-        }
     }
 
     @Override
@@ -185,32 +170,22 @@ public class AccountBUSImpl implements AccountBUS {
 
     @Override
     public AccountDTO findById(Integer s) {
-        if (userSession.hasPermission("VIEW_ACCOUNT")) {
             try (Connection connection = dataSource.getConnection()) {
                 return accountDAO.findById(s, connection);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("Không có quyền tìm tài khoản");
-            throw new RuntimeException("Bạn không có quyền tìm tài khoản");
-        }
     }
 
     @Override
     public List<AccountDTO> findAll() {
-        if (userSession.hasPermission("VIEW_ACCOUNT")) {
             try(Connection connection = dataSource.getConnection()) {
                 return accountDAO.findAll(connection);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        }else {
-            log.error("Không có quyền tìm tài khoản");
-            throw new RuntimeException("Bạn không có quyền tìm tài khoản");
-        }
     }
 
     private void valid(AccountDTO accountDTO) {

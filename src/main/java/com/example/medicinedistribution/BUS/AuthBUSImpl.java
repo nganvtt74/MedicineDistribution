@@ -94,7 +94,19 @@ public class AuthBUSImpl implements AuthBUS {
 
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        return false;
+        try (Connection connection = dataSource.getConnection()) {
+            AccountDTO account = accountDAO.findByUsername(username, connection);
+            if (account != null && PasswordUtil.checkPassword(oldPassword, account.getPassword())) {
+                account.setPassword(PasswordUtil.hashPassword(newPassword));
+                return accountDAO.updatePassword(account, connection);
+            } else {
+                log.error("Invalid username or password");
+                throw new RuntimeException("Tài khoản hoặc mật khẩu không hợp lệ");
+            }
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Lỗi khi lấy kết nối", e);
+        }
     }
 
     @Override
