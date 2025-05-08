@@ -42,11 +42,11 @@
                </padding>
                <children>
                   <Label styleClass="form-label" text="Trạng thái:" />
-                  <ComboBox fx:id="cbStatus1" prefWidth="120.0" promptText="Tất cả" />
+                  <ComboBox fx:id="cbStatus" prefWidth="120.0" promptText="Tất cả" />
                   <Label styleClass="form-label" text="Loại yêu cầu:" />
                   <ComboBox fx:id="cbRequestType1" prefWidth="150.0" promptText="Tất cả" />
-                  <Button fx:id="btnFilter1" style="-fx-font-size: 15;" styleClass="primary-button" text="Lọc" />
-                  <Button fx:id="btnReset1" style="-fx-font-size: 15;" styleClass="secondary-button" text="Đặt lại" />
+                  <Button fx:id="btnFilter" style="-fx-font-size: 15;" styleClass="primary-button" text="Lọc" />
+                  <Button fx:id="btnReset" style="-fx-font-size: 15;" styleClass="secondary-button" text="Đặt lại" />
                </children>
             </HBox>
 

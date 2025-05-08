@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -127,6 +128,16 @@ public class RequestBUSImpl implements RequestBUS {
                 log.error("Validation error: {} - {}", violation.getPropertyPath(), violation.getMessage());
                 throw new IllegalArgumentException(violation.getMessage());
             }
+        }
+    }
+
+    @Override
+    public List<RequestsDTO> findByFilters(LocalDate fromDate, LocalDate toDate, String status, Integer typeId) {
+        try(Connection conn = dataSource.getConnection()) {
+            return requestDAO.findByFilters(fromDate, toDate, status, typeId, conn);
+        } catch (SQLException e) {
+            log.error("Error while getting connection", e);
+            throw new RuntimeException("Error connecting to database", e);
         }
     }
 }

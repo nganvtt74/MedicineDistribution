@@ -527,62 +527,66 @@ public class PayRollController {
         });
         colTotalInsurance.setCellFactory(column -> createCurrencyCell());
         colIncomeTax.setCellValueFactory(cellData -> {
+            // Nếu nhân viên đang nghỉ thai sản (status 6), không tính thuế thu nhập
             if (isHaveStatus6(cellData.getValue().getEmployeeId())) {
                 return new SimpleObjectProperty<>(BigDecimal.ZERO);
             }
 
-            // Get the employee's row index
+            // Lấy vị trí hàng của nhân viên này trong bảng
             int rowIndex = tblSalary.getItems().indexOf(cellData.getValue());
 
-            // Get values from previously calculated columns
+            // Lấy giá trị thu nhập tổng và bảo hiểm đã được tính từ các cột trước
             BigDecimal totalIncome = colTotalIncome.getCellData(rowIndex);
             BigDecimal totalInsurance = colTotalInsurance.getCellData(rowIndex);
 
-            // Get employee data for dependent calculation
+            // Lấy thông tin về số người phụ thuộc để tính giảm trừ gia cảnh
             EmployeeDTO employee = cellData.getValue();
             int dependentCount = employee.getDependentCount() != null ? employee.getDependentCount() : 0;
 
-            // Calculate personal deductions
-            BigDecimal personalDeduction = BigDecimal.valueOf(11000000); // Personal deduction: 11M VND
-            BigDecimal dependentDeduction = BigDecimal.valueOf(4400000).multiply(BigDecimal.valueOf(dependentCount)); // 4.4M per dependent
-            BigDecimal insuranceDeduction = totalInsurance != null ? totalInsurance : BigDecimal.ZERO;
+            // Tính các khoản giảm trừ theo luật thuế
+            BigDecimal personalDeduction = BigDecimal.valueOf(11000000); // Giảm trừ cá nhân: 11 triệu VNĐ/tháng
+            BigDecimal dependentDeduction = BigDecimal.valueOf(4400000).multiply(BigDecimal.valueOf(dependentCount)); // 4.4 triệu VNĐ/người phụ thuộc/tháng
+            BigDecimal insuranceDeduction = totalInsurance != null ? totalInsurance : BigDecimal.ZERO; // Giảm trừ bảo hiểm đã đóng
 
-            // Total deductions
+            // Tổng các khoản giảm trừ
             BigDecimal totalDeductions = personalDeduction.add(dependentDeduction).add(insuranceDeduction);
 
-            // Calculate taxable income
+            // Tính thu nhập chịu thuế = thu nhập tổng - tổng giảm trừ
             BigDecimal taxableIncome = totalIncome.subtract(totalDeductions);
 
-            // Ensure taxable income is not negative
+            // Đảm bảo thu nhập chịu thuế không âm
             if (taxableIncome.compareTo(BigDecimal.ZERO) < 0) {
                 taxableIncome = BigDecimal.ZERO;
             }
 
-            // Calculate tax based on brackets
+            // Tính thuế dựa trên các bậc thuế suất từ cấu hình
             BigDecimal tax = BigDecimal.ZERO;
             for (TaxRateDTO taxRate : taxRates) {
+                // Xác định xem thu nhập thuộc bậc thuế nào
                 if (taxableIncome.compareTo(BigDecimal.valueOf(taxRate.getMin())) >= 0 &&
                         taxableIncome.compareTo(BigDecimal.valueOf(taxRate.getMax())) <= 0) {
+                    // Áp dụng công thức: Thuế = Thu nhập chịu thuế x Thuế suất - Số tiền giảm trừ cố định
                     tax = taxableIncome.multiply(BigDecimal.valueOf(taxRate.getTaxRate() / 100.0))
                             .subtract(BigDecimal.valueOf(taxRate.getFixedDeduction()));
                     break;
                 }
             }
 
-            // Ensure tax is not negative
+            // Đảm bảo thuế không âm
             if (tax.compareTo(BigDecimal.ZERO) < 0) {
                 tax = BigDecimal.ZERO;
             }
 
-            // Round to nearest 500 VND
+            // Làm tròn số thuế đến 500 VNĐ (thông lệ tại Việt Nam)
             long amountInLong = tax.longValue();
             long remainder = amountInLong % 500;
             if (remainder < 250) {
-                amountInLong = amountInLong - remainder;
+                amountInLong = amountInLong - remainder; // Làm tròn xuống
             } else {
-                amountInLong = amountInLong + (500 - remainder);
+                amountInLong = amountInLong + (500 - remainder); // Làm tròn lên
             }
 
+            // Trả về số thuế cuối cùng
             return new SimpleObjectProperty<>(BigDecimal.valueOf(amountInLong));
         });
         colIncomeTax.setCellFactory(column -> createCurrencyCell());

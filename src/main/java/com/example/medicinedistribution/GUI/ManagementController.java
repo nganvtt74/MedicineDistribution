@@ -59,24 +59,65 @@ public abstract class ManagementController {
     }
 
     protected void setupBtnBack() {
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResource("../../../../icon/Undo.png")).toExternalForm());
-        ImageView backIcon = new ImageView(backImage);
-        backIcon.setFitHeight(20);
-        backIcon.setFitWidth(20);
-        backIcon.setPreserveRatio(true);
+         Image backImage = new Image(Objects.requireNonNull(getClass().getResource("../../../../icon/Undo.png")).toExternalForm());
+         ImageView backIcon = new ImageView(backImage);
+         backIcon.setFitHeight(20);
+         backIcon.setFitWidth(20);
+         backIcon.setPreserveRatio(true);
 
-        btnBack.setText("Quay lại");
-        btnBack.setGraphic(backIcon);
-        btnBack.getStyleClass().clear();
-        btnBack.getStyleClass().addAll("primary-button");
+        // Create a specific blue color matching #1565C0
+        javafx.scene.paint.Color blueColor = javafx.scene.paint.Color.web("#1565C0");
 
-        btnBack.setStyle("-fx-graphic-text-gap: 4; -fx-padding: 8 15 8 8;" +
-                "-fx-border-radius: 5; -fx-background-radius: 5 ; -fx-cursor: hand" );
+        // Create a color input for the blue color
+        javafx.scene.effect.ColorInput colorInput = new javafx.scene.effect.ColorInput(
+            0, 0, backIcon.getFitWidth(), backIcon.getFitHeight(), blueColor
+        );
 
+        // Create a blend mode that only colors the non-transparent parts
+        javafx.scene.effect.Blend blend = new javafx.scene.effect.Blend(
+            javafx.scene.effect.BlendMode.SRC_ATOP,
+            null,
+            colorInput
+        );
 
-        btnBack.setOnAction(event -> {
-            handleBackButton();
-        });
+        // Apply the effect to the icon
+        backIcon.setEffect(blend);
+
+         btnBack.setText("Quay lại");
+         btnBack.setGraphic(backIcon);
+         btnBack.getStyleClass().clear();
+
+         // Set transparent background and blue bold text
+         btnBack.setStyle("-fx-background-color: transparent;" +
+                          "-fx-text-fill: #1565C0;" +
+                          "-fx-font-weight: bold;" +
+                          "-fx-graphic-text-gap: 8;" +
+                          "-fx-padding: 8 15 8 8;" +
+                          "-fx-cursor: hand;");
+
+         btnBack.setOnAction(event -> {
+             handleBackButton();
+         });
+
+         // Add hover effect
+        btnBack.setOnMouseEntered(e ->
+            btnBack.setStyle("-fx-background-color: rgba(21, 101, 192, 0.1);" +
+                             "-fx-text-fill: #1565C0;" +
+                             "-fx-font-weight: bold;" +
+                             "-fx-graphic-text-gap: 8;" +
+                             "-fx-padding: 8 15 8 8;" +
+                             "-fx-cursor: hand;" +
+                             "-fx-background-radius: 30;")
+        );
+
+         btnBack.setOnMouseExited(e ->
+             btnBack.setStyle("-fx-background-color: transparent;" +
+                              "-fx-text-fill: #1565C0;" +
+                              "-fx-font-weight: bold;" +
+                              "-fx-graphic-text-gap: 8;" +
+                              "-fx-padding: 8 15 8 8;" +
+                              "-fx-cursor: hand;")
+         );
     }
     protected void logout() {
         // Perform logout logic here

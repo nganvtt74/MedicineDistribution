@@ -311,9 +311,9 @@ public class PostLoginController {
             }
         }
 
-        if (!busFactory.getUserSession().hasPermission("INSERT_REQUEST")) {
-            btnGroup.getChildren().remove(btnCreateRequest);
-        }
+//        if (!busFactory.getUserSession().hasPermission("INSERT_REQUEST")) {
+//            btnGroup.getChildren().remove(btnCreateRequest);
+//        }
 //        if (!busFactory.getUserSession().hasPermission("EXPORT_SALARY")) {
 //            btnGroup.getChildren().remove(btnSalary);
 //        }

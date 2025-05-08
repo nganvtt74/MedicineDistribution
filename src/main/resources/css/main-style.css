@@ -1326,3 +1326,31 @@
     -fx-text-fill: white;
     -fx-opacity: 0.7;
 }
+
+/* Icon button style */
+.icon-button {
+    -fx-background-color: white;
+    -fx-background-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.icon-button:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-translate-y: 1px;
+}
+
+.status-pending {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #ff8c00;
+    -fx-background-radius: 15;
+    -fx-padding: 5 15;
+}

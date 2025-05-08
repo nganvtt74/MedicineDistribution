@@ -5,6 +5,7 @@ import com.example.medicinedistribution.DTO.RequestsDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,5 +120,43 @@ public class RequestDAOImpl implements RequestDAO {
                 .approved_by(rs.getObject("approved_by") != null ? rs.getInt("approved_by") : null)
                 .approved_at(rs.getDate("approved_at") != null ? rs.getDate("approved_at").toLocalDate() : null)
                 .build();
+    }
+
+    @Override
+    public List<RequestsDTO> findByFilters(LocalDate fromDate, LocalDate toDate, String status, Integer typeId, Connection conn) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM requests WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (fromDate != null) {
+            sql.append(" AND start_date >= ?");
+            params.add(Date.valueOf(fromDate));
+        }
+        if (toDate != null) {
+            sql.append(" AND end_date <= ?");
+            params.add(Date.valueOf(toDate));
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(status);
+        }
+        if (typeId != null) {
+            sql.append(" AND type_id = ?");
+            params.add(typeId);
+        }
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = stmt.executeQuery();
+            List<RequestsDTO> requestList = new ArrayList<>();
+            while (rs.next()) {
+                requestList.add(mapResultSetToRequest(rs));
+            }
+            return requestList;
+        } catch (Exception e) {
+            log.error("Error finding requests by filters: {}", e.getMessage());
+        }
+        return null;
     }
 }
