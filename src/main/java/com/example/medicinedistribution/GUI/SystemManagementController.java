@@ -146,7 +146,7 @@ public class SystemManagementController extends ManagementController {
         content.getStyleClass().add("contact-content");
         // Add contact details
         content.getChildren().addAll(
-                createContactField("Name:", "Gia Uy"),
+                createContactField("Name:", "Nhom 5"),
                 createContactField("Email:", "magiauy46@gmail.com"),
                 createContactField("Phone:", "+84 0339702531"),
                 createContactField("GitHub:", "github.com/magiauy")
