@@ -99,21 +99,33 @@ public class EmployeeAction extends SubAction<EmployeeController, EmployeeDTO> {
         });
     }
 
-    private void validProperty() {
-        dtpBirthday.setEditable(false);
-        dtpHireDate.setEditable(false);
-        txtPhone.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty()) {
-                try {
-                    String formattedPhone = newValue.replaceAll("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
-                    txtPhone.setText(formattedPhone);
-                } catch (NumberFormatException e) {
-                    // Handle invalid number format
-                }
-            }
-        });
-    }
+private void validProperty() {
+    dtpBirthday.setEditable(false);
+    dtpHireDate.setEditable(false);
 
+    // Remove the automatic formatting that conflicts with the validation regex
+    txtPhone.textProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue == null) return;
+
+        // Only allow valid characters for the phone regex pattern
+        String cleaned = newValue.replaceAll("[^0-9+\\- ]", "");
+
+        // Don't update if nothing changed (to avoid infinite recursion)
+        if (!cleaned.equals(newValue)) {
+            txtPhone.setText(cleaned);
+        }
+
+        // Check if valid against the pattern on every change
+        boolean isValid = cleaned.matches("^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$");
+
+        // Visual feedback for validity (optional)
+        if (!cleaned.isEmpty()) {
+            txtPhone.setStyle(isValid ? "-fx-border-color: green;" : "-fx-border-color: red;");
+        } else {
+            txtPhone.setStyle("");
+        }
+    });
+}
     @Override
     protected void createFormFields() {
         // Create containers for sections
@@ -521,9 +533,9 @@ public class EmployeeAction extends SubAction<EmployeeController, EmployeeDTO> {
         if (txtPhone.getText().trim().isEmpty()) {
             errorMessages.append("- Số điện thoại không được để trống\n");
         } else
-        if (!txtPhone.getText().trim().matches("^(\\d{3}-\\d{3}-\\d+)$")) {
-            errorMessages.append("- Số điện thoại không đúng định dạng (XXX-XXX-XXXX)\n");
-        }
+    if (!txtPhone.getText().trim().matches("^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$")) {
+        errorMessages.append("- Số điện thoại không đúng định dạng\n");
+    }
 
         if (!txtEmail.getText().trim().isEmpty() &&
                 !txtEmail.getText().trim().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
