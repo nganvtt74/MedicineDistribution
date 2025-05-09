@@ -147,17 +147,13 @@ public class EmployeeBUSImpl implements EmployeeBUS {
 
     @Override
     public EmployeeDTO findById(Integer integer) {
-        if (userSession.hasPermission("VIEW_EMPLOYEE")) {
             try(Connection conn = dataSource.getConnection()) {
                 return employeeDAO.findById(integer, conn);
             } catch (SQLException e) {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to find employee");
-            throw new PermissionDeniedException("Bạn không có quyền tìm nhân viên");
-        }
+
     }
 
     @Override

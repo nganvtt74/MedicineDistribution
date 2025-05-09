@@ -44,8 +44,10 @@ public EmployeeDTO(EmployeeDTO employeeDTO) {
     @NotBlank(message = "Giới tính không được để trống")
     private String gender;
 
-    @Pattern(regexp = "^((0|\\+84)[0-9]{9}|\\d{3}-\\d{3}-\\d+)$", message = "Số điện thoại không hợp lệ")
-    private String phone;
+    @Pattern(
+            regexp = "^(?:(?:0|\\+84)\\d{9}|\\+\\d{1,3}(?:[ \\-]\\d{1,4}){2,4})$",
+            message = "Số điện thoại không hợp lệ"
+    )    private String phone;
     
     @Email(message = "Email không hợp lệ")
     private String email;
