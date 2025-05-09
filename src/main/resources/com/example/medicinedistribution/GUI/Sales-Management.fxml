@@ -21,7 +21,7 @@
       
           <!-- Top Header Bar with App Title -->
           <top>
-              <HBox alignment="CENTER_LEFT" prefHeight="60.0" styleClass="header-bar">
+              <HBox fx:id="navBar" alignment="CENTER_LEFT" prefHeight="60.0" styleClass="header-bar">
                   <padding>
                       <Insets left="20.0" right="20.0" />
                   </padding>

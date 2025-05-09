@@ -1354,3 +1354,38 @@
     -fx-background-radius: 15;
     -fx-padding: 5 15;
 }
+.section-subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+    -fx-padding: 5px 0;
+    -fx-border-color: transparent transparent #ecf0f1 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-opacity: 0.9;
+}
+.admin-nav-bar {
+    -fx-background-color: black;
+    -fx-effect: dropshadow(gaussian, rgba(218,165,32,0.4), 8, 0, 0, 3);
+    -fx-padding: 10px 20px;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: #a93226;
+
+}
+.admin-nav-bar .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+.admin-background .button {
+    -fx-background-color: linear-gradient(to right, #1a1a1a, #252525);
+    -fx-text-fill: #daa520;
+    -fx-border-color: #daa520;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.admin-background .button:hover {
+    -fx-background-color: linear-gradient(to right, #252525, #333333);
+    -fx-effect: dropshadow(gaussian, rgba(218,165,32,0.4), 5, 0, 0, 1);
+}

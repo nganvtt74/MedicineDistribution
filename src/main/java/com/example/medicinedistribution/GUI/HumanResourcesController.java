@@ -130,6 +130,7 @@ public class HumanResourcesController extends ManagementController {
         }else {
             button_group_vbox_2.getChildren().remove(btnPayroll);
         }
+        System.out.println(busFactory.getUserSession().getPermissions());
         if (userSession.hasPermission("MANAGE_REQUEST")) {
             btnRequest.setOnAction(event -> {
                 // Handle request button click

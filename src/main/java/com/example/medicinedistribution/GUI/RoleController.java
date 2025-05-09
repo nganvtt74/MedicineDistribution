@@ -270,9 +270,8 @@ public class RoleController {
     private void savePermissions() {
         if (currentPermissionController != null && tblRole.getSelectionModel().getSelectedItem() != null) {
                 RoleDTO selectedRole = tblRole.getSelectionModel().getSelectedItem();
-                if (selectedRole.getRoleName().equals(txtSelectedRole.getText())) {
-                    selectedRole.setRoleName(txtSelectedRole.getText());
-                }
+                selectedRole.setRoleName(txtSelectedRole.getText());
+                System.out.println("Selected role: " + selectedRole.getRoleName());
 
                 List<PermissionDTO> updatedPermissions = currentPermissionController.getUpdatedPermissions();
 
@@ -294,6 +293,7 @@ public class RoleController {
                     // Show success message or notification
                     log.info("Permissions updated successfully for role: {}", selectedRole.getRoleName());
                     NotificationUtil.showSuccessNotification("Thành công", "Cập nhật vai trò thành công");
+                    loadRoles();
                     // You might want to refresh the view or show a success message
                 } else {
                     // Show error message

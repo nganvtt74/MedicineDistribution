@@ -35,6 +35,8 @@ public abstract class ManagementController {
     protected ImageView logoImage;
 
     protected BUSFactory busFactory;
+    @FXML
+    protected HBox navBar;
 
     @FXML
     protected StackPane contentArea;
@@ -51,7 +53,9 @@ public abstract class ManagementController {
         // Constructor to initialize the controller with the BUSFactory
         // You can use this factory to access your business logic
         this.busFactory = busFactory;
+
     }
+
     public void handleBackButton() {
         if (backFunction != null) {
             backFunction.run();
@@ -118,6 +122,12 @@ public abstract class ManagementController {
                               "-fx-padding: 8 15 8 8;" +
                               "-fx-cursor: hand;")
          );
+
+        if (busFactory.getUserSession().hasPermission("ADMIN")) {
+            Platform.runLater(() -> {
+                navBar.getStyleClass().add("admin-nav-bar");
+            });
+        }
     }
     protected void logout() {
         // Perform logout logic here

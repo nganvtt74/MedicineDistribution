@@ -173,8 +173,48 @@ public class UserProfileStage extends Stage {
             errorLabel
         ));
 
-        section.getChildren().addAll(sectionTitle, passwordGrid, errorLabel, savePasswordButton);
+        // Add a separator
+        Separator separator = new Separator();
+        separator.getStyleClass().add("divider");
+        separator.setPadding(new Insets(10, 0, 10, 0));
+
+        // Additional features section
+        Label additionalFeaturesLabel = new Label("Tính năng bổ sung");
+        additionalFeaturesLabel.getStyleClass().add("section-subtitle");
+
+        // Salary button
+        Button salaryButton = new Button("Xem lương");
+        salaryButton.getStyleClass().addAll("button", "primary-button");
+        salaryButton.setMaxWidth(Double.MAX_VALUE);
+        salaryButton.setOnAction(e -> showSalaryExport());
+
+        // Request button
+        Button requestButton = new Button("Nộp đơn");
+        requestButton.getStyleClass().addAll("button", "secondary-button");
+        requestButton.setMaxWidth(Double.MAX_VALUE);
+        requestButton.setOnAction(e -> showRequestCreation());
+
+        // Add buttons to a VBox for additional features
+        VBox additionalButtons = new VBox(10);
+        additionalButtons.getChildren().addAll(salaryButton, requestButton);
+
+        section.getChildren().addAll(
+                sectionTitle,
+                passwordGrid,
+                savePasswordButton,
+                errorLabel,
+                separator,
+                additionalFeaturesLabel,
+                additionalButtons
+        );
         return section;
+    }
+
+    private void showSalaryExport() {
+        SalaryExportDialog.show(busFactory, this);
+    }
+    private void showRequestCreation() {
+        RequestCreationDialog.show(busFactory, this);
     }
 
     private void savePersonalInfo(String firstName,String lateName, String email, String phone, String address, LocalDate dob) {

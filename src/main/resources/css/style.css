@@ -442,3 +442,22 @@
     -fx-pref-width: 400px;
     -fx-max-width: 600px;
 }
+.admin-background {
+    -fx-background-color: linear-gradient(to bottom right, #101010, #1a1a1a, #252525);
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-border-color: linear-gradient(to right, #daa520, #b8860b);
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(218,165,32,0.3), 10, 0, 0, 3);
+    -fx-padding: 15px;
+}
+
+.admin-background .label {
+    -fx-text-fill: #f5f5f5;
+    -fx-effect: dropshadow(gaussian, rgba(218,165,32,0.5), 3, 0, 0, 1);
+}
+.admin-background .module-title {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(218,165,32,0.5), 3, 0, 0, 1);
+}

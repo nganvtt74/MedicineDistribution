@@ -15,7 +15,7 @@
 
 <AnchorPane prefWidth="800.0" stylesheets="@../../../../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="TOP_CENTER" prefHeight="562.0" prefWidth="800.0" spacing="20.0" styleClass="dashboard-background">
+      <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="562.0" prefWidth="800.0" spacing="20.0" styleClass="dashboard-background">
          <children>
             <Label fx:id="lblTitle" styleClass="welcome-text" text="Hệ Thống Quản Lý Phân Phối Thuốc">
                <font>
