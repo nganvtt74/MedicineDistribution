@@ -125,19 +125,42 @@ public List<StatisticDTO> getProfitStatistics(LocalDate fromDate, LocalDate toDa
         return result;
     }
 
-    @Override
-    public List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String viewType) {
-        // Get product sales statistics
-        List<ProductStatisticDTO> productStats = invoiceBUS.getProductSalesSummary(fromDate, toDate, viewType);
-        List<ProductStatisticDTO> result = new ArrayList<>();
+@Override
+public List<ProductStatisticDTO> getProductSalesStatistics(LocalDate fromDate, LocalDate toDate, String viewType) {
+    // Get product sales statistics
+    List<ProductStatisticDTO> productStats = invoiceBUS.getProductSalesSummary(fromDate, toDate, viewType);
 
-        for (ProductStatisticDTO stat : productStats) {
-            ProductStatisticDTO productStat = new ProductStatisticDTO(stat.getProductId(), stat.getProductName(), stat.getCategoryName(), stat.getQuantity());
-            result.add(productStat);
+    // Create a map to consolidate duplicate products by product ID
+    Map<String, ProductStatisticDTO> consolidatedStats = new HashMap<>();
+
+    // Consolidate duplicate products by summing their quantities
+    for (ProductStatisticDTO stat : productStats) {
+        String productId = String.valueOf(stat.getProductId());
+
+        if (consolidatedStats.containsKey(productId)) {
+            // Add quantity to existing entry
+            ProductStatisticDTO existingStat = consolidatedStats.get(productId);
+            existingStat.setQuantity(existingStat.getQuantity() + stat.getQuantity());
+        } else {
+            // Create new entry
+            ProductStatisticDTO productStat = new ProductStatisticDTO(
+                stat.getProductId(),
+                stat.getProductName(),
+                stat.getCategoryName(),
+                stat.getQuantity()
+            );
+            consolidatedStats.put(productId, productStat);
         }
-
-        return result;
     }
+
+    // Convert the map values to a list
+    List<ProductStatisticDTO> result = new ArrayList<>(consolidatedStats.values());
+
+    // Sort by quantity in descending order
+    result.sort((a, b) -> b.getQuantity() - a.getQuantity());
+
+    return result;
+}
 
     @Override
     public Map<String, Integer> getProductSalesByCategory(LocalDate fromDate, LocalDate toDate) {

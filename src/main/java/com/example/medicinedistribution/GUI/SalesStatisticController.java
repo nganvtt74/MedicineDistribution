@@ -245,12 +245,17 @@ public class SalesStatisticController implements Initializable {
 
     private void handleRevenueExport(ActionEvent event) {
         try {
-            ExportUtils.exportRevenueStatistics(tblRevenueDetails.getItems(),
+            List<StatisticDTO> revenueDetails = tblRevenueDetails.getItems();
+            BigDecimal totalRevenue = CurrencyUtils.parseCurrencyToNumber(lblTotalRevenue.getText());
+            int totalInvoices = Integer.parseInt(lblTotalInvoices.getText().replaceAll("[^0-9]", ""));
+
+            ExportUtils.exportRevenueStatistics(
+                    revenueDetails,
                     dpRevenueFromDate.getValue(),
                     dpRevenueToDate.getValue(),
-                    new BigDecimal(lblTotalRevenue.getText().replace("₫", "").replace(",", "")),
-                    Integer.parseInt(lblTotalInvoices.getText()));
-
+                    totalRevenue,
+                    totalInvoices
+            );
             NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
                     "Báo cáo doanh thu đã được xuất thành công");
         } catch (Exception e) {
@@ -340,11 +345,22 @@ public class SalesStatisticController implements Initializable {
 
     private void handleExpenseExport(ActionEvent event) {
         try {
-            ExportUtils.exportExpenseStatistics(tblExpenseDetails.getItems(),
-                    dpExpenseFromDate.getValue(),
-                    dpExpenseToDate.getValue(),
-                    new BigDecimal(lblTotalExpense.getText().replace("₫", "").replace(",", "")),
-                    Integer.parseInt(lblTotalReceipts.getText()));
+            // Export expense statistics
+            List<StatisticDTO> expenseDetails = tblExpenseDetails.getItems();
+            BigDecimal totalExpense = CurrencyUtils.parseCurrencyToNumber(lblTotalExpense.getText());
+            int totalReceipts = Integer.parseInt(lblTotalReceipts.getText().replaceAll("[^0-9]", ""));
+            // Export the data
+             ExportUtils.exportExpenseStatistics(expenseDetails,
+                     dpExpenseFromDate.getValue(),
+                     dpExpenseToDate.getValue(),
+                     totalExpense,
+                     totalReceipts);
+
+//            ExportUtils.exportExpenseStatistics(tblExpenseDetails.getItems(),
+//                    dpExpenseFromDate.getValue(),
+//                    dpExpenseToDate.getValue(),
+//                    new BigDecimal(lblTotalExpense.getText().replace("₫", "").replace(",", "")),
+//                    Integer.parseInt(lblTotalReceipts.getText()));
 
             NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
                     "Báo cáo chi phí đã được xuất thành công");
@@ -435,13 +451,17 @@ public class SalesStatisticController implements Initializable {
 
     private void handleProfitExport(ActionEvent event) {
         try {
-            ExportUtils.exportProfitStatistics(tblProfitDetails.getItems(),
+            // Export profit statistics
+            List<StatisticDTO> profitDetails = tblProfitDetails.getItems();
+            BigDecimal totalRevenue = CurrencyUtils.parseCurrencyToNumber(lblProfitTotalRevenue.getText());
+            BigDecimal totalExpense = CurrencyUtils.parseCurrencyToNumber(lblProfitTotalExpense.getText());
+            BigDecimal totalProfit = CurrencyUtils.parseCurrencyToNumber(lblTotalProfit.getText());
+            ExportUtils.exportProfitStatistics(profitDetails,
                     dpProfitFromDate.getValue(),
                     dpProfitToDate.getValue(),
-                    new BigDecimal(lblProfitTotalRevenue.getText().replace("₫", "").replace(",", "")),
-                    new BigDecimal(lblProfitTotalExpense.getText().replace("₫", "").replace(",", "")),
-                    new BigDecimal(lblTotalProfit.getText().replace("₫", "").replace(",", "")));
-
+                    totalRevenue,
+                    totalExpense,
+                    totalProfit);
             NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
                     "Báo cáo lợi nhuận đã được xuất thành công");
         } catch (Exception e) {
@@ -638,8 +658,19 @@ public class SalesStatisticController implements Initializable {
 
     private void exportProductData() {
         try {
+            // Export product sales statistics
+            List<ProductStatisticDTO> productStats = tblProductDetails.getItems();
+
+            if (productStats.isEmpty()) {
+                NotificationUtil.showErrorNotification(
+                        "Không có dữ liệu",
+                        "Không có dữ liệu để xuất báo cáo"
+                );
+                return;
+            }
+            // Export the data
             ExportUtils.exportProductSalesStatistics(
-                    tblProductDetails.getItems(),
+                    productStats,
                     dpProductFromDate.getValue(),
                     dpProductToDate.getValue(),
                     Integer.parseInt(lblTotalQuantity.getText().replace(",", "")),
