@@ -48,17 +48,7 @@
                                           <Font size="15.0" />
                                        </font>
                                     </Button>
-                                              <Button fx:id="btnAddAllowance" styleClass="primary-button" text="Thêm">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </Button>
                                               <Button fx:id="btnEditAllowance" styleClass="secondary-button" text="Sửa">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </Button>
-                                              <Button fx:id="btnDeleteAllowance" styleClass="danger-button" text="Xóa">
                                        <font>
                                           <Font size="15.0" />
                                        </font>

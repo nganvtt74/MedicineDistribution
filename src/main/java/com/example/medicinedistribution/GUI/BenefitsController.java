@@ -35,9 +35,7 @@ public class BenefitsController {
     // AllowanceDTO controls
     @FXML private TextField txtSearchAllowance;
     @FXML private Button btnRefreshAllowance;
-    @FXML private Button btnAddAllowance;
     @FXML private Button btnEditAllowance;
-    @FXML private Button btnDeleteAllowance;
     @FXML private TableView<AllowanceDTO> tblAllowance;
 
     // BonusDTO controls
@@ -203,9 +201,7 @@ public class BenefitsController {
     }
 
     private void setupAllowanceUI() {
-        btnAddAllowance.setOnAction(event -> {
-            AllowanceAction.showDialog(busFactory, this, AllowanceAction.ActionType.ADD);
-        });
+
 
         btnEditAllowance.setOnAction(event -> {
             AllowanceDTO selected = tblAllowance.getSelectionModel().getSelectedItem();
@@ -216,30 +212,6 @@ public class BenefitsController {
             AllowanceAction.showDialog(busFactory, this, AllowanceAction.ActionType.EDIT, selected);
         });
 
-        btnDeleteAllowance.setOnAction(event -> {
-            if (!NotificationUtil.showConfirmation("Xác nhận", "Bạn có chắc chắn muốn xóa phụ cấp này?")) {
-                return;
-            }
-
-            AllowanceDTO selected = tblAllowance.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                NotificationUtil.showErrorNotification("Lỗi", "Vui lòng chọn một phụ cấp để xóa.");
-                return;
-            }
-
-            try {
-                if (allowanceBUS.delete(selected.getId())) {
-                    NotificationUtil.showSuccessNotification("Thành công", "Xóa phụ cấp thành công.");
-                    refreshData();
-                }
-            } catch (PermissionDeniedException e) {
-                NotificationUtil.showErrorNotification("Quyền truy cập", e.getMessage());
-            } catch (DeleteFailedException e) {
-                NotificationUtil.showErrorNotification("Lỗi", e.getMessage());
-            } catch (Exception e) {
-                NotificationUtil.showErrorNotification("Lỗi", "Có lỗi không xác định: " + e.getMessage());
-            }
-        });
 
         txtSearchAllowance.textProperty().addListener((observable, oldValue, newValue) -> {
             filterAllowances();
