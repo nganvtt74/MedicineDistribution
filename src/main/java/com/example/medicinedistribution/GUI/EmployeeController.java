@@ -152,7 +152,9 @@ public class EmployeeController {
                 statusText = "Đang làm việc";
             } else if (status == 0) {
                 statusText = "Đã nghỉ việc";
-            } else {
+            } else if (status == 2) {
+                statusText = "Nghỉ thai sản";
+            }else {
                 statusText = "Không xác định";
             }
             return new SimpleStringProperty(statusText);

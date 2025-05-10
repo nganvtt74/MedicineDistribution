@@ -166,6 +166,8 @@ public static void exportRevenueStatistics(List<StatisticDTO> revenueStats,
 
     // Close the document
     document.close();
+    NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
+            "Báo cáo doanh thu đã được xuất thành công");
 
     // Open the PDF file
     if (Desktop.isDesktopSupported()) {
@@ -498,6 +500,8 @@ public static void exportExpenseStatistics(List<StatisticDTO> expenseStats,
 
         // Close the document
         document.close();
+        NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
+                "Báo cáo lợi nhuận đã được xuất thành công");
 
         // Open the PDF file
         if (Desktop.isDesktopSupported()) {
@@ -739,6 +743,11 @@ public static void exportProductSalesStatistics(List<ProductStatisticDTO> produc
 
     // Close the document
     document.close();
+
+    NotificationUtil.showSuccessNotification(
+            "Xuất báo cáo thành công",
+            "Báo cáo thống kê sản phẩm \n đã được xuất thành công"
+    );
 
     // Open the PDF file
     if (Desktop.isDesktopSupported()) {

@@ -24,6 +24,7 @@
                <columns>
                   <TableColumn fx:id="colDate" prefWidth="120.0" text="Ngày thay đổi" />
                   <TableColumn fx:id="colPosition" prefWidth="200.0" text="Chức vụ" />
+                  <TableColumn fx:id="colOldPosition" prefWidth="200.0" text="Chức vụ cũ" />
                   <TableColumn fx:id="colSalaryBefore" prefWidth="150.0" text="Lương trước" />
                   <TableColumn fx:id="colSalaryAfter" prefWidth="150.0" text="Lương sau" />
                </columns>

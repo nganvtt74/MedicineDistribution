@@ -68,7 +68,9 @@ public class BonusDAOImpl implements BonusDAO {
 
     @Override
     public BonusDTO findById(Integer id, Connection conn) {
-        String sql = "SELECT * FROM bonus WHERE id = ?";
+        String sql = "SELECT b.*, e.firstName, e.lastName " +
+                "FROM bonus b " +
+                "JOIN employee e ON b.employee_id = e.employeeId";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -84,7 +86,9 @@ public class BonusDAOImpl implements BonusDAO {
 
     @Override
     public List<BonusDTO> findAll(Connection conn) {
-        String sql = "SELECT * FROM bonus";
+        String sql = "SELECT b.*, e.firstName, e.lastName " +
+                "FROM bonus b " +
+                "JOIN employee e ON b.employee_id = e.employeeId";
         List<BonusDTO> bonusList = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -166,6 +170,10 @@ public class BonusDAOImpl implements BonusDAO {
         bonus.setBonus_type_id(rs.getInt("bonus_type_id"));
         bonus.setAmount(rs.getBigDecimal("amount"));
         bonus.setDate(rs.getDate("date").toLocalDate());
+        String firstName = rs.getString("firstName");
+        String lastName = rs.getString("lastName");
+        String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+        bonus.setEmployee_name(fullName.trim());
         return bonus;
     }
 }

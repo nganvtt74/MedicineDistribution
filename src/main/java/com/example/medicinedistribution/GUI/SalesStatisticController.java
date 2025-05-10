@@ -256,8 +256,7 @@ public class SalesStatisticController implements Initializable {
                     totalRevenue,
                     totalInvoices
             );
-            NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
-                    "Báo cáo doanh thu đã được xuất thành công");
+
         } catch (Exception e) {
             NotificationUtil.showErrorNotification("Lỗi xuất báo cáo",
                     "Đã xảy ra lỗi khi xuất báo cáo doanh thu: " + e.getMessage());
@@ -462,8 +461,7 @@ public class SalesStatisticController implements Initializable {
                     totalRevenue,
                     totalExpense,
                     totalProfit);
-            NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
-                    "Báo cáo lợi nhuận đã được xuất thành công");
+
         } catch (Exception e) {
             NotificationUtil.showErrorNotification("Lỗi xuất báo cáo",
                     "Đã xảy ra lỗi khi xuất báo cáo lợi nhuận: " + e.getMessage());
@@ -678,10 +676,6 @@ public class SalesStatisticController implements Initializable {
                     Double.parseDouble(lblAverageQuantity.getText())
             );
 
-            NotificationUtil.showSuccessNotification(
-                    "Xuất báo cáo thành công",
-                    "Báo cáo thống kê sản phẩm đã được xuất thành công"
-            );
         } catch (Exception e) {
             NotificationUtil.showErrorNotification(
                     "Lỗi xuất báo cáo",

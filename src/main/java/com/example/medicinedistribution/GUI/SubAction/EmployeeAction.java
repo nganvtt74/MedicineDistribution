@@ -311,7 +311,7 @@ private void validProperty() {
 
         // Status
         cboStatus = new ComboBox<>();
-        cboStatus.setItems(FXCollections.observableArrayList("Đang làm việc", "Đã nghỉ việc"));
+        cboStatus.setItems(FXCollections.observableArrayList("Đang làm việc", "Đã nghỉ việc","Nghỉ thai sản"));
         cboStatus.setMaxWidth(Double.MAX_VALUE);
         addFormField(grid, "Trạng thái:", cboStatus, row);
 
@@ -485,9 +485,21 @@ private void validProperty() {
             dtpHireDate.setValue(selectedData.getHireDate()== null ? LocalDate.now() : selectedData.getHireDate());
 
             // Set status
-            int statusIndex = selectedData.getStatus() == 1 ? 0 : 1; // 1 = Working (index 0), 0 = Left (index 1)
+            int statusIndex;
+            switch(selectedData.getStatus()) {
+                case 1: // Working
+                    statusIndex = 0; // "Đang làm việc"
+                    break;
+                case 0: // Left
+                    statusIndex = 1; // "Đã nghỉ việc"
+                    break;
+                case 2: // Maternity leave
+                    statusIndex = 2; // "Nghỉ thai sản"
+                    break;
+                default:
+                    statusIndex = 0; // Default to "Đang làm việc"
+            }
             cboStatus.getSelectionModel().select(statusIndex);
-
             // Select position in combo box
             for (PositionWrapper posWrapper : cboPosition.getItems()) {
                 if (posWrapper.getPosition().getPositionId() == selectedData.getPositionId()) {
@@ -622,7 +634,23 @@ private void validProperty() {
         employee.setHireDate(dtpHireDate.getValue());
         employee.setBasicSalary(new BigDecimal(txtBasicSalary.getText().trim().replace(",", "")));
         employee.setPositionName(cboPosition.getValue().getPosition().getPositionName());
-        employee.setStatus(cboStatus.getValue().equals("Đang làm việc") ? 1 : 0);
+        // Map status values: "Đang làm việc" -> 1, "Đã nghỉ việc" -> 0, "Nghỉ thai sản" -> 2
+        String selectedStatus = cboStatus.getValue();
+        int statusValue;
+        switch(selectedStatus) {
+            case "Đang làm việc":
+                statusValue = 1;
+                break;
+            case "Đã nghỉ việc":
+                statusValue = 0;
+                break;
+            case "Nghỉ thai sản":
+                statusValue = 2;
+                break;
+            default:
+                statusValue = 1; // Default to "Đang làm việc" if unknown
+        }
+        employee.setStatus(statusValue);
 
         return employee;
     }

@@ -150,7 +150,7 @@ public class BenefitsController {
         colEmployeeName.setCellValueFactory(cellData -> {
             // This would need to be implemented to look up employee name from employee_id
             // For now, just return placeholder
-            return new SimpleStringProperty("Nhân viên " + cellData.getValue().getEmployee_id());
+            return new SimpleStringProperty( cellData.getValue().getEmployee_name());
         });
         colEmployeeName.setPrefWidth(200);
 

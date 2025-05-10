@@ -14,7 +14,9 @@ import java.time.LocalDate;
 public class BonusDTO {
     private Integer id;
     private Integer employee_id;
+    private String employee_name;
     private Integer bonus_type_id;
     private BigDecimal amount;
     private LocalDate date;
+
 }

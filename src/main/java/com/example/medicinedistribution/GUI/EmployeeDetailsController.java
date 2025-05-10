@@ -104,9 +104,26 @@ public class EmployeeDetailsController {
             addDetailRow(employmentInfoGrid, "Ngày thuê:", employee.getHireDate().format(dateFormatter), row++);
             addDetailRow(employmentInfoGrid, "Lương cơ bản:", String.format("%,.0f VND", employee.getBasicSalary()), row++);
             addDetailRow(employmentInfoGrid, "Số ngày nghỉ phép còn lại:", "30 ngày", row++);
+            String statusText;
+            String statusClass;
 
-            String statusText = employee.getStatus() == 1 ? "Đang làm việc" : "Đã nghỉ việc";
-            String statusClass = employee.getStatus() == 1 ? "status-active" : "status-inactive";
+            switch (employee.getStatus()) {
+                case 1:
+                    statusText = "Đang làm việc";
+                    statusClass = "status-active";
+                    break;
+                case 0:
+                    statusText = "Đã nghỉ việc";
+                    statusClass = "status-inactive";
+                    break;
+                case 2:
+                    statusText = "Nghỉ thai sản";
+                    statusClass = "status-pending";
+                    break;
+                default:
+                    statusText = "Không xác định";
+                    statusClass = "status-inactive";
+            }
 
             Label statusLabel = new Label(statusText);
             statusLabel.getStyleClass().add(statusClass);

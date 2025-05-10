@@ -46,6 +46,9 @@ public class EmployeeHistoryController {
     private TableColumn<PositionHistoryDTO, String> colPosition;
 
     @FXML
+    private TableColumn<PositionHistoryDTO, String> colOldPosition;
+
+    @FXML
     private TableColumn<PositionHistoryDTO, String> colSalaryBefore;
 
     @FXML
@@ -102,6 +105,10 @@ public class EmployeeHistoryController {
         // Position column
         colPosition.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getPositionName()));
+
+        // Old position column
+        colOldPosition.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getOldPositionName()));
 
         // Format salary columns with thousand separators
         colSalaryBefore.setCellValueFactory(cellData -> {

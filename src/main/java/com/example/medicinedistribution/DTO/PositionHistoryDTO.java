@@ -15,6 +15,7 @@ public class PositionHistoryDTO {
     private Integer id;
     private LocalDate date;
     private String positionName;
+    private String oldPositionName;
     private Integer employeeId;
     private BigDecimal salaryBefore;
     private BigDecimal salaryAfter;

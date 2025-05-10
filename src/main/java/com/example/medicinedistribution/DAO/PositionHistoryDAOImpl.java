@@ -15,13 +15,15 @@ import java.util.List;
 public class PositionHistoryDAOImpl implements PositionHistoryDAO {
     @Override
     public Integer insert(PositionHistoryDTO positionHistoryDTO, Connection conn) {
-        String sql = "INSERT INTO position_history (date, position_name, employee_id, salary_before, salary_after) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO position_history (date, position_name,old_position_name, employee_id, salary_before, salary_after) VALUES (?,?,?, ?, ?, ?)";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
-            stmt.setString(2, positionHistoryDTO.getPositionName());
-            stmt.setInt(3, positionHistoryDTO.getEmployeeId());
-            stmt.setBigDecimal(4, positionHistoryDTO.getSalaryBefore());
-            stmt.setBigDecimal(5, positionHistoryDTO.getSalaryAfter());
+            int i = 1;
+            stmt.setDate(i++, java.sql.Date.valueOf(LocalDate.now()));
+            stmt.setString(i++, positionHistoryDTO.getPositionName());
+            stmt.setString(i++, positionHistoryDTO.getOldPositionName());
+            stmt.setInt(i++, positionHistoryDTO.getEmployeeId());
+            stmt.setBigDecimal(i++, positionHistoryDTO.getSalaryBefore());
+            stmt.setBigDecimal(i++, positionHistoryDTO.getSalaryAfter());
             return stmt.executeUpdate();
         } catch (SQLException e) {
             log.error("Error inserting PositionHistoryDTO: {}", e.getMessage());
@@ -68,6 +70,7 @@ public class PositionHistoryDAOImpl implements PositionHistoryDAO {
                 positionHistoryDTO.setId(rs.getInt("id"));
                 positionHistoryDTO.setDate(rs.getDate("date").toLocalDate());
                 positionHistoryDTO.setPositionName(rs.getString("position_name"));
+                positionHistoryDTO.setOldPositionName(rs.getString("old_position_name"));
                 positionHistoryDTO.setEmployeeId(rs.getInt("employee_id"));
                 positionHistoryDTO.setSalaryBefore(rs.getBigDecimal("salary_before"));
                 positionHistoryDTO.setSalaryAfter(rs.getBigDecimal("salary_after"));
