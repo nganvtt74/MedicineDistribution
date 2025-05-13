@@ -234,7 +234,6 @@
                       <Insets bottom="10" left="10" right="10" top="10" />
                   </padding>
                   <Button fx:id="btnSave" styleClass="primary-button" text="Lưu bảng lương" />
-                  <Button fx:id="btnClose" styleClass="secondary-button" text="Đóng" />
               </HBox>
           </bottom>
       </BorderPane>

@@ -38,7 +38,8 @@ public class HumanResourcesController extends ManagementController {
             btnPayroll,
             btnRequest,
             btnSettings,
-            btnBack;
+            btnBack,
+            btnStatistic;
 
     @FXML
     public StackPane contentArea;
@@ -108,6 +109,17 @@ public class HumanResourcesController extends ManagementController {
                 }
             }
         }
+        if (userSession.hasPermission("MANAGE_PAYROLL")) {
+            btnStatistic.setOnAction(event -> {
+                // Handle salary button click
+                loadFxml("EmployeeStatistic.fxml", new EmployeeStatisticController(busFactory));
+            });
+        }else {
+            button_group_vbox_2.getChildren().remove(btnPayroll);
+        }
+
+
+
         btnSettings.setOnAction(event -> {
             // Handle settings button click
             loadFxml("settingHR.fxml", new SettingsHRController(busFactory));

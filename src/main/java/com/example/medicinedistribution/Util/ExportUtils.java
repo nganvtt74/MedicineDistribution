@@ -1093,4 +1093,127 @@ private static String formatCurrency(BigDecimal amount) {
 
         return html.toString();
     }
+    public static void exportEmployeeStatistics(LocalDate startDate, LocalDate endDate, int currentEmployees, int newEmployees, int maternityLeaveEmployees, BigDecimal totalSalary, BigDecimal totalDeductions, List<PayrollDTO> payrollList) throws Exception {
+        // Create a file chooser dialog
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Lưu Báo Cáo Nhân Viên");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        fileChooser.setInitialFileName("BaoCao_NhanVien_" +
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf");
+
+        File file = fileChooser.showSaveDialog(null);
+        if (file == null) return;
+
+        // Create PDF document
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        try {
+            // Load font that supports Vietnamese
+            String fontPath = "./fonts/arial-unicode-ms.ttf";
+            PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H,
+                    PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
+            document.setFont(font);
+        } catch (IOException e) {
+            log.error("Error loading font: {}", e.getMessage());
+            // Fall back to default font if custom font fails to load
+            document.setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA));
+        }
+
+        // Add title
+        Paragraph title = new Paragraph("BÁO CÁO THỐNG KÊ NHÂN VIÊN")
+                .setFontSize(18)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(5);
+        document.add(title);
+
+        // Add date range
+        String dateRange = "Kỳ báo cáo: " + startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        + " đến " + endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        document.add(new Paragraph(dateRange)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(15));
+
+        // Add export date
+        document.add(new Paragraph("Ngày xuất: " + LocalDateTime.now().format(
+                        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                .setTextAlignment(TextAlignment.RIGHT)
+                .setFontSize(10)
+                .setMarginBottom(20));
+
+        // Add summary section
+        document.add(new Paragraph("TỔNG KẾT NHÂN SỰ")
+                .setFontSize(14)
+                .setBold()
+                .setMarginBottom(10));
+
+        Table summaryTable = new Table(UnitValue.createPercentArray(new float[]{50, 50}))
+                .setWidth(UnitValue.createPercentValue(100));
+
+        // Add employee counts
+        summaryTable.addCell(createHeaderCell("Tổng nhân viên hiện tại:"));
+        summaryTable.addCell(createValueCell(String.valueOf(currentEmployees)));
+
+        summaryTable.addCell(createHeaderCell("Nhân viên mới:"));
+        summaryTable.addCell(createValueCell(String.valueOf(newEmployees)));
+
+        summaryTable.addCell(createHeaderCell("Nhân viên nghỉ thai sản:"));
+        summaryTable.addCell(createValueCell(String.valueOf(maternityLeaveEmployees)));
+
+        document.add(summaryTable);
+        document.add(new Paragraph("\n"));
+
+        // Add salary summary section
+        document.add(new Paragraph("TỔNG KẾT LƯƠNG")
+                .setFontSize(14)
+                .setBold()
+                .setMarginBottom(10));
+
+        Table salaryTable = new Table(UnitValue.createPercentArray(new float[]{50, 50}))
+                .setWidth(UnitValue.createPercentValue(100));
+
+        // Calculate net salary (after deductions)
+        BigDecimal netSalary = totalSalary.subtract(totalDeductions);
+
+        // Add salary statistics
+        salaryTable.addCell(createHeaderCell("Tổng lương:"));
+        salaryTable.addCell(createValueCell(CurrencyUtils.formatVND(totalSalary)));
+
+        salaryTable.addCell(createHeaderCell("Tổng khấu trừ:"));
+        salaryTable.addCell(createValueCell(CurrencyUtils.formatVND(totalDeductions)));
+
+        salaryTable.addCell(createHeaderCell("Tổng thực lãnh:"));
+        salaryTable.addCell(createValueCell(CurrencyUtils.formatVND(netSalary)));
+
+        // Calculate average salary if there are employees
+        if (currentEmployees > 0) {
+            BigDecimal avgSalary = netSalary.divide(BigDecimal.valueOf(currentEmployees), 0, RoundingMode.HALF_UP);
+            salaryTable.addCell(createHeaderCell("Lương thực lãnh trung bình:"));
+            salaryTable.addCell(createValueCell(CurrencyUtils.formatVND(avgSalary)));
+        }
+
+        document.add(salaryTable);
+        document.add(new Paragraph("\n"));
+
+
+        // Add footer note
+        document.add(new Paragraph("\nGhi chú: Báo cáo này được tạo tự động từ hệ thống.")
+                .setFontSize(8)
+                .setFontColor(ColorConstants.GRAY)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginTop(20));
+
+        // Close the document
+        document.close();
+        NotificationUtil.showSuccessNotification("Xuất báo cáo thành công",
+                "Báo cáo thống kê nhân viên đã được xuất thành công");
+
+        // Open the PDF file
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(file);
+        }
+    }
 }

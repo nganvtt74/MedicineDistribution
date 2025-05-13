@@ -13,4 +13,6 @@ public interface PayrollBUS {
 
 
     PayrollDTO getPayrollByEmployeeId(int employeeId, int month, int year);
+
+    List<PayrollDTO> findByPeriod(Integer selectedMonth, Integer selectedYear);
 }

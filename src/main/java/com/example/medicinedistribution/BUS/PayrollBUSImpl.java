@@ -125,4 +125,14 @@ public class PayrollBUSImpl implements PayrollBUS {
         return null;
     }
 
+    @Override
+    public List<PayrollDTO> findByPeriod(Integer selectedMonth, Integer selectedYear) {
+        try (Connection connection = dataSource.getConnection()) {
+            return payrollDAO.findByPeriod(selectedMonth, selectedYear, connection);
+        } catch (Exception e) {
+            log.error("Error fetching payroll by period: {}", e.getMessage());
+            return null;
+        }
+    }
+
 }

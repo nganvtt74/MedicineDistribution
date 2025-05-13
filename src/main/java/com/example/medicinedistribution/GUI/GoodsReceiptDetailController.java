@@ -107,6 +107,12 @@ public class GoodsReceiptDetailController {
         });
 
         btnPrint.setOnAction(event -> {
+
+            for(GoodsReceiptDetailDTO detail : receipt.getDetails()) {
+                detail.setProductName(productMap.get(detail.getProductId()).getProductName());
+                detail.setUnit(productMap.get(detail.getProductId()).getUnit());
+            }
+
             // Print the receipt
             // Implement print functionality here
             ExportUtils.exportGoodsReceipt(receipt, busFactory);

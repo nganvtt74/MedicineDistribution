@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -244,5 +245,49 @@ public BigDecimal getAvgNetIncome6Months(int employeeId, int month, int year, Co
             log.error("Error while fetching payroll by employee ID, month and year", e);
         }
         return null;
+    }
+
+    @Override
+    public List<PayrollDTO> findByPeriod(Integer selectedMonth, Integer selectedYear, Connection connection) {
+        String sql = "SELECT * FROM payroll WHERE MONTH(payrollDate) = ? AND YEAR(payrollDate) = ?";
+        List<PayrollDTO> payrollList = new ArrayList<>();
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, selectedMonth);
+            pstmt.setInt(2, selectedYear);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    PayrollDTO payrollDTO = PayrollDTO.builder()
+                            .payrollId(rs.getInt("payrollId"))
+                            .employeeId(rs.getInt("employeeId"))
+                            .payrollDate(rs.getDate("payrollDate").toLocalDate())
+                            .actual_working_days(rs.getInt("actual_working_days"))
+                            .leave_days(rs.getInt("leave_days"))
+                            .late_days(rs.getInt("late_days"))
+                            .position_allowance(rs.getBigDecimal("position_allowance"))
+                            .other_allowance(rs.getBigDecimal("other_allowance"))
+                            .total_allowance(rs.getBigDecimal("total_allowance"))
+                            .bonus_total(rs.getBigDecimal("bonus_total"))
+                            .taxable_income(rs.getBigDecimal("taxable_income"))
+                            .social_insurance_salary(rs.getBigDecimal("social_insurance_salary"))
+                            .insurance_social(rs.getBigDecimal("insurance_social"))
+                            .insurance_health(rs.getBigDecimal("insurance_health"))
+                            .insurance_accident(rs.getBigDecimal("insurance_accident"))
+                            .total_insurance(rs.getBigDecimal("total_insurance"))
+                            .income_tax(rs.getBigDecimal("income_tax"))
+                            .deductible_income(rs.getBigDecimal("deductible_income"))
+                            .penalty_amount(rs.getBigDecimal("penalty_amount"))
+                            .net_income(rs.getBigDecimal("net_income"))
+                            .created_by(rs.getInt("created_by"))
+                            .base_salary(rs.getBigDecimal("base_salary"))
+                            .build();
+                    payrollList.add(payrollDTO);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error while fetching payroll by period", e);
+        }
+        return payrollList;
     }
 }

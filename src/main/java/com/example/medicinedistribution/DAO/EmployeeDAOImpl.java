@@ -99,34 +99,41 @@ public boolean update(EmployeeDTO employeeDTO, Connection conn) {
         return null;
     }
 
-    @Override
-    public List<EmployeeDTO> findAll(Connection conn) {
-        String sql = "SELECT * FROM employee";
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
-            List<EmployeeDTO> employees = new ArrayList<>();
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                employees.add(EmployeeDTO.builder()
-                        .employeeId(rs.getInt("employeeId"))
-                        .firstName(rs.getString("firstName"))
-                        .lastName(rs.getString("lastName"))
-                        .basicSalary(rs.getBigDecimal("basic_salary"))
-                        .phone(rs.getString("phone"))
-                        .birthday(rs.getDate("birthday")==null? null : rs.getDate("birthday").toLocalDate())
-                        .hireDate(rs.getDate("hireDate")==null? null : rs.getDate("hireDate").toLocalDate())
-                        .status(rs.getInt("status"))
-                        .positionId(rs.getInt("positionId"))
-                        .address(rs.getString("address"))
-                        .email(rs.getString("email"))
-                        .gender(rs.getString("gender"))
-                        .build());
-            }
-            return employees;
-        }catch (SQLException e) {
-            log.error(e.getMessage());
+@Override
+public List<EmployeeDTO> findAll(Connection conn) {
+    String sql = "SELECT e.*, p.positionName, d.departmentId, d.departmentName " +
+                 "FROM employee e " +
+                 "LEFT JOIN position p ON e.positionId = p.positionId " +
+                 "LEFT JOIN department d ON p.departmentId = d.departmentId";
+
+    try(PreparedStatement stmt = conn.prepareStatement(sql)){
+        List<EmployeeDTO> employees = new ArrayList<>();
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            employees.add(EmployeeDTO.builder()
+                    .employeeId(rs.getInt("employeeId"))
+                    .firstName(rs.getString("firstName"))
+                    .lastName(rs.getString("lastName"))
+                    .basicSalary(rs.getBigDecimal("basic_salary"))
+                    .phone(rs.getString("phone"))
+                    .birthday(rs.getDate("birthday")==null? null : rs.getDate("birthday").toLocalDate())
+                    .hireDate(rs.getDate("hireDate")==null? null : rs.getDate("hireDate").toLocalDate())
+                    .status(rs.getInt("status"))
+                    .positionId(rs.getInt("positionId"))
+                    .positionName(rs.getString("positionName"))
+                    .departmentId(rs.getInt("departmentId"))
+                    .departmentName(rs.getString("departmentName"))
+                    .address(rs.getString("address"))
+                    .email(rs.getString("email"))
+                    .gender(rs.getString("gender"))
+                    .build());
         }
-        return null;
+        return employees;
+    }catch (SQLException e) {
+        log.error(e.getMessage());
     }
+    return null;
+}
 
     @Override
     public List<EmployeeDTO> getEmployeeWithoutAccount(Connection conn) {

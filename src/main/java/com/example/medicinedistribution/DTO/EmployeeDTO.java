@@ -76,5 +76,7 @@ public EmployeeDTO(EmployeeDTO employeeDTO) {
 
     private String positionName;
     private Integer dependentCount;
+    private Integer departmentId;
+    private String departmentName;
 
 }

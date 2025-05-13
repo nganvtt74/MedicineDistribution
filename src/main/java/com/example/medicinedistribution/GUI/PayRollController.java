@@ -191,6 +191,7 @@ public class PayRollController {
 
             PayrollExportUtils.exportPayroll(tblSalary, selectedMonth, selectedYear);
         });
+        btnFilter.fire();
 
     }
 

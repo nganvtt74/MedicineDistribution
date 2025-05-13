@@ -12,4 +12,6 @@ public interface PayrollDAO {
     boolean getPayrollByMonthAndYear(int month, int year, Connection conn);
     BigDecimal getAvgNetIncome6Months(int employeeId, int month, int year, Connection conn);
     PayrollDTO getPayrollByEmployeeId(int employeeId, int month, int year, Connection conn);
+
+    List<PayrollDTO> findByPeriod(Integer selectedMonth, Integer selectedYear, Connection connection);
 }
