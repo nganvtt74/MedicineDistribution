@@ -19,6 +19,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.font.FontProvider;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.element.AreaBreak;
 import com.lowagie.text.pdf.BaseFont;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
@@ -40,10 +41,8 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -1093,7 +1092,7 @@ private static String formatCurrency(BigDecimal amount) {
 
         return html.toString();
     }
-    public static void exportEmployeeStatistics(LocalDate startDate, LocalDate endDate, int currentEmployees, int newEmployees, int maternityLeaveEmployees, BigDecimal totalSalary, BigDecimal totalDeductions, List<PayrollDTO> payrollList) throws Exception {
+    public static void exportEmployeeStatistics(LocalDate startDate, LocalDate endDate, int currentEmployees, int newEmployees, int maternityLeaveEmployees, BigDecimal totalSalary, BigDecimal totalDeductions, List<BonusDTO> payrollList) throws Exception {
         // Create a file chooser dialog
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Lưu Báo Cáo Nhân Viên");
@@ -1197,7 +1196,112 @@ private static String formatCurrency(BigDecimal amount) {
 
         document.add(salaryTable);
         document.add(new Paragraph("\n"));
+        // Add bonus summary section
+        // Add bonus summary section
+        document.add(new Paragraph("THÔNG TIN THƯỞNG")
+                .setFontSize(14)
+                .setBold()
+                .setMarginBottom(10));
 
+        // Calculate total bonus
+        BigDecimal totalBonus = BigDecimal.ZERO;
+        if (payrollList != null && !payrollList.isEmpty()) {
+            totalBonus = payrollList.stream()
+                    .map(BonusDTO::getAmount)
+                    .filter(Objects::nonNull)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        // Add bonus summary table
+        Table bonusSummaryTable = new Table(UnitValue.createPercentArray(new float[]{50, 50}))
+                .setWidth(UnitValue.createPercentValue(100));
+
+        bonusSummaryTable.addCell(createHeaderCell("Tổng thưởng:"));
+        bonusSummaryTable.addCell(createValueCell(CurrencyUtils.formatVND(totalBonus)));
+
+        // Calculate bonus recipients count
+        long bonusRecipientsCount = payrollList != null ?
+                payrollList.stream().map(BonusDTO::getEmployee_id).distinct().count() : 0;
+
+        bonusSummaryTable.addCell(createHeaderCell("Số nhân viên nhận thưởng:"));
+        bonusSummaryTable.addCell(createValueCell(String.valueOf(bonusRecipientsCount)));
+
+        // Calculate average bonus per recipient if there are any recipients
+        if (bonusRecipientsCount > 0) {
+            BigDecimal averageBonus = totalBonus.divide(BigDecimal.valueOf(bonusRecipientsCount), 0, RoundingMode.HALF_UP);
+            bonusSummaryTable.addCell(createHeaderCell("Thưởng trung bình:"));
+            bonusSummaryTable.addCell(createValueCell(CurrencyUtils.formatVND(averageBonus)));
+        }
+
+        document.add(bonusSummaryTable);
+        document.add(new Paragraph("\n"));
+
+
+        if (payrollList != null && !payrollList.isEmpty()) {
+            document.add(new Paragraph("CHI TIẾT THƯỞNG")
+                    .setFontSize(14)
+                    .setBold()
+                    .setMarginBottom(10));
+
+            // Create bonus details table
+            Table bonusTable = new Table(UnitValue.createPercentArray(new float[]{20, 15, 15, 15, 20, 15}))
+                    .setWidth(UnitValue.createPercentValue(100));
+
+            // Add header row
+            bonusTable.addHeaderCell(createTableHeaderCell("Nhân viên"));
+            bonusTable.addHeaderCell(createTableHeaderCell("Phòng ban"));
+            bonusTable.addHeaderCell(createTableHeaderCell("Chức vụ"));
+            bonusTable.addHeaderCell(createTableHeaderCell("Loại thưởng"));
+            bonusTable.addHeaderCell(createTableHeaderCell("Số tiền"));
+            bonusTable.addHeaderCell(createTableHeaderCell("Ngày thưởng"));
+
+            // Add bonus data rows
+            int rowCount = 0;
+            final int ROWS_PER_PAGE = 15; // Adjust based on your layout
+
+            for (BonusDTO bonus : payrollList) {
+                // Add a page break if needed
+                if (rowCount > 0 && rowCount % ROWS_PER_PAGE == 0) {
+                    document.add(bonusTable); // Add the current table
+                    document.add(new AreaBreak()); // Add page break
+
+                    // Create new table for next page with headers
+                    bonusTable = new Table(UnitValue.createPercentArray(new float[]{20, 15, 15, 15, 20, 15}))
+                            .setWidth(UnitValue.createPercentValue(100));
+
+                    // Add header row again
+                    bonusTable.addHeaderCell(createTableHeaderCell("Nhân viên"));
+                    bonusTable.addHeaderCell(createTableHeaderCell("Phòng ban"));
+                    bonusTable.addHeaderCell(createTableHeaderCell("Chức vụ"));
+                    bonusTable.addHeaderCell(createTableHeaderCell("Loại thưởng"));
+                    bonusTable.addHeaderCell(createTableHeaderCell("Số tiền"));
+                    bonusTable.addHeaderCell(createTableHeaderCell("Ngày thưởng"));
+                }
+
+                // Add data to table
+                bonusTable.addCell(createTableCell(bonus.getEmployee_name()));
+                bonusTable.addCell(createTableCell(bonus.getDepartment_name()));
+                bonusTable.addCell(createTableCell(bonus.getPosition_name()));
+                bonusTable.addCell(createTableCell(bonus.getBonus_type_name()));
+                bonusTable.addCell(createTableCell(CurrencyUtils.formatVND(bonus.getAmount())));
+                bonusTable.addCell(createTableCell(formatDate(bonus.getDate())));
+
+                rowCount++;
+            }
+
+            // Add the final table
+            document.add(bonusTable);
+            document.add(new Paragraph("\n"));
+
+            // Add total calculation at the bottom
+            Table totalTable = new Table(UnitValue.createPercentArray(new float[]{80, 20}))
+                    .setWidth(UnitValue.createPercentValue(100));
+
+            totalTable.addCell(new Cell().add(new Paragraph("TỔNG CỘNG").setBold().setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
+            totalTable.addCell(new Cell().add(new Paragraph(CurrencyUtils.formatVND(totalBonus)).setBold()).setBorder(Border.NO_BORDER));
+
+            document.add(totalTable);
+        }
 
         // Add footer note
         document.add(new Paragraph("\nGhi chú: Báo cáo này được tạo tự động từ hệ thống.")

@@ -15,7 +15,10 @@ public class BonusDTO {
     private Integer id;
     private Integer employee_id;
     private String employee_name;
+    private String position_name;
+    private String department_name;
     private Integer bonus_type_id;
+    private String bonus_type_name;
     private BigDecimal amount;
     private LocalDate date;
 

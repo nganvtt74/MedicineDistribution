@@ -145,7 +145,15 @@ public class BonusDAOImpl implements BonusDAO {
 
     @Override
     public List<BonusDTO> getByMothYear(int monthValue, int year, Connection conn) {
-        String sql = "SELECT * FROM bonus WHERE MONTH(date) = ? AND YEAR(date) = ?";
+        String sql = "SELECT b.*, e.firstName, e.lastName, p.positionName as position_name, " +
+                "d.departmentName as department_name, bt.name as bonus_type_name " +
+                "FROM bonus b " +
+                "JOIN employee e ON b.employee_id = e.employeeId " +
+                "JOIN position p ON e.positionId = p.positionId " +
+                "JOIN department d ON p.departmentId = d.departmentId " +
+                "JOIN bonus_type bt ON b.bonus_type_id = bt.id " +
+                "WHERE MONTH(b.date) = ? AND YEAR(b.date) = ?";
+
         List<BonusDTO> bonusList = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -154,7 +162,7 @@ public class BonusDAOImpl implements BonusDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                bonusList.add(mapResultSetToBonus(rs));
+                bonusList.add(mapResultSetToBonusFull(rs));
             }
         } catch (SQLException e) {
             log.error("Error finding bonuses by month and year: {}", e.getMessage());
@@ -176,4 +184,27 @@ public class BonusDAOImpl implements BonusDAO {
         bonus.setEmployee_name(fullName.trim());
         return bonus;
     }
+
+    private BonusDTO mapResultSetToBonusFull(ResultSet rs) throws SQLException {
+        BonusDTO bonus = new BonusDTO();
+        bonus.setId(rs.getInt("id"));
+        bonus.setEmployee_id(rs.getInt("employee_id"));
+        bonus.setBonus_type_id(rs.getInt("bonus_type_id"));
+        bonus.setAmount(rs.getBigDecimal("amount"));
+        bonus.setDate(rs.getDate("date").toLocalDate());
+
+        // Get employee name
+        String firstName = rs.getString("firstName");
+        String lastName = rs.getString("lastName");
+        String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+        bonus.setEmployee_name(fullName.trim());
+
+        // Get position, department and bonus type information
+        bonus.setPosition_name(rs.getString("position_name"));
+        bonus.setDepartment_name(rs.getString("department_name"));
+        bonus.setBonus_type_name(rs.getString("bonus_type_name"));
+
+        return bonus;
+    }
+
 }

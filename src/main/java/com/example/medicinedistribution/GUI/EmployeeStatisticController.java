@@ -3,13 +3,16 @@ package com.example.medicinedistribution.GUI;
 import com.example.medicinedistribution.BUS.BUSFactory;
 import com.example.medicinedistribution.BUS.Interface.EmployeeBUS;
 import com.example.medicinedistribution.BUS.Interface.PayrollBUS;
+import com.example.medicinedistribution.DTO.BonusDTO;
 import com.example.medicinedistribution.DTO.EmployeeDTO;
 import com.example.medicinedistribution.DTO.PayrollDTO;
 import com.example.medicinedistribution.Util.CurrencyUtils;
 import com.example.medicinedistribution.Util.ExportUtils;
 import com.example.medicinedistribution.Util.NotificationUtil;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,10 +23,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import lombok.extern.slf4j.Slf4j;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -31,6 +31,7 @@ import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -79,11 +80,31 @@ public class EmployeeStatisticController {
     @FXML
     private PieChart pieChartDepartment;
 
+    @FXML private Label lblTotalBonus;
+    @FXML private Label lblMaxBonus;
+    @FXML private Label lblBonusEmployeeCount;
+    @FXML private ComboBox<String> cboBonusDepartment;
+    @FXML private ComboBox<String> cboBonusType;
+    @FXML private TableView<BonusDTO> tblBonusDetails;
+    @FXML private TableColumn<BonusDTO, Integer> colEmployeeId;
+    @FXML private TableColumn<BonusDTO, String> colEmployeeName;
+    @FXML private TableColumn<BonusDTO, String> colDepartment;
+    @FXML private TableColumn<BonusDTO, String> colPosition;
+    @FXML private TableColumn<BonusDTO, String> colBonusType;
+    @FXML private TableColumn<BonusDTO, BigDecimal> colBonusAmount;
+    @FXML private TableColumn<BonusDTO, LocalDate> colBonusDate;
+    @FXML private TableColumn<BonusDTO, String> colBonusReason;
+
+    private ObservableList<BonusDTO> bonusList = FXCollections.observableArrayList();
+
+
     private BUSFactory busFactory;
     private EmployeeBUS employeeBUS;
     private PayrollBUS payrollBUS;
+
     private List<PayrollDTO> payrollList = new ArrayList<>();
     private List<EmployeeDTO> employeeList = new ArrayList<>();
+//    private List<BonusDTO> bonusList = new ArrayList<>();
 
     public EmployeeStatisticController(BUSFactory busFactory) {
         this.busFactory = busFactory;
@@ -162,10 +183,13 @@ public class EmployeeStatisticController {
             // Get payroll data for the month
             payrollList = payrollBUS.findByPeriod(month, year);
 
+//            bonusList = busFactory.getBonusBUS().getByMothYear(month, year);
+
             // Update UI elements
             updateEmployeeStatistics(startDate, endDate);
             updateSalaryStatistics();
             updateCharts(startDate, endDate);
+            updateBonusStatistics();
 
         } catch (Exception e) {
             log.error("Error loading data", e);
@@ -311,7 +335,79 @@ public class EmployeeStatisticController {
 
         pieChartStatus.setData(pieData);
     }
+    private void updateBonusStatistics() {
+        bonusList = FXCollections.observableArrayList(busFactory.getBonusBUS().getByMothYear(
+                cboMonth.getValue(), cboYear.getValue()));
+        // Check if bonusList is null or empty
+        if (bonusList.isEmpty()) {
+            lblTotalBonus.setText("0 ₫");
+            lblMaxBonus.setText("0 ₫");
+            lblBonusEmployeeCount.setText("0");
+            return;
+        }
 
+        // Calculate total bonus
+        BigDecimal totalBonus = bonusList.stream()
+                .map(BonusDTO::getAmount)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Find max bonus
+        Optional<BigDecimal> maxBonus = bonusList.stream()
+                .map(BonusDTO::getAmount)
+                .filter(Objects::nonNull)
+                .max(BigDecimal::compareTo);
+
+        // Count distinct employees receiving bonuses
+        long employeeCount = bonusList.stream()
+                .map(BonusDTO::getEmployee_id)
+                .distinct()
+                .count();
+
+        // Format as currency
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        lblTotalBonus.setText(currencyFormat.format(totalBonus));
+        lblMaxBonus.setText(currencyFormat.format(maxBonus.orElse(BigDecimal.ZERO)));
+        lblBonusEmployeeCount.setText(String.valueOf(employeeCount));
+
+        // Set up table columns
+        colEmployeeId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getEmployee_id()).asObject());
+        colEmployeeName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmployee_name()));
+        colDepartment.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartment_name()));
+        colPosition.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPosition_name()));
+        colBonusType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBonus_type_name()));
+        colBonusAmount.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getAmount()));
+        colBonusDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDate()));
+
+        // Format amount column to display currency
+        colBonusAmount.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal amount, boolean empty) {
+                super.updateItem(amount, empty);
+                if (empty || amount == null) {
+                    setText(null);
+                } else {
+                    setText(currencyFormat.format(amount));
+                }
+            }
+        });
+
+        // Format date column
+        colBonusDate.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null) {
+                    setText(null);
+                } else {
+                    setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                }
+            }
+        });
+
+        // Update table content
+        tblBonusDetails.setItems(bonusList);
+    }
 //    private void updateDepartmentPieChart() {
 //        pieChartDepartment.getData().clear();
 //
@@ -379,33 +475,7 @@ private void updateDepartmentPieChart() {
 }
 
 
-    private void applyGlobalChartStyles() {
-        // CSS để tùy chỉnh legend giống như hình mẫu
-        String chartCSS =
-                ".chart-legend {\n" +
-                        "    -fx-background-color: transparent;\n" +
-                        "    -fx-padding: 20px 0 0 0;\n" + // Thêm padding phía trên để tạo khoảng cách
-                        "    -fx-legend-side: bottom;\n" + // Đặt legend ở dưới
-                        "    -fx-orientation: horizontal;\n" + // Các mục legend sẽ xếp theo chiều ngang
-                        "    -fx-wrap-text: true;\n" + // Cho phép legend xuống dòng
-                        "}\n" +
-                        ".chart-legend-item {\n" +
-                        "    -fx-padding: 5px 15px 5px 5px;\n" + // Tăng khoảng cách giữa các mục
-                        "    -fx-font-size: 12px;\n" +
-                        "}\n" +
-                        ".chart-legend-item-symbol {\n" +
-                        "    -fx-background-radius: 50%;\n" + // Symbol hình tròn
-                        "    -fx-padding: 5px;\n" + // Kích thước symbol
-                        "}\n" +
-                        ".chart-pie-label {\n" +
-                        "    -fx-font-size: 11px;\n" +
-                        "    -fx-font-weight: bold;\n" +
-                        "}\n";
 
-        // Áp dụng cho từng chart riêng lẻ
-        pieChartStatus.setStyle(chartCSS);
-        pieChartDepartment.setStyle(chartCSS);
-    }
 
     private String getDepartmentName(Integer departmentId) {
 
@@ -425,8 +495,6 @@ private void updateDepartmentPieChart() {
         try {
             // Export employee statistics report
             exportEmployeeStatistics(selectedMonth, selectedYear);
-            NotificationUtil.showSuccessNotification("Xuất báo cáo",
-                "Báo cáo thống kê nhân sự đã được xuất thành công!");
         } catch (Exception e) {
             log.error("Error exporting report", e);
             NotificationUtil.showErrorNotification("Lỗi",
@@ -451,7 +519,6 @@ private void updateDepartmentPieChart() {
 
         BigDecimal totalSalary = BigDecimal.ZERO;
         BigDecimal totalDeductions = BigDecimal.ZERO;
-
         for (PayrollDTO payroll : payrollList) {
             if (payroll.getNet_income() != null) {
                 totalSalary = totalSalary.add(payroll.getNet_income());
@@ -464,6 +531,12 @@ private void updateDepartmentPieChart() {
 
             totalDeductions = totalDeductions.add(taxAmount).add(insuranceAmount).add(penaltyAmount);
         }
+        ArrayList<BonusDTO> bonusList = new ArrayList<>();
+        for (BonusDTO bonus : this.bonusList) {
+            if (bonus.getDate() != null && !bonus.getDate().isBefore(startDate) && !bonus.getDate().isAfter(endDate)) {
+                bonusList.add(bonus);
+            }
+        }
 
         // Call ExportUtils or similar utility to generate the report
         // This is a placeholder - you'll need to implement the actual export functionality
@@ -475,7 +548,7 @@ private void updateDepartmentPieChart() {
                 maternityLeaveEmployees,
             totalSalary,
             totalDeductions,
-            payrollList
+            bonusList
         );
     }
 
