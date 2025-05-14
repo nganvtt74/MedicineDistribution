@@ -109,14 +109,6 @@ public class HumanResourcesController extends ManagementController {
                 }
             }
         }
-        if (userSession.hasPermission("MANAGE_PAYROLL")) {
-            btnStatistic.setOnAction(event -> {
-                // Handle salary button click
-                loadFxml("EmployeeStatistic.fxml", new EmployeeStatisticController(busFactory));
-            });
-        }else {
-            button_group_vbox_2.getChildren().remove(btnPayroll);
-        }
 
 
 
@@ -132,6 +124,15 @@ public class HumanResourcesController extends ManagementController {
             });
         }else {
             button_group_vbox_2.getChildren().remove(btnBenefits);
+        }
+
+        if (userSession.hasPermission("HR_STATISTIC")) {
+            btnStatistic.setOnAction(event -> {
+                // Handle salary button click
+                loadFxml("EmployeeStatistic.fxml", new EmployeeStatisticController(busFactory));
+            });
+        }else {
+            button_group_vbox_2.getChildren().remove(btnStatistic);
         }
 
         if (userSession.hasPermission("MANAGE_PAYROLL")) {
