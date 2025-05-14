@@ -86,7 +86,6 @@ public class EmployeeBUSImpl implements EmployeeBUS {
 
     @Override
     public boolean update(EmployeeDTO employeeDTO) {
-        if (userSession.hasPermission("UPDATE_EMPLOYEE")) {
             valid(employeeDTO);
             try(Connection conn = dataSource.getConnection()) {
                 if (employeeDAO.update(employeeDTO, conn)) {
@@ -100,10 +99,6 @@ public class EmployeeBUSImpl implements EmployeeBUS {
                 log.error("Error while getting connection", e);
                 throw new RuntimeException("Lỗi khi lấy kết nối", e);
             }
-        } else {
-            log.error("User does not have permission to update employee");
-            throw new PermissionDeniedException("Bạn không có quyền sửa nhân viên");
-        }
     }
 
     @Override
